@@ -1,5 +1,3 @@
-import io.ktor.plugin.features.*
-
 val ktorVersion: String by project
 val kotlinWrappersVersion: String by project
 
@@ -20,16 +18,6 @@ repositories {
     mavenCentral()
 }
 
-// Unnecessary if using react router (without jury-rigging)
-ktor {
-    docker {
-        localImageName.set("mosaic")
-        imageTag.set("latest")
-        jreVersion.set(JavaVersion.VERSION_17)
-        portMappings.set(listOf(DockerPortMapping(insideDocker = 8080, outsideDocker = 80)))
-    }
-}
-
 kotlin {
     js {
         browser {
@@ -40,15 +28,6 @@ kotlin {
             }
         }
         binaries.executable()
-    }
-
-    // Not necessary if using react router
-    jvm {
-        withJava()
-
-        compilations.all {
-            kotlinOptions.jvmTarget = "17"
-        }
     }
 
     sourceSets {
@@ -83,18 +62,5 @@ kotlin {
                 implementation(npm("dashjs", "4.7.4"))
             }
         }
-
-        // Not necessary if using react router
-        val jvmMain by getting {
-            dependencies {
-                implementation("io.ktor:ktor-client-cio:$ktorVersion")
-//                implementation("org.jetbrains.exposed:exposed-core:0.40.1")
-//                implementation("org.jetbrains.exposed:exposed-dao:0.40.1")
-//                implementation("org.jetbrains.exposed:exposed-jdbc:0.40.1")
-            }
-        }
-
-        // Not necessary if using react router
-        applyDefaultHierarchyTemplate()
     }
 }
