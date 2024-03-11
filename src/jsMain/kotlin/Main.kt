@@ -1,15 +1,11 @@
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.js.*
-import io.ktor.client.plugins.*
-import io.ktor.client.request.*
-import io.ktor.http.*
 import kotlinx.browser.document
 import kotlinx.html.dom.append
 import kotlinx.html.id
-import kotlinx.html.js.p
 import kotlinx.html.js.video
+import kotlinx.html.onLoad
 import org.w3c.dom.HTMLElement
+import utils.dash.create
+import utils.dash.dashjs
 
 
 suspend fun main() {
@@ -20,30 +16,10 @@ suspend fun main() {
     appContainer.append.video {
         id = "videoPlayer"
         controls = true
-        width = "50%"
-        height = "50%"
     }
     dashjs.create("videoPlayer", url)
 }
 
-
-@JsModule("dashjs")
-@JsNonModule
-external object dashjs {
-    fun MediaPlayer(): MP
-
-    interface MP {
-        fun create(): MP
-        fun initialize(video: HTMLElement, url: String, autoPlay: Boolean)
-    }
-}
-
-
-fun dashjs.create(componentId: String, url: String) {
-    val player = MediaPlayer().create()
-    val component = (document.querySelector("#$componentId") ?: error("Couldn't find component")) as HTMLElement
-    player.initialize(component, url, false)
-}
 
 
 
