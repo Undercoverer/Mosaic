@@ -12,7 +12,7 @@ external interface DashVideoPlayerProps : Props {
     var src: String
 }
 
-val DashVideoPlayer = FC<DashVideoPlayerProps> { props ->
+val VideoPlayerComponent = FC<DashVideoPlayerProps> { props ->
     val videoRef = useRef<HTMLVideoElement>()
 
     useEffectOnce {

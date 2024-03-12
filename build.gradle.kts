@@ -52,6 +52,8 @@ kotlin {
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react-router")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-router-dom")
+
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-emotion")
 
                 // Ktor
