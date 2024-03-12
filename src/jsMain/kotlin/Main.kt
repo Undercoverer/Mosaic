@@ -1,6 +1,9 @@
-import components.DashVideoPlayer
-import react.*
+import components.browserRouter
+import react.FC
+import react.Props
+import react.create
 import react.dom.client.createRoot
+import react.router.RouterProvider
 import web.dom.document
 
 fun main() {
@@ -11,8 +14,8 @@ fun main() {
 
 
 private val App = FC<Props>("MainApp") {
-    DashVideoPlayer {
-        src = "https://dash.akamaized.net/envivio/Envivio-dash2/manifest.mpd"
+    RouterProvider {
+        router = browserRouter
     }
 }
 
