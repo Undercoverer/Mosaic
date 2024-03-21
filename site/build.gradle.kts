@@ -41,6 +41,8 @@ kotlin {
             // Uncomment the following if you want access to a large set of font-awesome icons:
             // implementation(libs.silk.icons.fa)
             implementation(libs.kobwebx.markdown)
+            implementation(npm("dashjs", "4.7.4"))
+
         }
 
         // Uncomment the following if you pass `includeServer = true` into the `configAsKobwebApplication` call.
