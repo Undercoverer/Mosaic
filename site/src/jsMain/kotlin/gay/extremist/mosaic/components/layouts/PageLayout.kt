@@ -14,6 +14,7 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import gay.extremist.mosaic.components.VideoPlayer
 import kotlinx.browser.document
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
@@ -96,6 +97,7 @@ fun PageLayout(title: String, content: @Composable ColumnScope.() -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 content()
+                VideoPlayer("https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd", height = 500, width = 500)
             }
         }
         // Associate the footer with the row that will get pushed off the bottom of the page if it can't fit.
