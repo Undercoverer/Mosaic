@@ -1,0 +1,14 @@
+site:
+  title: "Mosaic"
+
+server:
+  files:
+    dev:
+      contentRoot: "build/processedResources/js/main/public"
+      script: "build/dist/js/developmentExecutable/mosaic.js"
+      api: "build/libs/mosaic.jar"
+    prod:
+      script: "build/dist/js/productionExecutable/mosaic.js"
+      siteRoot: ".kobweb/site"
+
+  port: 8080
