@@ -97,7 +97,7 @@ fun PageLayout(title: String, content: @Composable ColumnScope.() -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 content()
-                VideoPlayer("https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd", height = 500, width = 500)
+                VideoPlayer("video-player", "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd", height = 500, width = 500)
             }
         }
         // Associate the footer with the row that will get pushed off the bottom of the page if it can't fit.
