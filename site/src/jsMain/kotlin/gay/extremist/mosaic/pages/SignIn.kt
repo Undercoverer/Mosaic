@@ -8,15 +8,9 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.background
-import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
-import com.varabyte.kobweb.compose.ui.modifiers.fontSize
-import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.silk.components.icons.CircleIcon
-import com.varabyte.kobweb.silk.components.icons.MoonIcon
-import com.varabyte.kobweb.silk.components.icons.SunIcon
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.toSitePalette
@@ -26,45 +20,44 @@ import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 
 
-@Page()
+@Page("/signin")
 @Composable
-fun HomePage() {
-    PageLayout("Home"){
+fun SignInPage() {
+    PageLayout("Sign in or Register"){
         val sitePalette = ColorMode.current.toSitePalette()
-        Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
+        Row(modifier = Modifier.fillMaxSize().gap(1.cssRem),  verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
             Column(modifier = Modifier
                 .fillMaxSize()
-                .background(sitePalette.brand.secondary),
+                .background(sitePalette.brand.secondary).height(25.cssRem).width(10.cssRem),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    CircleIcon()
-                }
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "Creator Videos")
-                }
+
+
             }
             Column(modifier = Modifier
                 .fillMaxSize()
-                .background(sitePalette.brand.accent),
+                .background(sitePalette.brand.accent).width(30.cssRem),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    SunIcon()
+
+
+                P(attrs = Modifier.fontSize(40.px).toAttrs()){
+                    Text(value = "Sign In")
                 }
                 P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "General Videos")
+                    Text(value = "Register")
+
                 }
+
+
             }
             Column(modifier = Modifier
                 .fillMaxSize()
                 .background(sitePalette
-                    .brand.primary),
+                    .brand.primary).height(15.cssRem).width(10.cssRem),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    MoonIcon()
+
                 }
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "Followed Tags Videos")
-                }
+
             }
         }
 

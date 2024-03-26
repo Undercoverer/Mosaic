@@ -14,18 +14,17 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import gay.extremist.mosaic.components.VideoPlayer
+import gay.extremist.mosaic.components.sections.Footer
+import gay.extremist.mosaic.components.sections.NavHeader
+import gay.extremist.mosaic.toSitePalette
 import kotlinx.browser.document
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.percent
-import gay.extremist.mosaic.components.sections.Footer
-import gay.extremist.mosaic.components.sections.NavHeader
-import gay.extremist.mosaic.toSitePalette
 
 val PageContentStyle by ComponentStyle {
-    base { Modifier.fillMaxSize().padding(leftRight = 2.cssRem, top = 4.cssRem) }
-    Breakpoint.MD { Modifier.maxWidth(60.cssRem) }
+    base { Modifier.fillMaxSize().padding(leftRight = 2.cssRem, top = 0.20.cssRem) }
+    Breakpoint.MD { Modifier.maxWidth(85.cssRem) }
 }
 
 // NOTE: This is a fun little graphic that showcases what you can do with SVG. However, this probably does not make
@@ -65,7 +64,7 @@ private fun SvgCobweb(modifier: Modifier) {
 @Composable
 fun PageLayout(title: String, content: @Composable ColumnScope.() -> Unit) {
     LaunchedEffect(title) {
-        document.title = "Kobweb - $title"
+        document.title = "Mosaic - $title"
     }
 
     Box(
@@ -81,7 +80,7 @@ fun PageLayout(title: String, content: @Composable ColumnScope.() -> Unit) {
             .gridTemplateRows { size(1.fr); size(minContent) },
         contentAlignment = Alignment.Center
     ) {
-        SvgCobweb(Modifier.gridRow(1).align(Alignment.TopStart))
+        //SvgCobweb(Modifier.gridRow(1).align(Alignment.TopStart))
         Column(
             // Isolate the content, because otherwise the absolute-positioned SVG above will render on top of it.
             // This is confusing but how browsers work. Read up on stacking contexts for more info.
@@ -97,7 +96,7 @@ fun PageLayout(title: String, content: @Composable ColumnScope.() -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 content()
-                VideoPlayer("video-player", "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd", height = 500, width = 500)
+                //VideoPlayer("player","https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd", height = 500, width = 500)
             }
         }
         // Associate the footer with the row that will get pushed off the bottom of the page if it can't fit.

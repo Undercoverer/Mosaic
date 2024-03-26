@@ -26,10 +26,10 @@ import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 
 
-@Page()
+@Page("/unsignedhome")
 @Composable
-fun HomePage() {
-    PageLayout("Home"){
+fun UnsignedHomePage() {
+    PageLayout("Unsigned Home"){
         val sitePalette = ColorMode.current.toSitePalette()
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
             Column(modifier = Modifier
@@ -39,9 +39,7 @@ fun HomePage() {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     CircleIcon()
                 }
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "Creator Videos")
-                }
+
             }
             Column(modifier = Modifier
                 .fillMaxSize()
@@ -62,9 +60,7 @@ fun HomePage() {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     MoonIcon()
                 }
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "Followed Tags Videos")
-                }
+
             }
         }
 

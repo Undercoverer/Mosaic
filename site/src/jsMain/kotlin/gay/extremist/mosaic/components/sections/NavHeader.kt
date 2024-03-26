@@ -31,9 +31,9 @@ import com.varabyte.kobweb.silk.components.style.base
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import org.jetbrains.compose.web.css.*
 import gay.extremist.mosaic.components.widgets.IconButton
 import gay.extremist.mosaic.toSitePalette
+import org.jetbrains.compose.web.css.*
 
 val NavHeaderStyle by ComponentStyle.base {
     Modifier.fillMaxWidth().padding(1.cssRem)
@@ -47,7 +47,9 @@ private fun NavLink(path: String, text: String) {
 @Composable
 private fun MenuItems() {
     NavLink("/", "Home")
-    NavLink("/about", "About")
+    NavLink("/video", "Video")
+    NavLink("/signin", "Sign In")
+    NavLink("/account", "Account")
 }
 
 @Composable
@@ -100,9 +102,9 @@ enum class SideMenuState {
 @Composable
 fun NavHeader() {
     Row(NavHeaderStyle.toModifier(), verticalAlignment = Alignment.CenterVertically) {
-        Link("https://kobweb.varabyte.com") {
+        Link("/") {
             // Block display overrides inline display of the <img> tag, so it calculates centering better
-            Image("/kobweb-logo.png", "Kobweb Logo", Modifier.height(2.cssRem).display(DisplayStyle.Block))
+            Image("/MosaicLogoNoBackground.png", "Mosaic Logo", Modifier.height(4.cssRem).display(DisplayStyle.Block))
         }
 
         Spacer()
