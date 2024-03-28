@@ -51,9 +51,15 @@ kotlin {
 
         }
 
-        // Uncomment the following if you pass `includeServer = true` into the `configAsKobwebApplication` call.
+        // Find dependency for using buttondefaults
+        //implementation("androidx.compose.material3:material3:1.2.1")
+        // Find dependency for shapes
+        //implementation("androidx.compose.foundation:foundation:1.6.4")
+
+    }
+
+    // Uncomment the following if you pass `includeServer = true` into the `configAsKobwebApplication` call.
 //        jvmMain.dependencies {
 //            compileOnly(libs.kobweb.api) // Provided by Kobweb backend at runtime
 //        }
-    }
 }
