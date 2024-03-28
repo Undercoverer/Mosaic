@@ -22,7 +22,7 @@ import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 
 
-val SearchoContainerStyle by ComponentStyle {
+val SearchContainerStyle by ComponentStyle {
     base { Modifier.fillMaxWidth().gap(10.cssRem) }
 
 }
@@ -74,7 +74,7 @@ fun SearchPage() {
             }
 
         }
-        //Row(Modifier.fillMaxSize().padding(3.px).background(Colors.Transparent)){}
+        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
 
     }
 }

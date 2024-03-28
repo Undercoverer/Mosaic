@@ -15,14 +15,14 @@ import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.sections.Footer
-import gay.extremist.mosaic.components.sections.NavHeader
+import gay.extremist.mosaic.components.sections.UnsignInNavHeader
 import gay.extremist.mosaic.toSitePalette
 import kotlinx.browser.document
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.percent
 
-val PageContentStyle by ComponentStyle {
+val UnsignInPageContentStyle by ComponentStyle {
     base { Modifier.fillMaxSize().padding(leftRight = 2.cssRem, top = 0.20.cssRem) }
     Breakpoint.MD { Modifier.maxWidth(100.cssRem) }
 }
@@ -64,7 +64,7 @@ private fun SvgMosaic(modifier: Modifier) {
 }
 
 @Composable
-fun PageLayout(title: String, content: @Composable ColumnScope.() -> Unit) {
+fun UnsignInPageLayout(title: String, content: @Composable ColumnScope.() -> Unit) {
     LaunchedEffect(title) {
         document.title = "Mosaic - $title"
     }
@@ -92,9 +92,9 @@ fun PageLayout(title: String, content: @Composable ColumnScope.() -> Unit) {
             Modifier.fillMaxSize().gridRow(1),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            NavHeader()
+            UnsignInNavHeader()
             Column(
-                PageContentStyle.toModifier(),
+                UnsignInPageContentStyle.toModifier(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 content()
