@@ -24,21 +24,24 @@ import org.jetbrains.compose.web.dom.Text
 @Composable
 fun PlaylistPage() {
     PageLayout("Playlist"){
-        val sitePalette = ColorMode.current.toSitePalette()
-        Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
-            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.secondary), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    SunIcon()
+
+            val sitePalette = ColorMode.current.toSitePalette()
+            Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
+                Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.secondary), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        SunIcon()
+                    }
+                    P(attrs = Modifier.fontSize(40.px).toAttrs()){
+                        Text(value = "MyPlaylist")
+                    }
                 }
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "MyPlaylist")
-                }
+                Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).height(20.cssRem).width(15.cssRem)) {  }
+
+                Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).height(30.cssRem).width(15.cssRem)) {  }
+
             }
-            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).height(18.cssRem).width(10.cssRem)) {  }
+            Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
 
-            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).height(25.cssRem).width(10.cssRem)) {  }
-
-        }
     }
 }
 

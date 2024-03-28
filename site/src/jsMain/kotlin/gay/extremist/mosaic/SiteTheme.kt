@@ -8,6 +8,7 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import com.varabyte.kobweb.silk.theme.colors.palette.background
 import com.varabyte.kobweb.silk.theme.colors.palette.color
 
+
 /**
  * @property nearBackground A useful color to apply to a container that should differentiate itself from the background
  *   but just a little.
@@ -58,4 +59,6 @@ fun initTheme(ctx: InitSilkContext) {
     ctx.theme.palettes.light.color = Colors.Black
     ctx.theme.palettes.dark.background = Color.rgb(0x06080B)
     ctx.theme.palettes.dark.color = Colors.White
+
 }
+

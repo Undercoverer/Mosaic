@@ -1,6 +1,6 @@
-package gay.extremist.mosaic.pages
 
-//import androidx.compose.foundation.shape
+
+package gay.extremist.mosaic.pages
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -15,7 +15,7 @@ import com.varabyte.kobweb.silk.components.icons.CircleIcon
 import com.varabyte.kobweb.silk.components.icons.MoonIcon
 import com.varabyte.kobweb.silk.components.icons.SunIcon
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import gay.extremist.mosaic.components.layouts.UnsignInPageLayout
+import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
@@ -23,10 +23,10 @@ import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 
 
-@Page("/unsignedhome")
+@Page("/home")
 @Composable
-fun UnsignedHomePage() {
-    UnsignInPageLayout("Unsigned Home"){
+fun HomePage() {
+    PageLayout("Home"){
         val sitePalette = ColorMode.current.toSitePalette()
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
             Column(modifier = Modifier
@@ -36,7 +36,9 @@ fun UnsignedHomePage() {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     CircleIcon()
                 }
-
+                P(attrs = Modifier.fontSize(40.px).toAttrs()){
+                    Text(value = "Creator Videos")
+                }
             }
             Column(modifier = Modifier
                 .fillMaxSize()
@@ -57,11 +59,13 @@ fun UnsignedHomePage() {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     MoonIcon()
                 }
-
+                P(attrs = Modifier.fontSize(40.px).toAttrs()){
+                    Text(value = "Followed Tags Videos")
+                }
             }
         }
-        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
 
+        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
 
 
     }

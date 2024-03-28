@@ -28,14 +28,14 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
 
 
-val VideoContainerStyle by ComponentStyle {
+val UnsignInVideoContainerStyle by ComponentStyle {
     base { Modifier.fillMaxWidth().gap(10.cssRem) }
 
 }
-@Page("/video")
+@Page("/unsigninvideo")
 @Composable
-fun VideoPage() {
-    PageLayout("Video") {
+fun UnsignInVideoPage() {
+    PageLayout("Unsigned In Video") {
 
         Row(
             Modifier.fillMaxWidth().gap(1.cssRem)
@@ -107,7 +107,7 @@ fun VideoPage() {
                         }, Modifier.color(sitePalette.brand.accent)) {
                             Text("Follow")
                         }
-
+                        
                         Button(onClick = {
                             // Change this click handler with your call-to-action behavior
                             // here. Link to an order page? Open a calendar UI? Play a movie?

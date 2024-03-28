@@ -71,6 +71,7 @@ fun AccountPage() {
             }
         }
 
+        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
 
 
     }

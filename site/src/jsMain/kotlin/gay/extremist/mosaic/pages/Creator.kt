@@ -24,18 +24,20 @@ fun CreatorPage() {
     PageLayout("Creator"){
         val sitePalette = ColorMode.current.toSitePalette()
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
-            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.secondary).height(18.cssRem).width(10.cssRem)) {  }
+            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.secondary).height(20.cssRem).width(15.cssRem)) {  }
             Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     CircleIcon()
                 }
                 P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "Moonseer")
+                    Text(value = "Creator")
                 }
             }
-            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).height(25.cssRem).width(10.cssRem)) {  }
+            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).height(30.cssRem).width(15.cssRem)) {  }
 
         }
+        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+
     }
 }
 

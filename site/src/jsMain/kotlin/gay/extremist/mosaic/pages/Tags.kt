@@ -24,9 +24,9 @@ fun TagPage() {
     PageLayout("Tag"){
         val sitePalette = ColorMode.current.toSitePalette()
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
-            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.secondary).height(18.cssRem).width(10.cssRem)) {  }
+            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.secondary).height(20.cssRem).width(15.cssRem)) {  }
 
-            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).height(25.cssRem).width(10.cssRem)) {  }
+            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).height(30.cssRem).width(15.cssRem)) {  }
             Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     MoonIcon()
@@ -36,6 +36,8 @@ fun TagPage() {
                 }
             }
         }
+        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+
     }
 }
 
