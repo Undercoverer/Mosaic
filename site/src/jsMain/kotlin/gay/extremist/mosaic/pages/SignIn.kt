@@ -16,7 +16,7 @@ import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import gay.extremist.mosaic.components.layouts.UnsignInPageLayout
+import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
@@ -24,10 +24,10 @@ import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 
 
-@Page()
+@Page("/signin")
 @Composable
-fun UnsignInRegisterPage() {
-    UnsignInPageLayout("Sign in or Register"){
+fun SignInPage() {
+    PageLayout("Sign in or Register"){
         val sitePalette = ColorMode.current.toSitePalette()
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem),  verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
             Column(modifier = Modifier
@@ -47,7 +47,6 @@ fun UnsignInRegisterPage() {
                     Text(value = "Sign In")
                 }
                 val ctx = rememberPageContext()
-
                 Button(onClick = {
                     // Change this click handler with your call-to-action behavior
                     // here. Link to an order page? Open a calendar UI? Play a movie?

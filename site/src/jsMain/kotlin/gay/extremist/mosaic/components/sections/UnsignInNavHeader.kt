@@ -35,7 +35,7 @@ import gay.extremist.mosaic.components.widgets.IconButton
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.*
 
-val NavHeaderStyle by ComponentStyle.base {
+val UnsignInNavHeaderStyle by ComponentStyle.base {
     Modifier.fillMaxWidth().padding(1.cssRem)
 }
 
@@ -46,10 +46,8 @@ private fun NavLink(path: String, text: String) {
 
 @Composable
 private fun MenuItems() {
-    NavLink("/home", "Home")
-    NavLink("/video", "Video")
-    NavLink("/signin", "Sign In")
-    NavLink("/account", "Account")
+    NavLink("/unsignedhome", "Home")
+    NavLink("/", "Sign In")
 }
 
 @Composable
@@ -75,7 +73,7 @@ private fun CloseButton(onClick: () -> Unit) {
     }
 }
 
-val SideMenuSlideInAnim by Keyframes {
+val UnsignInSideMenuSlideInAnim by Keyframes {
     from {
         Modifier.translateX(100.percent)
     }
@@ -87,7 +85,7 @@ val SideMenuSlideInAnim by Keyframes {
 
 // Note: When the user closes the side menu, we don't immediately stop rendering it (at which point it would disappear
 // abruptly). Instead, we start animating it out and only stop rendering it when the animation is complete.
-enum class SideMenuState {
+enum class UnsignInSideMenuState {
     CLOSED,
     OPEN,
     CLOSING;
@@ -100,9 +98,9 @@ enum class SideMenuState {
 }
 
 @Composable
-fun NavHeader() {
+fun UnsignInNavHeader() {
     Row(NavHeaderStyle.toModifier(), verticalAlignment = Alignment.CenterVertically) {
-        Link("/home") {
+        Link("/unsignedhome") {
             // Block display overrides inline display of the <img> tag, so it calculates centering better
             Image("/MosaicLogoNoBackground.png", "Mosaic Logo", Modifier.height(4.cssRem).display(DisplayStyle.Block))
         }
