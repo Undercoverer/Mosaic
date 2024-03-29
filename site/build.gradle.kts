@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kobweb.application)
     alias(libs.plugins.kobwebx.markdown)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 group = "gay.extremist.mosaic"
@@ -24,42 +25,24 @@ kobweb {
 }
 
 kotlin {
-    // This example is frontend only. However, for a fullstack app, you can uncomment the includeServer parameter
-    // and the `jvmMain` source set below.
-    configAsKobwebApplication("mosaic" /*, includeServer = true*/)
+    configAsKobwebApplication("mosaic")
 
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
-            //implementation(compose.foundation)
+            implementation(compose.foundation)
+            implementation(libs.ktor.client.core)
+            implementation(libs.kotlinx.serialization)
         }
 
         jsMain.dependencies {
             implementation(compose.html.core)
             implementation(libs.kobweb.core)
-            implementation(libs.kobweb.silk)
-            // This default template uses built-in SVG icons, but what's available is limited.
-            // Uncomment the following if you want access to a large set of font-awesome icons:
-            // implementation(libs.silk.icons.fa)
+            implementation(libs.kobweb.silk) // This default template uses built-in SVG icons, but what's available is limited.
+            implementation(libs.silk.icons.fa)
             implementation(libs.kobwebx.markdown)
+            implementation(libs.ktor.client.content.negotiation)
             implementation(npm("dashjs", "4.7.4"))
-
-            // Find dependency for using buttondefaults
-            //implementation("androidx.compose.material3:material3:1.2.1")
-            // Find dependency for shapes
-            //implementation("androidx.compose.foundation:foundation:1.6.4")
-
         }
-
-        // Find dependency for using buttondefaults
-        //implementation("androidx.compose.material3:material3:1.2.1")
-        // Find dependency for shapes
-        //implementation("androidx.compose.foundation:foundation:1.6.4")
-
     }
-
-    // Uncomment the following if you pass `includeServer = true` into the `configAsKobwebApplication` call.
-//        jvmMain.dependencies {
-//            compileOnly(libs.kobweb.api) // Provided by Kobweb backend at runtime
-//        }
 }
