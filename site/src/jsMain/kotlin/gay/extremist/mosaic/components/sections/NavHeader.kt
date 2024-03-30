@@ -34,7 +34,6 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.widgets.IconButton
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.*
-import gay.extremist.mosaic.components.widgets.SearchFunc
 
 val NavHeaderStyle by ComponentStyle.base {
     Modifier.fillMaxWidth().padding(1.cssRem)
@@ -48,9 +47,8 @@ private fun NavLink(path: String, text: String) {
 @Composable
 private fun MenuItems() {
     NavLink("/home", "Home")
-    NavLink("/video", "Video")
-    NavLink("/signin", "Sign In")
     NavLink("/account", "Account")
+    NavLink("/unsignedhome", "Sign Out")
 }
 
 @Composable
@@ -109,7 +107,7 @@ fun NavHeader() {
         }
 
         Spacer()
-
+        //SearchFunc()
 
         Row(Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD), verticalAlignment = Alignment.CenterVertically) {
             MenuItems()

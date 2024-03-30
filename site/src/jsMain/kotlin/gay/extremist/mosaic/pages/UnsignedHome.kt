@@ -11,12 +11,12 @@ import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.UnsignInPageLayout
-import gay.extremist.mosaic.components.widgets.VideoTile
+import gay.extremist.mosaic.components.widgets.SearchVideoTile
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
@@ -32,7 +32,9 @@ fun UnsignedHomePage() {
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
             Column(modifier = Modifier
                 .fillMaxSize()
-                .background(sitePalette.brand.secondary),
+                .background(sitePalette.brand.secondary)
+                .width(25.cssRem)
+                .height(20.cssRem),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
 
@@ -42,35 +44,36 @@ fun UnsignedHomePage() {
             Column(modifier = Modifier
                 .fillMaxSize()
                 .background(sitePalette.brand.accent)
-                .width(30.cssRem),
-                verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "General Videos")
-                }
-                Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.7.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                .height(45.cssRem),
+                verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+                SpanText(
+                    text = "General Videos",
+                    modifier = Modifier.padding(20.px).fontSize(35.px),
+                )
+                Box(Modifier.fillMaxSize().padding(2.cssRem).height(38.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
                             P { Text("Title\n") }
 
                         }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
                             P { Text("Title\n") }
 
                         }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
                             P { Text("Title\n") }
 
                         }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
                             P { Text("Title\n") }
 
                         }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
                             P { Text("Title\n") }
 
                         }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
                             P { Text("Title\n") }
 
                         }
@@ -82,7 +85,9 @@ fun UnsignedHomePage() {
             Column(modifier = Modifier
                 .fillMaxSize()
                 .background(sitePalette
-                    .brand.primary),
+                    .brand.primary)
+                .width(25.cssRem)
+                .height(30.cssRem),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
 
