@@ -11,9 +11,9 @@ import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.VideoTile
@@ -32,12 +32,14 @@ fun HomePage() {
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
             Column(modifier = Modifier
                 .fillMaxSize()
-                .background(sitePalette.brand.secondary),
+                .background(sitePalette.brand.secondary)
+                .height(45.cssRem),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "Creator Videos")
-                }
-                Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.7.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                SpanText(
+                    text = "Followed Creators",
+                    modifier = Modifier.padding(20.px).fontSize(35.px),
+                )
+                Box(Modifier.fillMaxSize().padding(2.cssRem).height(38.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
                         VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
@@ -71,12 +73,14 @@ fun HomePage() {
             }
             Column(modifier = Modifier
                 .fillMaxSize()
-                .background(sitePalette.brand.accent),
+                .background(sitePalette.brand.accent)
+                .height(45.cssRem),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "General Videos")
-                }
-                Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.7.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                SpanText(
+                    text = "General",
+                    modifier = Modifier.padding(20.px).fontSize(35.px),
+                )
+                Box(Modifier.fillMaxSize().padding(2.cssRem).height(38.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
                         VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
@@ -111,12 +115,14 @@ fun HomePage() {
             Column(modifier = Modifier
                 .fillMaxSize()
                 .background(sitePalette
-                    .brand.primary),
-                verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "Followed Tags Videos")
-                }
-                Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.7.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                    .brand.primary)
+                .height(45.cssRem),
+                verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+                SpanText(
+                    text = "Followed Tags",
+                    modifier = Modifier.padding(20.px).fontSize(35.px),
+                )
+                Box(Modifier.fillMaxSize().padding(2.cssRem).height(38.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
                         VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {

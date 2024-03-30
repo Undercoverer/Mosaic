@@ -12,7 +12,7 @@ import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.icons.ArrowUpIcon
-import com.varabyte.kobweb.silk.components.icons.MoonIcon
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.IconButton
@@ -29,11 +29,12 @@ fun AccountPage() {
     PageLayout("Account"){
         val sitePalette = ColorMode.current.toSitePalette()
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
-            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.secondary).height(30.cssRem), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.secondary).height(45.cssRem), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 val ctx = rememberPageContext()
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "Playlists")
-                }
+                SpanText(
+                    text = "PLaylists",
+                    modifier = Modifier.padding(20.px).fontSize(35.px),
+                )
                 //SearchFunc()
                 Button(onClick = {
                     // Change this click handler with your call-to-action behavior
@@ -48,20 +49,20 @@ fun AccountPage() {
 
 
             }
-            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    MoonIcon()
-                }
-                P(attrs = Modifier.fontSize(30.px).toAttrs()){
-                    Text(value = "Account Info")
-                }
+            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).height(45.cssRem), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+
+                SpanText(
+                    text = "Account Info",
+                    modifier = Modifier.padding(20.px).fontSize(35.px),
+                )
 
             }
-            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).height(30.cssRem), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).height(45.cssRem), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 val ctx = rememberPageContext()
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "Upload")
-                }
+                SpanText(
+                    text = "Upload",
+                    modifier = Modifier.padding(20.px).fontSize(35.px),
+                )
                 IconButton(onClick = { ctx.router.tryRoutingTo("/playlist") },) {
                     ArrowUpIcon()
                 }
