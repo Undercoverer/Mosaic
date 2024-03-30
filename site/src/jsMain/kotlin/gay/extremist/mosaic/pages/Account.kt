@@ -34,6 +34,7 @@ fun AccountPage() {
                 P(attrs = Modifier.fontSize(40.px).toAttrs()){
                     Text(value = "Playlists")
                 }
+                //SearchFunc()
                 Button(onClick = {
                     // Change this click handler with your call-to-action behavior
                     // here. Link to an order page? Open a calendar UI? Play a movie?

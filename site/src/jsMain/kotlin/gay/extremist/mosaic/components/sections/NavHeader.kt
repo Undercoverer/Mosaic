@@ -34,6 +34,7 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.widgets.IconButton
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.*
+import gay.extremist.mosaic.components.widgets.SearchFunc
 
 val NavHeaderStyle by ComponentStyle.base {
     Modifier.fillMaxWidth().padding(1.cssRem)
@@ -108,6 +109,7 @@ fun NavHeader() {
         }
 
         Spacer()
+
 
         Row(Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD), verticalAlignment = Alignment.CenterVertically) {
             MenuItems()
