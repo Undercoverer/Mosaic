@@ -9,45 +9,11 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.silk.components.overlay.*
+import com.varabyte.kobweb.silk.components.text.SpanText
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.cssRem
-
-
-@Composable
-fun MenuPulldown() {
-    val keepOpenStrategyHover = remember { KeepPopupOpenStrategy.onHover() }
-    val nestedKeepOpenStrategy = remember { KeepPopupOpenStrategy.onHover() }
-    val outerKeepPopupOpen = remember { keepOpenStrategyHover + nestedKeepOpenStrategy.observed() }
-    MenuItem("Team Select")
-    Popover(
-        ElementTarget.PreviousSibling,
-        Modifier.margin(top = (-1).cssRem),
-        keepOpenStrategy = outerKeepPopupOpen,
-        hideDelayMs = 100,
-    ) {
-        Column(Modifier.alignItems(AlignItems.Stretch)) {
-            MenuItem("Team 1")
-            MenuItem("Team 2")
-            MenuItem("Team 3")
-            MenuItem("More")
-            Popover(
-                ElementTarget.PreviousSibling,
-                Modifier.margin(left = (-1).cssRem),
-                placement = PopupPlacement.RightTop,
-                hideDelayMs = 100,
-                keepOpenStrategy = nestedKeepOpenStrategy,
-            ) {
-                Column {
-                    MenuItem("Team 4")
-                    MenuItem("Team 5")
-                    MenuItem("Team 6")
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun MenuPulldown2() {
@@ -89,19 +55,8 @@ fun MenuPulldown2() {
     }
 }
 
-/*
-val MenuItemVariant by SpanTextStyle.addVariant {
-    base {
-        Modifier
-            .backgroundColor(Colors.LightBlue)
-            .padding(topBottom = 0.375.cssRem, leftRight = 0.55.cssRem)
-    }
-    hover {
-        Modifier.backgroundColor(Colors.LightGreen.darkened())
-    }
-}
-*/
+
 @Composable
 fun MenuItem(text: String) {
-    //SpanText(text, variant = MenuItemVariant)
+    SpanText(text)
 }
