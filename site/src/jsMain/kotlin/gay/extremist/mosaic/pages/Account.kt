@@ -53,7 +53,13 @@ fun AccountPage() {
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
 
-                AccountInfo()
+
+                AccountInfo {email, username, password ->
+                    println("Email: $email")
+                    println("Username: $username")
+                    println("Password: $password")
+
+                }
 
             }
             Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).padding(2.cssRem), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {

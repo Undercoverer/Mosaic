@@ -43,14 +43,13 @@ fun UnsignedHomePage() {
             }
             Column(modifier = Modifier
                 .fillMaxSize()
-                .background(sitePalette.brand.accent)
-                .height(45.cssRem),
+                .background(sitePalette.brand.accent),
                 verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
                 SpanText(
                     text = "General Videos",
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
-                Box(Modifier.fillMaxSize().padding(2.cssRem).height(38.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
                         SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
@@ -95,7 +94,7 @@ fun UnsignedHomePage() {
 
             }
         }
-        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+        Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
 
 
 

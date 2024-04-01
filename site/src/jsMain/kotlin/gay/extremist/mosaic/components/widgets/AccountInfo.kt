@@ -2,23 +2,36 @@ package gay.extremist.mosaic.components.widgets
 
 import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
+import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
+import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.graphics.Color
-import com.varabyte.kobweb.compose.ui.graphics.Colors
-import com.varabyte.kobweb.compose.ui.modifiers.background
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.gap
-import com.varabyte.kobweb.compose.ui.modifiers.height
-import com.varabyte.kobweb.compose.ui.modifiers.width
-import com.varabyte.kobweb.silk.components.forms.*
+import com.varabyte.kobweb.silk.components.disclosure.Tabs
+import com.varabyte.kobweb.silk.components.forms.FilledInputVariant
+import com.varabyte.kobweb.silk.components.forms.InputGroup
+import com.varabyte.kobweb.silk.components.forms.InputSize
+import com.varabyte.kobweb.silk.components.forms.TextInput
+import com.varabyte.kobweb.silk.components.text.SpanText
 import org.jetbrains.compose.web.css.cssRem
-import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
-fun AccountInfo() {
-    Column(Modifier.gap(0.5.cssRem), verticalArrangement = Arrangement.Center) {
+fun AccountInfo(onAction: (String, String, String) -> Unit) {
+    Column(Modifier.gap(0.5.cssRem), verticalArrangement = Arrangement.Center, ) {
+
+        SpanText("Current Email")
+        SpanText("Current Username")
+        SpanText("Current Password")
+
+
+
         var email by remember { mutableStateOf("") }
+        var username by remember { mutableStateOf("") }
+        var password by remember { mutableStateOf("") }
+
         InputGroup( size = InputSize.LG) {
             TextInput(
                 email,
@@ -27,7 +40,7 @@ fun AccountInfo() {
                 onTextChanged = { email = it })
         }
 
-        var username by remember { mutableStateOf("") }
+
         InputGroup(size = InputSize.LG) {
             TextInput(
                 username,
@@ -36,26 +49,32 @@ fun AccountInfo() {
                 onTextChanged = { username = it })
         }
 
-        var showPassword by remember { mutableStateOf(false) }
-        var password by remember { mutableStateOf("") }
-        InputGroup(Modifier.width(236.px).background(Colors.White), size = InputSize.LG) {
+
+        InputGroup(size = InputSize.LG) {
             TextInput(
                 password,
-                placeholder = "password",
+                placeholder = "username",
                 variant = FilledInputVariant,
-                password = !showPassword,
-                onTextChanged = { password = it },
-
-                )
-            RightInset(width = 4.5.cssRem) {
-                Button(
-                    onClick = { showPassword = !showPassword },
-                    Modifier.width(3.5.cssRem).height(1.75.cssRem).background(Color.rgb(0x2EB4A9)),
-                    size = ButtonSize.SM,
-                ) {
-                    Text(if (showPassword) "Hide" else "Show")
-                }
+                onTextChanged = { password = it })
+        }
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            IconButton(
+                onClick = { onAction(email, username, password) }
+            ) {
+                Text("Submit")
             }
         }
+        Tabs(Modifier.fontSize(1.3.cssRem)) {
+            TabPanel {
+                Tab { Text("Tags") }; Panel { Text("Tag List") }
+            }
+            TabPanel {
+                Tab { Text("Creators") }; Panel { Text("Creator List") }
+            }
+        }
+
     }
 }

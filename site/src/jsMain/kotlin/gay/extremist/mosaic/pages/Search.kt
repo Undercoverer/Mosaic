@@ -18,6 +18,7 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.PageLayout
+import gay.extremist.mosaic.components.widgets.CheckPopUp
 import gay.extremist.mosaic.components.widgets.SearchVideoTile
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
@@ -42,7 +43,7 @@ fun SearchPage() {
             horizontalArrangement = Arrangement.Center
         ) {
             Column(
-                modifier = Modifier.fillMaxSize().height(45.cssRem).background(
+                modifier = Modifier.fillMaxSize().background(
                     when (ColorMode.current) {
                         ColorMode.LIGHT -> Colors.LightGray
                         ColorMode.DARK -> Color.rgb(0x2B2B2B)
@@ -53,7 +54,7 @@ fun SearchPage() {
                     text = "Search Results",
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
-                Box(Modifier.fillMaxSize().padding(2.cssRem).height(38.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
                         SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
@@ -88,7 +89,7 @@ fun SearchPage() {
 
             }
             Column(
-                modifier = Modifier.fillMaxSize().height(45.cssRem).background(sitePalette.brand.accent).width(35.cssRem).background(
+                modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).width(35.cssRem).background(
                     when (ColorMode.current) {
                         ColorMode.LIGHT -> Colors.LightGray
                         ColorMode.DARK -> Color.rgb(0x2B2B2B)
@@ -100,12 +101,12 @@ fun SearchPage() {
                 P(attrs = Modifier.fontSize(40.px).toAttrs()) {
                     Text(value = "Filters")
                 }
-
+                CheckPopUp()
 
             }
 
         }
-        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+        Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
 
     }
 }

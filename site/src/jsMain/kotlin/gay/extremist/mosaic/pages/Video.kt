@@ -194,7 +194,7 @@ fun VideoPage() {
                         )
                     }
 
-                    Box(Modifier.fillMaxSize().padding(2.cssRem).height(38.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                    Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                         Column(Modifier.gap(1.cssRem).fillMaxSize()){
                             val ctx = rememberPageContext()
                             VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
@@ -230,7 +230,7 @@ fun VideoPage() {
 
             }
         }
-        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+        Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
 
     }
 }
