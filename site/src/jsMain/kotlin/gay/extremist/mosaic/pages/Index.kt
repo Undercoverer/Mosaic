@@ -40,7 +40,7 @@ fun SignInPage() {
             }
             Column(modifier = Modifier
                 .fillMaxSize()
-                .background(sitePalette.brand.accent).width(35.cssRem).height(45.cssRem).padding(2.cssRem),
+                .background(sitePalette.brand.accent).width(35.cssRem).padding(2.cssRem),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
 
                 Column (
@@ -113,7 +113,7 @@ fun SignInPage() {
             }
         }
 
-        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+        Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
 
     }
 

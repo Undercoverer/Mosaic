@@ -130,7 +130,8 @@ fun UploadDataEntry(onAction: (String, String, String, List<String>, List<String
                                         checkedItems - "Checkbox"
                                     }
                                 },
-                                colorScheme = colorScheme
+                                colorScheme = colorScheme,
+                                size = CheckboxSize.LG
                             ) { Text("Checkbox") }
                         }
                     }

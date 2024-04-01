@@ -30,12 +30,12 @@ fun TagPage() {
             Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.secondary).height(20.cssRem).width(25.cssRem)) {  }
 
             Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).height(30.cssRem).width(25.cssRem)) {  }
-            Column(modifier = Modifier.fillMaxSize().height(45.cssRem).background(sitePalette.brand.primary), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
                 SpanText(
                     text = "Videos of Tag",
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
-                Box(Modifier.fillMaxSize().padding(2.cssRem).height(38.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
                         VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
@@ -69,7 +69,7 @@ fun TagPage() {
 
             }
         }
-        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+        Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
 
     }
 }

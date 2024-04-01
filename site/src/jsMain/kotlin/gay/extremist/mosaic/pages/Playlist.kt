@@ -24,7 +24,7 @@ fun PlaylistPage() {
     PageLayout("Playlist"){
 
             val sitePalette = ColorMode.current.toSitePalette()
-            Row(modifier = Modifier.fillMaxSize().gap(1.cssRem).height(45.cssRem)){
+            Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
                 Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.secondary), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         SunIcon()
@@ -39,7 +39,7 @@ fun PlaylistPage() {
                 Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).height(30.cssRem).width(25.cssRem)) {  }
 
             }
-            Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+            Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
 
     }
 }
