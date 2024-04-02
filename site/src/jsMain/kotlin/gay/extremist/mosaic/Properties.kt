@@ -1,0 +1,29 @@
+package gay.extremist.mosaic
+
+import io.ktor.client.*
+import io.ktor.client.engine.js.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+
+const val BASE_URL = "http://localhost:8080"
+
+
+@OptIn(ExperimentalSerializationApi::class)
+val CLIENT = HttpClient(Js) {
+    install(ContentNegotiation) {
+        Json {
+            ignoreUnknownKeys = true
+            encodeDefaults = true
+            explicitNulls = false
+            isLenient = true
+        }
+    }
+    defaultRequest {
+        url(BASE_URL)
+        header("Accept", "application/json")
+        header("Content-Type", "application/json")
+    }
+}
