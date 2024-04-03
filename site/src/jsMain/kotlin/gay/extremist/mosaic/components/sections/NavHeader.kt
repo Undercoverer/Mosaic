@@ -108,6 +108,8 @@ fun NavHeader() {
         }
 
         Spacer()
+        //SearchBar()
+
 
         Row(Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD), verticalAlignment = Alignment.CenterVertically) {
             MenuItems()
