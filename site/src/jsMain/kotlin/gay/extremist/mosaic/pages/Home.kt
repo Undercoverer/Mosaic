@@ -11,11 +11,9 @@ import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
-import com.varabyte.kobweb.silk.components.icons.MoonIcon
-import com.varabyte.kobweb.silk.components.icons.SunIcon
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.VideoTile
@@ -35,8 +33,12 @@ fun HomePage() {
             Column(modifier = Modifier
                 .fillMaxSize()
                 .background(sitePalette.brand.secondary),
-                verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.7.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+                SpanText(
+                    text = "Followed Creators",
+                    modifier = Modifier.padding(20.px).fontSize(35.px),
+                )
+                Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
                         VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
@@ -71,29 +73,86 @@ fun HomePage() {
             Column(modifier = Modifier
                 .fillMaxSize()
                 .background(sitePalette.brand.accent),
-                verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    SunIcon()
-                }
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "General Videos")
+                verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+                SpanText(
+                    text = "General",
+                    modifier = Modifier.padding(20.px).fontSize(35.px),
+                )
+                Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                    Column(Modifier.gap(1.cssRem).fillMaxSize()){
+                        val ctx = rememberPageContext()
+                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                            P { Text("Title\n") }
+
+                        }
+
+                    }
+
                 }
             }
             Column(modifier = Modifier
                 .fillMaxSize()
-                .background(sitePalette
-                    .brand.primary),
-                verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    MoonIcon()
-                }
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "Followed Tags Videos")
+                .background(sitePalette.brand.primary),
+                verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+                SpanText(
+                    text = "Followed Tags",
+                    modifier = Modifier.padding(20.px).fontSize(35.px),
+                )
+                Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                    Column(Modifier.gap(1.cssRem).fillMaxSize()){
+                        val ctx = rememberPageContext()
+                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                            P { Text("Title\n") }
+
+                        }
+
+                    }
+
                 }
             }
         }
 
-        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+        Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
 
 
     }

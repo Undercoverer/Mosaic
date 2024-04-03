@@ -8,16 +8,14 @@ import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.silk.components.icons.SunIcon
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Text
 
 
 @Page("/playlist")
@@ -31,16 +29,17 @@ fun PlaylistPage() {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         SunIcon()
                     }
-                    P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                        Text(value = "MyPlaylist")
-                    }
+                    SpanText(
+                        text = "MyPlaylist",
+                        modifier = Modifier.padding(20.px).fontSize(35.px),
+                    )
                 }
-                Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).height(20.cssRem).width(15.cssRem)) {  }
+                Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).height(20.cssRem).width(25.cssRem)) {  }
 
-                Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).height(30.cssRem).width(15.cssRem)) {  }
+                Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).height(30.cssRem).width(25.cssRem)) {  }
 
             }
-            Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+            Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
 
     }
 }

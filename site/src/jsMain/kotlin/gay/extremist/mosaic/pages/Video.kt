@@ -1,9 +1,8 @@
 package gay.extremist.mosaic.pages
 
 import androidx.compose.runtime.Composable
-import com.varabyte.kobweb.compose.foundation.layout.Arrangement
-import com.varabyte.kobweb.compose.foundation.layout.Column
-import com.varabyte.kobweb.compose.foundation.layout.Row
+import com.varabyte.kobweb.compose.css.Overflow
+import com.varabyte.kobweb.compose.foundation.layout.*
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
@@ -21,10 +20,12 @@ import gay.extremist.mosaic.HeadlineTextStyle
 import gay.extremist.mosaic.SubheadlineTextStyle
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.VideoPlayer
+import gay.extremist.mosaic.components.widgets.VideoTile
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 
 
@@ -98,6 +99,7 @@ fun VideoPage() {
                                 }
                             )
                         )
+                        Spacer()
                         val ctx = rememberPageContext()
                         Button(onClick = {
                             // Change this click handler with your call-to-action behavior
@@ -187,26 +189,39 @@ fun VideoPage() {
 
                     Div(HeadlineTextStyle.toAttrs()) {
                         SpanText(
-                            "Mosaic",
-                            Modifier
-                                .color(sitePalette.brand.secondary)
-                                // Use a shadow so this light-colored word is more visible in light mode
-                                .textShadow(0.px, 0.px, blurRadius = 0.5.cssRem, color = Colors.Gray)
+                            text = "Similar Videos",
+                            modifier = Modifier.padding(20.px).fontSize(35.px),
                         )
                     }
-                    Div(HeadlineTextStyle.toAttrs()){
-                        SpanText(
-                            "Video List", Modifier.color(
-                                when (ColorMode.current) {
-                                    ColorMode.LIGHT -> Colors.Black
-                                    ColorMode.DARK -> Colors.White
-                                }
-                            )
-                        )
-                    }
-                    Column {
-                        Div(SubheadlineTextStyle.toAttrs()) {
-                            SpanText("List of Videos (Database) ")
+
+                    Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                        Column(Modifier.gap(1.cssRem).fillMaxSize()){
+                            val ctx = rememberPageContext()
+                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                                P { Text("Title\n") }
+
+                            }
+                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                                P { Text("Title\n") }
+
+                            }
+                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                                P { Text("Title\n") }
+
+                            }
+                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                                P { Text("Title\n") }
+
+                            }
+                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                                P { Text("Title\n") }
+
+                            }
+                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                                P { Text("Title\n") }
+
+                            }
+
                         }
 
                     }
@@ -215,7 +230,7 @@ fun VideoPage() {
 
             }
         }
-        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+        Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
 
     }
 }

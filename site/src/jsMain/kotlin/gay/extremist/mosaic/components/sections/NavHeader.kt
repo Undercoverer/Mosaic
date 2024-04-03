@@ -47,9 +47,8 @@ private fun NavLink(path: String, text: String) {
 @Composable
 private fun MenuItems() {
     NavLink("/home", "Home")
-    NavLink("/video", "Video")
-    NavLink("/signin", "Sign In")
     NavLink("/account", "Account")
+    NavLink("/unsignedhome", "Sign Out")
 }
 
 @Composable
@@ -108,8 +107,7 @@ fun NavHeader() {
         }
 
         Spacer()
-        //SearchBar()
-
+        //SearchFunc()
 
         Row(Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD), verticalAlignment = Alignment.CenterVertically) {
             MenuItems()

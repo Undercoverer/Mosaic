@@ -3,19 +3,20 @@ package gay.extremist.mosaic.pages
 //import androidx.compose.foundation.shape
 
 import androidx.compose.runtime.Composable
+import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
+import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.silk.components.icons.CircleIcon
-import com.varabyte.kobweb.silk.components.icons.MoonIcon
-import com.varabyte.kobweb.silk.components.icons.SunIcon
+import com.varabyte.kobweb.core.rememberPageContext
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.UnsignInPageLayout
+import gay.extremist.mosaic.components.widgets.SearchVideoTile
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
@@ -31,36 +32,69 @@ fun UnsignedHomePage() {
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
             Column(modifier = Modifier
                 .fillMaxSize()
-                .background(sitePalette.brand.secondary),
+                .background(sitePalette.brand.secondary)
+                .width(25.cssRem)
+                .height(20.cssRem),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    CircleIcon()
+
                 }
 
             }
             Column(modifier = Modifier
                 .fillMaxSize()
                 .background(sitePalette.brand.accent),
-                verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    SunIcon()
-                }
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "General Videos")
+                verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+                SpanText(
+                    text = "General Videos",
+                    modifier = Modifier.padding(20.px).fontSize(35.px),
+                )
+                Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                    Column(Modifier.gap(1.cssRem).fillMaxSize()){
+                        val ctx = rememberPageContext()
+                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
+                            P { Text("Title\n") }
+
+                        }
+                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
+                            P { Text("Title\n") }
+
+                        }
+
+                    }
+
                 }
             }
             Column(modifier = Modifier
                 .fillMaxSize()
                 .background(sitePalette
-                    .brand.primary),
+                    .brand.primary)
+                .width(25.cssRem)
+                .height(30.cssRem),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    MoonIcon()
+
                 }
 
             }
         }
-        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+        Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
 
 
 

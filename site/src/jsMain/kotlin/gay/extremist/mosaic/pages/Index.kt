@@ -11,22 +11,23 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Button
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.UnsignInPageLayout
+import gay.extremist.mosaic.components.widgets.RegisterFunc
+import gay.extremist.mosaic.components.widgets.SignInFunc
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 
 
-@Page()
+@Page("")
 @Composable
-fun UnsignInRegisterPage() {
+fun SignInPage() {
     UnsignInPageLayout("Sign in or Register"){
         val sitePalette = ColorMode.current.toSitePalette()
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem),  verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center){
@@ -39,15 +40,26 @@ fun UnsignInRegisterPage() {
             }
             Column(modifier = Modifier
                 .fillMaxSize()
-                .background(sitePalette.brand.accent).width(35.cssRem),
+                .background(sitePalette.brand.accent).width(35.cssRem).padding(2.cssRem),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
 
+                Column (
+                    modifier = Modifier.fillMaxWidth().gap(1.cssRem),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
 
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "Sign In")
+                ) {
+                    SpanText(
+                        text = "Sign In",
+                        modifier = Modifier.padding(8.px).fontSize(35.px),
+                    )
+
+                    SignInFunc()
                 }
-                val ctx = rememberPageContext()
 
+                Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+
+                val ctx = rememberPageContext()
                 Button(onClick = {
                     // Change this click handler with your call-to-action behavior
                     // here. Link to an order page? Open a calendar UI? Play a movie?
@@ -59,10 +71,22 @@ fun UnsignInRegisterPage() {
                 }).background(Color.rgb(0x2EB4A9))) {
                     Text("Sign In")
                 }
-                P(attrs = Modifier.fontSize(40.px).toAttrs()){
-                    Text(value = "Register")
+                Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
+                Column (
+                    modifier = Modifier.fillMaxWidth().gap(1.cssRem),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
 
+                ) {
+                    SpanText(
+                        text = "Register",
+                        modifier = Modifier.padding(8.px).fontSize(35.px),
+                    )
+
+                    RegisterFunc()
                 }
+
+                Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
                 Button(onClick = {
                     // Change this click handler with your call-to-action behavior
                     // here. Link to an order page? Open a calendar UI? Play a movie?
@@ -89,7 +113,7 @@ fun UnsignInRegisterPage() {
             }
         }
 
-        Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
+        Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
 
     }
 
