@@ -9,6 +9,7 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.silk.components.graphics.Image
+// import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
@@ -30,6 +31,7 @@ fun VideoTile(onClick: () -> Unit, content: @Composable () -> Unit) {
                     .fillMaxSize()
                     .padding(4.px), )
         }
+        
         Box(Modifier.fillMaxWidth(70.percent).padding(1.cssRem)) {
             content()
         }
