@@ -103,7 +103,14 @@ fun NavHeader() {
     Row(NavHeaderStyle.toModifier(), verticalAlignment = Alignment.CenterVertically) {
         Link("/home") {
             // Block display overrides inline display of the <img> tag, so it calculates centering better
-            Image("/MosaicLogoNoBackground.png", "Mosaic Logo", Modifier.height(4.cssRem).display(DisplayStyle.Block))
+            val currentColorMode = ColorMode.current
+
+            val (imageResource, imageSize) = when (currentColorMode) {
+                ColorMode.LIGHT -> Pair("/MosaicWhiteBackground.png", 3.5.cssRem)
+                ColorMode.DARK -> Pair("/MosaicLogoNoBackground.png", 4.cssRem)
+            }
+
+            Image(imageResource, "Mosaic Logo", Modifier.height(imageSize).display(DisplayStyle.Block))
         }
 
         Spacer()

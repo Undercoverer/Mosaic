@@ -16,7 +16,6 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toAttrs
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import gay.extremist.mosaic.HeadlineTextStyle
 import gay.extremist.mosaic.SubheadlineTextStyle
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.VideoPlayer
@@ -99,25 +98,25 @@ fun VideoPage() {
                                 }
                             )
                         )
-                        Spacer()
-                        val ctx = rememberPageContext()
-                        Button(onClick = {
-                            // Change this click handler with your call-to-action behavior
-                            // here. Link to an order page? Open a calendar UI? Play a movie?
-                            // Up to you!
-                            ctx.router.tryRoutingTo("/creator")
-                        }, Modifier.color(sitePalette.brand.accent)) {
-                            Text("Follow")
-                        }
-
-                        Button(onClick = {
-                            // Change this click handler with your call-to-action behavior
-                            // here. Link to an order page? Open a calendar UI? Play a movie?
-                            // Up to you!
-                            ctx.router.tryRoutingTo("/playlist")
-                        }, Modifier.color(sitePalette.brand.secondary)) {
-                            Text("Save")
-                        }
+                    }
+                    Spacer()
+                    val ctx = rememberPageContext()
+                    Button(onClick = {
+                        // Change this click handler with your call-to-action behavior
+                        // here. Link to an order page? Open a calendar UI? Play a movie?
+                        // Up to you!
+                        ctx.router.tryRoutingTo("/creator")
+                    }, Modifier.color(sitePalette.brand.accent)) {
+                        Text("Follow")
+                    }
+                    Column(Modifier.width(1.cssRem)){  }
+                    Button(onClick = {
+                        // Change this click handler with your call-to-action behavior
+                        // here. Link to an order page? Open a calendar UI? Play a movie?
+                        // Up to you!
+                        ctx.router.tryRoutingTo("/playlist")
+                    }, Modifier.color(sitePalette.brand.secondary)) {
+                        Text("Save")
                     }
                 }
                 Row(Modifier.fillMaxSize().padding(3.px).background(Colors.Transparent)){}
@@ -177,49 +176,16 @@ fun VideoPage() {
                         }
                     ), horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val ctx = rememberPageContext()
-                    Button(onClick = {
-                        // Change this click handler with your call-to-action behavior
-                        // here. Link to an order page? Open a calendar UI? Play a movie?
-                        // Up to you!
-                        ctx.router.tryRoutingTo("/tags")
-                    }, Modifier.color(sitePalette.brand.primary)) {
-                        Text("Tags")
-                    }
 
-                    Div(HeadlineTextStyle.toAttrs()) {
-                        SpanText(
-                            text = "Similar Videos",
-                            modifier = Modifier.padding(20.px).fontSize(35.px),
-                        )
-                    }
+                    Row(Modifier.fillMaxSize().height(2.cssRem)){}
 
-                    Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                    Box(Modifier.fillMaxSize().padding(2.cssRem).height(37.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                         Column(Modifier.gap(1.cssRem).fillMaxSize()){
                             val ctx = rememberPageContext()
-                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                P { Text("Title\n") }
-
-                            }
-                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                P { Text("Title\n") }
-
-                            }
-                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                P { Text("Title\n") }
-
-                            }
-                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                P { Text("Title\n") }
-
-                            }
-                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                P { Text("Title\n") }
-
-                            }
-                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                P { Text("Title\n") }
-
+                            for (index in 1..25) {
+                                VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                                    P { Text("Title\n") }
+                                }
                             }
 
                         }
