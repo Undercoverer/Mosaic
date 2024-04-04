@@ -17,7 +17,6 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toAttrs
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import gay.extremist.mosaic.HeadlineTextStyle
 import gay.extremist.mosaic.SubheadlineTextStyle
 import gay.extremist.mosaic.components.layouts.UnsignInPageLayout
 import gay.extremist.mosaic.components.widgets.VideoPlayer
@@ -154,7 +153,7 @@ fun UnsignInVideoPage() {
 
 
             val sitePalette = ColorMode.current.toSitePalette()
-            Column(Modifier.fillMaxSize().background(when (ColorMode.current) {
+            Column(Modifier.fillMaxSize().padding(1.cssRem).background(when (ColorMode.current) {
                 ColorMode.LIGHT -> Colors.LightGray
                 ColorMode.DARK -> Color.rgb(0x2B2B2B)
             })) {
@@ -166,41 +165,15 @@ fun UnsignInVideoPage() {
                         }
                     ), horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Row(modifier = Modifier.fillMaxSize().height(2.cssRem)){}
 
-                    Div(HeadlineTextStyle.toAttrs()){
-                        SpanText(
-                            text = "Similar Videos",
-                            modifier = Modifier.padding(25.px).fontSize(35.px),
-                        )
-                    }
-                    Row(modifier = Modifier.fillMaxSize().height(1.cssRem)) {}
-
-                    Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                    Box(Modifier.fillMaxSize().height(37.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                         Column(Modifier.gap(1.cssRem).fillMaxSize()){
                             val ctx = rememberPageContext()
-                            VideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
-                                P { Text("Title\n") }
-
-                            }
-                            VideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
-                                P { Text("Title\n") }
-
-                            }
-                            VideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
-                                P { Text("Title\n") }
-
-                            }
-                            VideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
-                                P { Text("Title\n") }
-
-                            }
-                            VideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
-                                P { Text("Title\n") }
-
-                            }
-                            VideoTile(onClick = { ctx.router.tryRoutingTo("/unsigninvideo") }) {
-                                P { Text("Title\n") }
-
+                            for (index in 1..25) {
+                                VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                                    P { Text("Title\n") }
+                                }
                             }
 
                         }

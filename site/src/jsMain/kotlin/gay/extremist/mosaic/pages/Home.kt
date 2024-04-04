@@ -41,29 +41,10 @@ fun HomePage() {
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
+                        for (index in 1..25) {
+                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                                P { Text("Title\n") }
+                            }
                         }
 
                     }
@@ -81,29 +62,10 @@ fun HomePage() {
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
+                        for (index in 1..25) {
+                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                                P { Text("Title\n") }
+                            }
                         }
 
                     }
@@ -121,29 +83,10 @@ fun HomePage() {
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
+                        for (index in 1..25) {
+                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                                P { Text("Title\n") }
+                            }
                         }
 
                     }

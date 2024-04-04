@@ -14,7 +14,7 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.PageLayout
-import gay.extremist.mosaic.components.widgets.SearchVideoTile
+import gay.extremist.mosaic.components.widgets.*
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
@@ -36,29 +36,10 @@ fun CreatorPage() {
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
-                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
-                        }
-                        SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                            P { Text("Title\n") }
-
+                        for (index in 1..25) {
+                            SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                                P { Text("Title\n") }
+                            }
                         }
 
                     }
