@@ -19,9 +19,9 @@ class SitePalette(
     val brand: Brand,
 ) {
     class Brand(
-        val primary: Color = Color.rgb(0x2454BF),
+        val primary: Color = Color.rgb(0x3B72Ed),
         val secondary: Color = Color.rgb(0x9F8BFF),
-        val accent: Color = Color.rgb(0x30D5C8),
+        val accent: Color = Color.rgb(0x2ECDC0),
     )
 }
 
@@ -30,18 +30,18 @@ object SitePalettes {
         nearBackground = Color.rgb(0xF4F6FA),
         cobweb = Colors.LightGray,
         brand = SitePalette.Brand(
-            primary = Color.rgb(0x2454BF),
+            primary = Color.rgb(0x3B72Ed),
             secondary = Color.rgb(0x9F8BFF),
-            accent = Color.rgb(0x30D5C8),
+            accent = Color.rgb(0x2ECDC0),
         )
     )
     val dark = SitePalette(
         nearBackground = Color.rgb(0x13171F),
         cobweb = Colors.LightGray.inverted(),
         brand = SitePalette.Brand(
-            primary = Color.rgb(0x2454BF),
+            primary = Color.rgb(0x3B72Ed),
             secondary = Color.rgb(0x9F8BFF),
-            accent = Color.rgb(0x30D5C8),
+            accent = Color.rgb(0x2ECDC0),
         )
     )
 }
