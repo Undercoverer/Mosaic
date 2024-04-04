@@ -27,15 +27,14 @@ fun UploadDataEntry(onAction: (String, String, String, List<String>, List<String
         var title by remember { mutableStateOf("") }
         var desc by remember { mutableStateOf("") }
         var userTags by remember { mutableStateOf(listOf<String>()) }
-        var checkedItems by remember { mutableStateOf(emptyList<String>()) }
-
+        var checkedPresetTags by remember { mutableStateOf<List<String>>(emptyList()) }
 
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
             IconButton(
-                onClick = { onAction(video, title, desc, userTags, checkedItems) }
+                onClick = { onAction(video, title, desc, userTags, checkedPresetTags) }
             ) {
                 DownloadIcon()
             }
@@ -113,12 +112,18 @@ fun UploadDataEntry(onAction: (String, String, String, List<String>, List<String
                 }
             }
         }
-        val tabTags = listOf(
+        val presetTags = listOf(
             "Tab 1" to listOf("Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"),
             "Tab 2" to listOf("Tag 6", "Tag 7", "Tag 8", "Tag 9", "Tag 10"),
             "Tab 3" to listOf("Tag 11", "Tag 12", "Tag 13")
         )
-        PresetTagTabs(tabTags)
+
+
+        PresetTagTabs(
+            tabTags = presetTags,
+            onCheckedItemsChanged = { checkedPresetTags = it }
+        )
+
 
     }
 }

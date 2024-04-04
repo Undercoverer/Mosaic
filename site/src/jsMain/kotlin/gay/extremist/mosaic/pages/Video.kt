@@ -126,7 +126,8 @@ fun VideoPage() {
                     ColorMode.LIGHT -> Colors.LightGray
                     ColorMode.DARK -> Color.rgb(0x2B2B2B)
                 }), horizontalArrangement = Arrangement.Start) {
-                    Div(SubheadlineTextStyle.toAttrs()){
+                    Column(Modifier.fillMaxSize().fontSize(1.cssRem), horizontalAlignment = Alignment.Start) {
+
                         Link("/tags",
                             "Tags", Modifier.color(sitePalette.brand.primary)
                         )
@@ -138,7 +139,9 @@ fun VideoPage() {
                                 }
                             )
                         )
+
                     }
+
                 }
 
                 Row(Modifier.fillMaxSize().padding(3.px).background(Colors.Transparent)){}

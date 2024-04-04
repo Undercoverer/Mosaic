@@ -31,7 +31,9 @@ import com.varabyte.kobweb.silk.components.style.base
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import gay.extremist.mosaic.CLIENT
 import gay.extremist.mosaic.components.widgets.IconButton
+import gay.extremist.mosaic.components.widgets.SearchForm
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.*
 
@@ -114,8 +116,10 @@ fun NavHeader() {
         }
 
         Spacer()
-        //SearchFunc()
-
+        Row(Modifier.width(40.cssRem)){
+            SearchForm(CLIENT)
+        }
+        Spacer()
         Row(Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD), verticalAlignment = Alignment.CenterVertically) {
             MenuItems()
             ColorModeButton()
