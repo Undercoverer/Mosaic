@@ -81,7 +81,23 @@ fun SearchPage() {
                 P(attrs = Modifier.fontSize(40.px).toAttrs()) {
                     Text(value = "Filters")
                 }
-                FilterWidget()
+                val sortOptions = listOf("Option 1", "Option 2", "Option 3")
+                val presetTags = listOf(
+                    "Tab 1" to listOf("Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"),
+                    "Tab 2" to listOf("Tag 6", "Tag 7", "Tag 8", "Tag 9", "Tag 10"),
+                    "Tab 3" to listOf("Tag 11", "Tag 12", "Tag 13")
+                )
+
+                FilterWidget(
+                    sortOptions = sortOptions,
+                    presetTags = presetTags,
+                    onAction = { checkedSortOptions, checkedPresetTags ->
+                        // Do something with the selected sort options and preset tags
+                        // For example:
+                        println("Sort options: $checkedSortOptions")
+                        println("Preset tags: $checkedPresetTags")
+                    }
+                )
 
             }
 

@@ -104,7 +104,7 @@ fun AccountInfo(onAction: (String, String, String) -> Unit) {
                         Column(Modifier.gap(0.2.cssRem).fillMaxSize()){
                             val ctx = rememberPageContext()
                             for (index in 1..25) {
-                                Link("/tag", "Tag " + index, Modifier.color(Colors.DarkBlue))
+                                Link("/tags", "Tag " + index, Modifier.color(Colors.DarkBlue))
                             }
 
                         }

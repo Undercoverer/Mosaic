@@ -8,6 +8,7 @@ import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.*
 import com.varabyte.kobweb.silk.components.icons.fa.FaMagnifyingGlass
 import com.varabyte.kobweb.silk.components.style.addVariantBase
@@ -19,14 +20,13 @@ import org.jetbrains.compose.web.attributes.ButtonType
 import org.jetbrains.compose.web.attributes.onSubmit
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Form
-import org.jetbrains.compose.web.dom.Text
 
 
 val SearchBarInput by InputGroupStyle.addVariantBase {
     Modifier
         .setVariable(InputVars.BorderColor, Colors.Transparent)
         .setVariable(ColorVar, colorMode.toPalette().background)
-        .backgroundColor(Color.rgba(220, 233, 250, 0.2f).darkened(0.1f))
+        .backgroundColor(Color.rgba(220, 233, 250, 0.7f).darkened(0.3f))
 }
 
 @Composable
@@ -40,19 +40,13 @@ fun SearchForm(httpClient: HttpClient) {
                 onSubmit {
                     it.preventDefault() // This stops the form from "submitting"
                     // TODO Perform search
+                    // You can access the search query using the textInput state variable
+                    // For example: performSearch(textInput)
                 }
             }
     ) {
         val dataListId = "search-list"
-//        key(/**TODO Create suggestions list**/) {
-//            Datalist(Modifier.id(dataListId).toAttrs()) {
-//                viewModel.suggestions.forEach {
-//                    Option(it) // tried using key() but it didn't seem to help
-//                }
-//            }
-//        }
         SearchBar(dataListId, httpClient)
-        Text("Search and select an instructor or subject, or enter a course code")
     }
 }
 
@@ -64,15 +58,22 @@ private fun SearchBar(dataListId: String, httpClient: HttpClient) {
             textInput,
             { textInput = it },
             Modifier.onClick {  }.attrsModifier { attr("list", dataListId) },
-            placeholder = "",
+            placeholder = "Enter your search query", // Placeholder text for the input field
             focusBorderColor = Colors.Transparent,
         )
         RightInset {
+            val ctx = rememberPageContext()
             Button(
-                onClick = {},
+                onClick = {
+                    if (textInput.isNotEmpty()) {
+                        // If the search query is not empty, navigate to the search page
+
+                        ctx.router.tryRoutingTo("/search?q=$textInput")
+                    }
+                },
                 modifier = Modifier.ariaLabel("Search"),
                 variant = SearchBarInput,
-                type = ButtonType.Submit,
+                type = ButtonType.Button, // Change the button type to Button
             ) {
                 FaMagnifyingGlass()
             }

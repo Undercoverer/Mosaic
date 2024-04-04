@@ -14,7 +14,7 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.PageLayout
-import gay.extremist.mosaic.components.widgets.VideoTile
+import gay.extremist.mosaic.components.widgets.SearchVideoTile
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
@@ -39,7 +39,7 @@ fun TagPage() {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
                         for (index in 1..25) {
-                            VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
+                            SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
                                 P { Text("Title\n") }
                             }
                         }
