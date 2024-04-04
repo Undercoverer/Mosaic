@@ -28,8 +28,10 @@ fun VideoPlayer(id: String, src: String) {
     )
 
     scope.launch {
-        val video = document.getElementById(id) as HTMLVideoElement
-        dashjs.MediaPlayer().create().initialize(video, src, false)
+        runCatching {
+            val video = document.getElementById(id) as HTMLVideoElement
+            dashjs.MediaPlayer().create().initialize(video, src, false)
+        }
     }
 
 }

@@ -31,11 +31,11 @@ fun BasicUserInputField() {
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BasicTextField(
-            value = text,
-            onValueChange = { text = it },
-            modifier = Modifier.fillMaxWidth()
-        )
+//        BasicTextField(
+//            value = text,
+//            onValueChange = { text = it },
+//            modifier = Modifier.fillMaxWidth()
+//        )
         IconButton(
             onClick = {
                 // Do something with the user input, e.g., show it in a dialog
