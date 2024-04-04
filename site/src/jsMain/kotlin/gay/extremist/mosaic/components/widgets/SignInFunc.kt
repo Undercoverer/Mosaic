@@ -23,13 +23,13 @@ fun SignInFunc(onAction: (String, String) -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally // Align items horizontally at the center
     ) {
-        var username by remember { mutableStateOf("") }
+        var email by remember { mutableStateOf("") }
         InputGroup(size = InputSize.LG) {
             TextInput(
-                username,
-                placeholder = "username",
+                email,
+                placeholder = "email",
                 variant = FilledInputVariant,
-                onTextChanged = { username = it }
+                onTextChanged = { email = it }
             )
         }
 
@@ -57,11 +57,11 @@ fun SignInFunc(onAction: (String, String) -> Unit) {
         val ctx = rememberPageContext()
         Button(
             onClick = {
-                if (username.isNotEmpty() && password.isNotEmpty()) {
+                if (email.isNotEmpty() && password.isNotEmpty()) {
                     // All conditions are satisfied, navigate to "/home"
                     ctx.router.tryRoutingTo("/home")
                     // Additionally, perform the action associated with onAction
-                    onAction(username, password)
+                    onAction(email, password)
                 } else {
                     println("Cannot navigate to /home. All fields must be filled.")
                 }
