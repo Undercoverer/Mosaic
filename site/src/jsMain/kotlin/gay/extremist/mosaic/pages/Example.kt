@@ -11,6 +11,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import gay.extremist.mosaic.CLIENT
 import gay.extremist.mosaic.data_models.Address
 import gay.extremist.mosaic.data_models.Company
 import gay.extremist.mosaic.data_models.Geo
@@ -41,14 +42,7 @@ fun ExamplePage() {
      * into Kotlin data classes (which we have to define ourselves). TODO WHY ISNT IT WORKING >:(
      * Any incoming json which matches the data class will be automatically converted
      */
-    val httpClient = HttpClient(Js) {
-        install(ContentNegotiation) {
-            Json {
-                ignoreUnknownKeys = true
-                isLenient = true
-            }
-        }
-    }
+
 
     // Required to get information about the current page and its url
     val pageCtx = rememberPageContext()
@@ -84,7 +78,7 @@ fun ExamplePage() {
     LaunchedEffect(id) {
 //        // This would be how you do it, but it's broken for an unknown "unsolvable" reason (a couple hours and I couldn't find why)
 //        user = httpClient.get("https://jsonplaceholder.typicode.com/users/$id").body<User>()
-        user = Json.decodeFromString(httpClient.get("https://jsonplaceholder.typicode.com/users/$id").bodyAsText())
+        user = Json.decodeFromString(CLIENT.get("https://jsonplaceholder.typicode.com/users/$id").bodyAsText())
     }
 
     // It just works
