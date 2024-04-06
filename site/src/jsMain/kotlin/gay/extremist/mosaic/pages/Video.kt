@@ -1,6 +1,6 @@
 package gay.extremist.mosaic.pages
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.foundation.layout.*
 import com.varabyte.kobweb.compose.ui.Alignment
@@ -16,11 +16,16 @@ import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.toAttrs
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import gay.extremist.mosaic.SubheadlineTextStyle
+import gay.extremist.mosaic.*
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.VideoPlayer
 import gay.extremist.mosaic.components.widgets.VideoTile
-import gay.extremist.mosaic.toSitePalette
+import gay.extremist.mosaic.data_models.Tag
+import gay.extremist.mosaic.data_models.UnprivilegedAccessAccount
+import gay.extremist.mosaic.data_models.VideoResponse
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
@@ -32,9 +37,33 @@ val VideoContainerStyle by ComponentStyle {
     base { Modifier.fillMaxWidth().gap(10.cssRem) }
 
 }
-@Page("/video")
+@Page("/video/{id}")
 @Composable
 fun VideoPage() {
+    val pageCtx = rememberPageContext()
+    val id = pageCtx.route.params.getValue("id").toIntOrNull() ?: return
+    val loadingVal = "Loading..."
+
+    var video by remember {
+        mutableStateOf(
+            VideoResponse(
+                videoId = -1,
+                title = loadingVal,
+                description = loadingVal,
+                videoPath = loadingVal,
+                tags = listOf<Tag>(),
+                creatorId = -1,
+                uploadDate = loadingVal
+            )
+        )
+    }
+
+    LaunchedEffect(id) {
+        video = Json.decodeFromString(
+            CLIENT.get("videos/$id").bodyAsText()
+        )
+    }
+
     PageLayout("Video") {
 
         Row(
@@ -48,8 +77,10 @@ fun VideoPage() {
                 Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center){
                     VideoPlayer(
                         id = "player",
-                        src = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd")
-
+                        src = "${BASE_URL}${video.videoPath}/output.mpd".also {
+                            println(it)
+                        }
+                    )
                 }
 
 
@@ -63,7 +94,7 @@ fun VideoPage() {
 
                     Div(SubheadlineTextStyle.toAttrs()){
                         SpanText(
-                            "Video Title    ", Modifier.color(
+                            "${video.title}    ", Modifier.color(
                                 when (ColorMode.current) {
                                     ColorMode.LIGHT -> Colors.Black
                                     ColorMode.DARK -> Colors.White
@@ -72,7 +103,7 @@ fun VideoPage() {
                         )
 
                         //temp color
-                        Link("/creator", "Creator",  Modifier.color(sitePalette.brand.accent))
+                        Link("/creator/${video.creatorId}", "Creator",  Modifier.color(sitePalette.brand.accent))
 
                         SpanText(
                             "   Date   ", Modifier.color(

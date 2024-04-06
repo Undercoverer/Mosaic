@@ -16,7 +16,6 @@ val CLIENT = HttpClient(Js) {
     install(ContentNegotiation) {
         Json {
             ignoreUnknownKeys = true
-            encodeDefaults = true
             explicitNulls = false
             isLenient = true
         }
