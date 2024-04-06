@@ -58,7 +58,7 @@ private fun SearchBar(dataListId: String, httpClient: HttpClient) {
             textInput,
             { textInput = it },
             Modifier.onClick {  }.attrsModifier { attr("list", dataListId) },
-            placeholder = "Enter your search query", // Placeholder text for the input field
+            placeholder = "Search", // Placeholder text for the input field
             focusBorderColor = Colors.Transparent,
         )
         RightInset {

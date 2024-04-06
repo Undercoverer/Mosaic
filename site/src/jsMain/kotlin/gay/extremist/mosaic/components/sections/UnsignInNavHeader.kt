@@ -31,9 +31,7 @@ import com.varabyte.kobweb.silk.components.style.base
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import gay.extremist.mosaic.CLIENT
 import gay.extremist.mosaic.components.widgets.IconButton
-import gay.extremist.mosaic.components.widgets.SearchForm
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.*
 
@@ -48,8 +46,7 @@ private fun NavLink(path: String, text: String) {
 
 @Composable
 private fun MenuItems() {
-    NavLink("/unsignedhome", "Home")
-    NavLink("/", "Sign In")
+
 }
 
 @Composable
@@ -102,22 +99,18 @@ enum class UnsignInSideMenuState {
 @Composable
 fun UnsignInNavHeader() {
     Row(NavHeaderStyle.toModifier(), verticalAlignment = Alignment.CenterVertically) {
-        Link("/unsignedhome") {
-            // Block display overrides inline display of the <img> tag, so it calculates centering better
-            val currentColorMode = ColorMode.current
 
-            val (imageResource, imageSize) = when (currentColorMode) {
-                ColorMode.LIGHT -> Pair("/MosaicWhiteBackground.png", 3.5.cssRem)
-                ColorMode.DARK -> Pair("/MosaicLogoNoBackground.png", 4.cssRem)
-            }
+        // Block display overrides inline display of the <img> tag, so it calculates centering better
+        val currentColorMode = ColorMode.current
 
-            Image(imageResource, "Mosaic Logo", Modifier.height(imageSize).display(DisplayStyle.Block))
+        val (imageResource, imageSize) = when (currentColorMode) {
+            ColorMode.LIGHT -> Pair("/MosaicWhiteBackground.png", 3.5.cssRem)
+            ColorMode.DARK -> Pair("/MosaicLogoNoBackground.png", 4.cssRem)
         }
 
-        Spacer()
-        Row(Modifier.width(40.cssRem)){
-            SearchForm(CLIENT)
-        }
+        Image(imageResource, "Mosaic Logo", Modifier.height(imageSize).display(DisplayStyle.Block))
+
+
         Spacer()
 
         Row(Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD), verticalAlignment = Alignment.CenterVertically) {

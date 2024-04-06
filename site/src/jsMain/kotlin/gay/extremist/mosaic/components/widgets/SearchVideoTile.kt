@@ -31,7 +31,7 @@ fun SearchVideoTile(onClick: () -> Unit, content: @Composable () -> Unit) {
         .onClick { onClick() }) {
         Box(Modifier.fillMaxWidth(20.percent).height(7.cssRem), Alignment.Center) {
             ContentScale.Fit
-            Image("https://previews.123rf.com/images/mirage3/mirage31312/mirage3131200021/24595044-mosaic-small-colorful-tile-background-fun-abstract.jpg",
+            Image("/MosaicThumbnail.PNG",
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(4.px), )
