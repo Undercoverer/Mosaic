@@ -20,8 +20,6 @@ import gay.extremist.mosaic.components.widgets.VideoTile
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Text
 
 
 @Page("/home")
@@ -39,11 +37,11 @@ fun HomePage() {
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
-                    Column(Modifier.gap(1.cssRem).fillMaxSize()){
+                    Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
                         for (index in 1..25) {
                             VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                P { Text("Title\n") }
+                                SpanText("Title\n")
                             }
                         }
 
@@ -60,11 +58,11 @@ fun HomePage() {
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
-                    Column(Modifier.gap(1.cssRem).fillMaxSize()){
+                    Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
                         for (index in 1..25) {
                             VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                P { Text("Title\n") }
+                                SpanText("Title\n")
                             }
                         }
 
@@ -81,11 +79,11 @@ fun HomePage() {
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
-                    Column(Modifier.gap(1.cssRem).fillMaxSize()){
+                    Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
                         for (index in 1..25) {
                             VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                P { Text("Title\n") }
+                                SpanText("Title\n")
                             }
                         }
 

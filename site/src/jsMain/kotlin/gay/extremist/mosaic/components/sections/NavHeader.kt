@@ -17,6 +17,7 @@ import com.varabyte.kobweb.silk.components.icons.CloseIcon
 import com.varabyte.kobweb.silk.components.icons.HamburgerIcon
 import com.varabyte.kobweb.silk.components.icons.MoonIcon
 import com.varabyte.kobweb.silk.components.icons.SunIcon
+
 import com.varabyte.kobweb.silk.components.layout.breakpoint.displayIfAtLeast
 import com.varabyte.kobweb.silk.components.layout.breakpoint.displayUntil
 import com.varabyte.kobweb.silk.components.navigation.Link
@@ -50,7 +51,7 @@ private fun NavLink(path: String, text: String) {
 private fun MenuItems() {
     NavLink("/home", "Home")
     NavLink("/account", "Account")
-    NavLink("/unsignedhome", "Sign Out")
+    NavLink("/", "Sign Out")
 }
 
 @Composable

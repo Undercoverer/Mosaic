@@ -16,6 +16,7 @@ import com.varabyte.kobweb.silk.components.disclosure.Tabs
 import com.varabyte.kobweb.silk.components.forms.*
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.text.SpanText
+import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Text
 
@@ -23,13 +24,18 @@ import org.jetbrains.compose.web.dom.Text
 fun AccountInfo(onAction: (String, String, String) -> Unit) {
     Column(Modifier.gap(0.5.cssRem), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         val ctx = rememberPageContext()
-        Button(
-            onClick = {
-                ctx.router.tryRoutingTo("/creator")
-            },
-            Modifier.background(Color.rgb(0x2EB4A9))
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-            Text("My Creator Page")
+            Button(
+                onClick = {
+                    ctx.router.tryRoutingTo("/creator")
+                },
+                Modifier.background(Color.rgb(0x2EB4A9))
+            ) {
+                Text("My Creator Page")
+            }
         }
 
         SpanText("Current Email")
@@ -45,7 +51,7 @@ fun AccountInfo(onAction: (String, String, String) -> Unit) {
         InputGroup( size = InputSize.LG) {
             TextInput(
                 email,
-                placeholder = "email",
+                placeholder = "Email",
                 variant = FilledInputVariant,
                 onTextChanged = { email = it })
         }
@@ -54,7 +60,7 @@ fun AccountInfo(onAction: (String, String, String) -> Unit) {
         InputGroup(size = InputSize.LG) {
             TextInput(
                 username,
-                placeholder = "username",
+                placeholder = "Username",
                 variant = FilledInputVariant,
                 onTextChanged = { username = it })
         }
@@ -63,7 +69,7 @@ fun AccountInfo(onAction: (String, String, String) -> Unit) {
         InputGroup(size = InputSize.LG) {
             TextInput(
                 password,
-                placeholder = "username",
+                placeholder = "Password",
                 variant = FilledInputVariant,
                 onTextChanged = { password = it })
         }
@@ -81,7 +87,7 @@ fun AccountInfo(onAction: (String, String, String) -> Unit) {
             }
         }
         Row(Modifier.height(1.cssRem)){}
-        Tabs(Modifier.fontSize(1.3.cssRem)) {
+        Tabs(Modifier.fillMaxSize().fontSize(1.3.cssRem)) {
             TabPanel {
                 Tab { Text("Creators") }; Panel {
 
@@ -100,10 +106,10 @@ fun AccountInfo(onAction: (String, String, String) -> Unit) {
             }
             TabPanel {
                 Tab { Text("Tags") }; Panel {
-                    Box(Modifier.fillMaxSize().height(10.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                    Box(Modifier.fillMaxSize().height(10.cssRem).position(Position.Relative).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                         Column(Modifier.gap(0.2.cssRem).fillMaxSize()){
                             val ctx = rememberPageContext()
-                            for (index in 1..25) {
+                            for (index in 1..100) {
                                 Link("/tags", "Tag " + index, Modifier.color(Colors.DarkBlue))
                             }
 

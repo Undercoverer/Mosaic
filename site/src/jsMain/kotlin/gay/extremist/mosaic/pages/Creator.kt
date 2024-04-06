@@ -8,17 +8,18 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
+import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.PageLayout
-import gay.extremist.mosaic.components.widgets.*
+import gay.extremist.mosaic.components.widgets.SearchVideoTile
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
 
 @Page("/creator")
@@ -33,12 +34,21 @@ fun CreatorPage() {
                     text = "Creator Videos",
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
+                val ctx = rememberPageContext()
+                Button(onClick = {
+                    // Change this click handler with your call-to-action behavior
+                    // here. Link to an order page? Open a calendar UI? Play a movie?
+                    // Up to you!
+                    ctx.router.tryRoutingTo("/creator")
+                }, Modifier.background(Color.rgb(0x2EB4A9))) {
+                    Text("Follow")
+                }
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
-                    Column(Modifier.gap(1.cssRem).fillMaxSize()){
+                    Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
                         for (index in 1..25) {
                             SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                P { Text("Title\n") }
+                                SpanText("Title\n")
                             }
                         }
 

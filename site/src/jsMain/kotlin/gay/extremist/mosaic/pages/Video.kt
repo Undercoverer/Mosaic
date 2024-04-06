@@ -1,6 +1,6 @@
 package gay.extremist.mosaic.pages
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.foundation.layout.*
 import com.varabyte.kobweb.compose.ui.Alignment
@@ -13,20 +13,15 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.toAttrs
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import gay.extremist.mosaic.SubheadlineTextStyle
 import gay.extremist.mosaic.components.layouts.PageLayout
-import gay.extremist.mosaic.components.widgets.VideoPlayer
-import gay.extremist.mosaic.components.widgets.VideoTile
+import gay.extremist.mosaic.components.widgets.*
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
-
 
 val VideoContainerStyle by ComponentStyle {
     base { Modifier.fillMaxWidth().gap(10.cssRem) }
@@ -59,47 +54,63 @@ fun VideoPage() {
                 Row(Modifier.fillMaxSize().padding(15.px).background(when (ColorMode.current) {
                     ColorMode.LIGHT -> Colors.LightGray
                     ColorMode.DARK -> Color.rgb(0x2B2B2B)
-                }), horizontalArrangement = Arrangement.Start) {
+                }), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
+                    Row(Modifier.fontSize(1.4.cssRem).gap(2.cssRem)){
+                        Div() {
+                            SpanText(
+                                "Video Title", Modifier.color(
+                                    when (ColorMode.current) {
+                                        ColorMode.LIGHT -> Colors.Black
+                                        ColorMode.DARK -> Colors.White
+                                    }
+                                )
+                            )
+                        }
 
-                    Div(SubheadlineTextStyle.toAttrs()){
-                        SpanText(
-                            "Video Title    ", Modifier.color(
-                                when (ColorMode.current) {
-                                    ColorMode.LIGHT -> Colors.Black
-                                    ColorMode.DARK -> Colors.White
-                                }
-                            )
-                        )
+                        Div{//temp color
+                            Link("/creator", "Creator",  Modifier.color(sitePalette.brand.accent))
+                        }
 
-                        //temp color
-                        Link("/creator", "Creator",  Modifier.color(sitePalette.brand.accent))
-
-                        SpanText(
-                            "   Date   ", Modifier.color(
-                                when (ColorMode.current) {
-                                    ColorMode.LIGHT -> Colors.Black
-                                    ColorMode.DARK -> Colors.White
-                                }
-                            )
-                        )
-                        SpanText(
-                            "Views   ", Modifier.color(
-                                when (ColorMode.current) {
-                                    ColorMode.LIGHT -> Colors.Black
-                                    ColorMode.DARK -> Colors.White
-                                }
-                            )
-                        )
-                        SpanText(
-                            "Rating   ", Modifier.color(
-                                when (ColorMode.current) {
-                                    ColorMode.LIGHT -> Colors.Black
-                                    ColorMode.DARK -> Colors.White
-                                }
-                            )
-                        )
                     }
+
                     Spacer()
+
+                    Row(Modifier.fontSize(1.1.cssRem).gap(2.cssRem), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                        SpanText(
+                            "01/23/14", Modifier.color(
+                                when (ColorMode.current) {
+                                    ColorMode.LIGHT -> Colors.Black
+                                    ColorMode.DARK -> Colors.White
+                                }
+                            )
+                        )
+                        SpanText(
+                            "Views: 789", Modifier.color(
+                                when (ColorMode.current) {
+                                    ColorMode.LIGHT -> Colors.Black
+                                    ColorMode.DARK -> Colors.White
+                                }
+                            )
+                        )
+                        Row(Modifier.fontSize(1.1.cssRem), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                            SpanText(
+                                "Rating: 3.54/5", Modifier.color(
+                                    when (ColorMode.current) {
+                                        ColorMode.LIGHT -> Colors.Black
+                                        ColorMode.DARK -> Colors.White
+                                    }
+                                )
+                            )
+                            var ratingValue by remember { mutableStateOf(0) }
+                            RatingFunc { rating ->
+                                ratingValue = rating
+                                // Do something with the comment
+                                println("Comment submitted: $rating")
+                            }
+                        }
+                    }
+
+                    Row(Modifier.width(6.cssRem)){}
                     val ctx = rememberPageContext()
                     Button(onClick = {
                         // Change this click handler with your call-to-action behavior
@@ -110,14 +121,19 @@ fun VideoPage() {
                         Text("Follow")
                     }
                     Column(Modifier.width(1.cssRem)){  }
-                    Button(onClick = {
-                        // Change this click handler with your call-to-action behavior
-                        // here. Link to an order page? Open a calendar UI? Play a movie?
-                        // Up to you!
-                        ctx.router.tryRoutingTo("/playlist")
-                    }, Modifier.color(sitePalette.brand.secondary)) {
-                        Text("Save")
-                    }
+                    SavePopUp(
+                        checkboxItems = listOf("Playlist 1", "Playlist 2", "Playlist 3","Playlist 1", "Playlist 2", "Playlist 3","Playlist 1", "Playlist 2", "Playlist 3","Playlist 1", "Playlist 2", "Playlist 3"),
+                        onPlaylistAction = { playlist ->
+                            // Perform action with playlist
+                            println("Playlist submitted: $playlist")
+                        },
+                        onCheckboxAction = { selectedItem ->
+                            // Perform action with selected checkbox item
+                            selectedItem?.let {
+                                println("Checkbox submitted: $it")
+                            }
+                        }
+                    )
                 }
                 Row(Modifier.fillMaxSize().padding(3.px).background(Colors.Transparent)){}
 
@@ -126,19 +142,22 @@ fun VideoPage() {
                     ColorMode.LIGHT -> Colors.LightGray
                     ColorMode.DARK -> Color.rgb(0x2B2B2B)
                 }), horizontalArrangement = Arrangement.Start) {
-                    Column(Modifier.fillMaxSize().fontSize(1.cssRem), horizontalAlignment = Alignment.Start) {
+                    Column(Modifier.fillMaxSize().gap(1.cssRem).fontSize(1.1.cssRem).height(6.cssRem).overflow { y(Overflow.Auto)}, horizontalAlignment = Alignment.Start) {
 
                         Link("/tags",
                             "Tags", Modifier.color(sitePalette.brand.primary)
                         )
-                        SpanText(
-                            "   Desc", Modifier.color(
-                                when (ColorMode.current) {
-                                    ColorMode.LIGHT -> Colors.Black
-                                    ColorMode.DARK -> Colors.White
-                                }
+                        Div{
+                            SpanText(
+                                "Desc", Modifier.color(
+                                    when (ColorMode.current) {
+                                        ColorMode.LIGHT -> Colors.Black
+                                        ColorMode.DARK -> Colors.White
+                                    }
+                                )
                             )
-                        )
+                        }
+
 
                     }
 
@@ -147,11 +166,16 @@ fun VideoPage() {
                 Row(Modifier.fillMaxSize().padding(3.px).background(Colors.Transparent)){}
 
 
-                Row(Modifier.fillMaxSize().padding(15.px).background(when (ColorMode.current) {
+                Row(Modifier.fillMaxSize().padding(15.px).fontSize(1.1.cssRem).background(when (ColorMode.current) {
                     ColorMode.LIGHT -> Colors.LightGray
                     ColorMode.DARK -> Color.rgb(0x2B2B2B)
                 }), horizontalArrangement = Arrangement.Start) {
-                    Div(SubheadlineTextStyle.toAttrs()){
+                    Column(Modifier.fillMaxSize().gap(1.cssRem).height(8.cssRem).overflow { y(Overflow.Auto)}){
+                        CommentFunc { comment ->
+                            // Do something with the comment
+                            println("Comment submitted: $comment")
+                        }
+
                         SpanText(
                             "Comments", Modifier.color(
                                 when (ColorMode.current) {
@@ -160,7 +184,9 @@ fun VideoPage() {
                                 }
                             )
                         )
+
                     }
+
                 }
 
             }
@@ -177,17 +203,15 @@ fun VideoPage() {
                             ColorMode.LIGHT -> Colors.LightGray
                             ColorMode.DARK -> Color.rgb(0x2B2B2B)
                         }
-                    ), horizontalAlignment = Alignment.CenterHorizontally
+                    ), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top
                 ) {
 
-                    Row(Modifier.fillMaxSize().height(2.cssRem)){}
-
-                    Box(Modifier.fillMaxSize().padding(2.cssRem).height(37.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
-                        Column(Modifier.gap(1.cssRem).fillMaxSize()){
+                    Box(Modifier.fillMaxSize().padding(2.cssRem).height(50.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                        Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
                             val ctx = rememberPageContext()
                             for (index in 1..25) {
                                 VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                    P { Text("Title\n") }
+                                    SpanText("Title\n")
                                 }
                             }
 

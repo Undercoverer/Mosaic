@@ -25,7 +25,7 @@ fun RegisterFunc(onAction: (String, String, String) -> Unit) {
         InputGroup( size = InputSize.LG) {
             TextInput(
                 email,
-                placeholder = "email",
+                placeholder = "Email",
                 variant = FilledInputVariant,
                 onTextChanged = { email = it })
         }
@@ -34,17 +34,17 @@ fun RegisterFunc(onAction: (String, String, String) -> Unit) {
         InputGroup(size = InputSize.LG) {
             TextInput(
                 username,
-                placeholder = "username",
+                placeholder = "Username",
                 variant = FilledInputVariant,
                 onTextChanged = { username = it })
         }
 
         var showPassword by remember { mutableStateOf(false) }
         var password by remember { mutableStateOf("") }
-        InputGroup(Modifier.width(235.px).background(Colors.White), size = InputSize.LG) {
+        InputGroup(Modifier.width(247.px).background(Colors.White), size = InputSize.LG) {
             TextInput(
                 password,
-                placeholder = "password",
+                placeholder = "Password",
                 variant = FilledInputVariant,
                 password = !showPassword,
                 onTextChanged = { password = it },
