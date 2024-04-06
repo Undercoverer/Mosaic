@@ -19,8 +19,6 @@ import gay.extremist.mosaic.components.widgets.SearchVideoTile
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Text
 
 
 @Page("/playlist")
@@ -36,15 +34,16 @@ fun PlaylistPage() {
                         modifier = Modifier.padding(20.px).fontSize(35.px),
                     )
                     Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
-                        Column(Modifier.gap(1.cssRem).fillMaxSize()) {
+                        Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
                             val ctx = rememberPageContext()
                             for (index in 1..25) {
                                 SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                    P { Text("Title\n") }
+                                    SpanText("Title\n")
                                 }
                             }
 
                         }
+
                     }
                 }
                 Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).height(20.cssRem).width(25.cssRem)) {  }

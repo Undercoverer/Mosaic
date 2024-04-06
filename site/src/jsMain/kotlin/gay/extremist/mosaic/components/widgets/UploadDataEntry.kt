@@ -7,50 +7,71 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.fontSize
-import com.varabyte.kobweb.compose.ui.modifiers.gap
-import com.varabyte.kobweb.compose.ui.modifiers.width
+import com.varabyte.kobweb.compose.ui.graphics.Color
+import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.silk.components.forms.FilledInputVariant
 import com.varabyte.kobweb.silk.components.forms.InputGroup
 import com.varabyte.kobweb.silk.components.forms.InputSize
 import com.varabyte.kobweb.silk.components.forms.TextInput
 import com.varabyte.kobweb.silk.components.icons.DownloadIcon
-import org.jetbrains.compose.web.css.cssRem
-import org.jetbrains.compose.web.dom.Text
+import gay.extremist.mosaic.BASE_URL
+import org.jetbrains.compose.web.attributes.InputType
+import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.*
+
 
 @Composable
-fun UploadDataEntry(onAction: (String, String, String, List<String>, List<String>) -> Unit) {
+fun UploadDataEntry(onAction: ( String, String, List<String>, List<String>) -> Unit) {
 
-    Column(Modifier.gap(0.5.cssRem),  verticalArrangement = Arrangement.Center) {
-        var video by remember { mutableStateOf("") }
+    Column(Modifier.gap(0.5.cssRem).fontSize(1.3.cssRem),  verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         var title by remember { mutableStateOf("") }
         var desc by remember { mutableStateOf("") }
         var userTags by remember { mutableStateOf(listOf<String>()) }
         var checkedPresetTags by remember { mutableStateOf<List<String>>(emptyList()) }
+        var currentUserTag by remember { mutableStateOf("") }
 
         Box(
-            modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            IconButton(
-                onClick = { onAction(video, title, desc, userTags, checkedPresetTags) }
-            ) {
-                DownloadIcon()
+            Form(action = "$BASE_URL/video", attrs = {
+                attr("method", "POST")
+                attr("enctype", "multipart/form-data")
+            }) {
+                Column(Modifier.fillMaxSize().gap(1.cssRem), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box(
+                        modifier = Modifier.background(Color.rgb(0x2454BF)).borderRadius(2.cssRem),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        IconButton(
+                            onClick = { onAction(title, desc, userTags, checkedPresetTags) }
+                        ) {
+                            DownloadIcon()
+                        }
+                    }
+                    Div(attrs = {
+                        classes("input-group")
+                        style {
+                            display(DisplayStyle.Flex)
+                            justifyContent(JustifyContent.Center)
+                            alignItems(AlignItems.Center)
+                        }
+                    }) {
+                        Label(forId = "files") {
+
+                        }
+                        Input(InputType.File, attrs = {
+                            id("file")
+                            attr("multiple", "")
+                        })
+                    }
+                }
             }
         }
 
 
+
+
         InputGroup(size = InputSize.LG) {
-            TextInput(
-                video,
-                placeholder = "Video",
-                variant = FilledInputVariant,
-                onTextChanged = { video = it })
-        }
-
-
-        InputGroup( size = InputSize.LG) {
             TextInput(
                 title,
                 placeholder = "Title",
@@ -58,8 +79,7 @@ fun UploadDataEntry(onAction: (String, String, String, List<String>, List<String
                 onTextChanged = { title = it })
         }
 
-
-        InputGroup( size = InputSize.LG) {
+        InputGroup(size = InputSize.LG) {
             TextInput(
                 desc,
                 placeholder = "Description",
@@ -67,8 +87,6 @@ fun UploadDataEntry(onAction: (String, String, String, List<String>, List<String
                 onTextChanged = { desc = it })
         }
 
-        // Input field for user tags
-        var currentUserTag by remember { mutableStateOf("") }
         InputGroup(size = InputSize.LG) {
             TextInput(
                 currentUserTag,

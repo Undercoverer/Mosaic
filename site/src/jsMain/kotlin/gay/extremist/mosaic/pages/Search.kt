@@ -11,7 +11,6 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
@@ -22,9 +21,6 @@ import gay.extremist.mosaic.components.widgets.FilterWidget
 import gay.extremist.mosaic.components.widgets.SearchVideoTile
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
-import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Text
 
 val SearchContainerStyle by ComponentStyle {
     base { Modifier.fillMaxWidth().gap(10.cssRem) }
@@ -38,7 +34,7 @@ fun SearchPage() {
     PageLayout("Search") {
         val sitePalette = ColorMode.current.toSitePalette()
         Row(
-            modifier = Modifier.fillMaxSize().gap(1.cssRem),
+            modifier = Modifier.fillMaxSize().gap(1.cssRem).fontSize(1.1.cssRem),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -48,22 +44,19 @@ fun SearchPage() {
                         ColorMode.LIGHT -> Colors.LightGray
                         ColorMode.DARK -> Color.rgb(0x2B2B2B)
                     }
-                ), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally
+                ), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                SpanText(
-                    text = "Search Results",
-                    modifier = Modifier.padding(20.px).fontSize(35.px),
-                )
-                Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
-                    Column(Modifier.gap(1.cssRem).fillMaxSize()){
+                Box(Modifier.fillMaxSize().padding(2.cssRem).height(40.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                    Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
                         val ctx = rememberPageContext()
                         for (index in 1..25) {
                             SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                P { Text("Title\n") }
+                                SpanText("Title\n")
                             }
                         }
 
                     }
+
                 }
 
 
@@ -74,13 +67,11 @@ fun SearchPage() {
                         ColorMode.LIGHT -> Colors.LightGray
                         ColorMode.DARK -> Color.rgb(0x2B2B2B)
                     }
-                ), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally
+                ), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
 
-                P(attrs = Modifier.fontSize(40.px).toAttrs()) {
-                    Text(value = "Filters")
-                }
+
                 val sortOptions = listOf("Option 1", "Option 2", "Option 3")
                 val presetTags = listOf(
                     "Tab 1" to listOf("Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"),

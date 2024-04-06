@@ -27,7 +27,7 @@ fun SignInFunc(onAction: (String, String) -> Unit) {
         InputGroup(size = InputSize.LG) {
             TextInput(
                 email,
-                placeholder = "email",
+                placeholder = "Email",
                 variant = FilledInputVariant,
                 onTextChanged = { email = it }
             )
@@ -35,10 +35,10 @@ fun SignInFunc(onAction: (String, String) -> Unit) {
 
         var showPassword by remember { mutableStateOf(false) }
         var password by remember { mutableStateOf("") }
-        InputGroup(Modifier.width(235.px), size = InputSize.LG) {
+        InputGroup(Modifier.width(247.px), size = InputSize.LG) {
             TextInput(
                 password,
-                placeholder = "password",
+                placeholder = "Password",
                 variant = FilledInputVariant,
                 password = !showPassword,
                 onTextChanged = { password = it },
