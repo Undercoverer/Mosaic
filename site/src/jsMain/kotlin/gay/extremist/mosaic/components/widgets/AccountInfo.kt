@@ -1,32 +1,42 @@
 package gay.extremist.mosaic.components.widgets
 
 import androidx.compose.runtime.*
+import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
+import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.fontSize
-import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.graphics.Color
+import com.varabyte.kobweb.compose.ui.graphics.Colors
+import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.disclosure.Tabs
-import com.varabyte.kobweb.silk.components.forms.FilledInputVariant
-import com.varabyte.kobweb.silk.components.forms.InputGroup
-import com.varabyte.kobweb.silk.components.forms.InputSize
-import com.varabyte.kobweb.silk.components.forms.TextInput
+import com.varabyte.kobweb.silk.components.forms.*
+import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.text.SpanText
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
 fun AccountInfo(onAction: (String, String, String) -> Unit) {
-    Column(Modifier.gap(0.5.cssRem), verticalArrangement = Arrangement.Center, ) {
+    Column(Modifier.gap(0.5.cssRem), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        val ctx = rememberPageContext()
+        Button(
+            onClick = {
+                ctx.router.tryRoutingTo("/creator")
+            },
+            Modifier.background(Color.rgb(0x2EB4A9))
+        ) {
+            Text("My Creator Page")
+        }
 
         SpanText("Current Email")
         SpanText("Current Username")
         SpanText("Current Password")
 
-
+        Row(Modifier.height(1.cssRem)){}
 
         var email by remember { mutableStateOf("") }
         var username by remember { mutableStateOf("") }
@@ -61,18 +71,47 @@ fun AccountInfo(onAction: (String, String, String) -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            IconButton(
-                onClick = { onAction(email, username, password) }
+            Button(
+                onClick = {
+                    onAction(email, username, password)
+                },
+                Modifier.background(Color.rgb(0x2EB4A9))
             ) {
                 Text("Submit")
             }
         }
+        Row(Modifier.height(1.cssRem)){}
         Tabs(Modifier.fontSize(1.3.cssRem)) {
             TabPanel {
-                Tab { Text("Tags") }; Panel { Text("Tag List") }
+                Tab { Text("Creators") }; Panel {
+
+                    Box(Modifier.fillMaxSize().height(10.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                        Column(Modifier.gap(0.2.cssRem).fillMaxSize()){
+                            val ctx = rememberPageContext()
+                            for (index in 1..25) {
+                                Link("/creator", "Creator " + index, Modifier.color(Colors.DarkBlue))
+                            }
+
+                        }
+
+                    }
+
+                }
             }
             TabPanel {
-                Tab { Text("Creators") }; Panel { Text("Creator List") }
+                Tab { Text("Tags") }; Panel {
+                    Box(Modifier.fillMaxSize().height(10.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                        Column(Modifier.gap(0.2.cssRem).fillMaxSize()){
+                            val ctx = rememberPageContext()
+                            for (index in 1..25) {
+                                Link("/tags", "Tag " + index, Modifier.color(Colors.DarkBlue))
+                            }
+
+                        }
+
+                    }
+
+                }
             }
         }
 

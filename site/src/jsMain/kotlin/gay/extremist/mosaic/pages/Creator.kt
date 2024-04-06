@@ -73,6 +73,7 @@ fun CreatorPage() {
                 )
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fillMaxSize()){
+
                         for(video in videoList) {
                             SearchVideoTile(onClick = { pageCtx.router.tryRoutingTo("/video/${video.id}") }) {
                                 P { Text("${video.title}\n") }

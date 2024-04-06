@@ -26,7 +26,7 @@ fun AccountPage() {
     PageLayout("Account"){
         val sitePalette = ColorMode.current.toSitePalette()
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
-            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.secondary).padding(2.cssRem), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.secondary).padding(2.cssRem), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
                 val ctx = rememberPageContext()
                 SpanText(
                     text = "Playlists",

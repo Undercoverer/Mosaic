@@ -7,11 +7,15 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.silk.components.disclosure.Tabs
-import com.varabyte.kobweb.silk.components.forms.*
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.fontSize
+import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.width
+import com.varabyte.kobweb.silk.components.forms.FilledInputVariant
+import com.varabyte.kobweb.silk.components.forms.InputGroup
+import com.varabyte.kobweb.silk.components.forms.InputSize
+import com.varabyte.kobweb.silk.components.forms.TextInput
 import com.varabyte.kobweb.silk.components.icons.DownloadIcon
-import com.varabyte.kobweb.silk.theme.colors.ColorSchemes
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Text
 
@@ -23,15 +27,14 @@ fun UploadDataEntry(onAction: (String, String, String, List<String>, List<String
         var title by remember { mutableStateOf("") }
         var desc by remember { mutableStateOf("") }
         var userTags by remember { mutableStateOf(listOf<String>()) }
-        var checkedItems by remember { mutableStateOf(emptyList<String>()) }
-
+        var checkedPresetTags by remember { mutableStateOf<List<String>>(emptyList()) }
 
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
             IconButton(
-                onClick = { onAction(video, title, desc, userTags, checkedItems) }
+                onClick = { onAction(video, title, desc, userTags, checkedPresetTags) }
             ) {
                 DownloadIcon()
             }
@@ -59,7 +62,6 @@ fun UploadDataEntry(onAction: (String, String, String, List<String>, List<String
         InputGroup( size = InputSize.LG) {
             TextInput(
                 desc,
-                modifier = Modifier.height(10.cssRem),
                 placeholder = "Description",
                 variant = FilledInputVariant,
                 onTextChanged = { desc = it })
@@ -110,41 +112,18 @@ fun UploadDataEntry(onAction: (String, String, String, List<String>, List<String
                 }
             }
         }
+        val presetTags = listOf(
+            "Tab 1" to listOf("Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"),
+            "Tab 2" to listOf("Tag 6", "Tag 7", "Tag 8", "Tag 9", "Tag 10"),
+            "Tab 3" to listOf("Tag 11", "Tag 12", "Tag 13")
+        )
 
 
-        Tabs {
-            TabPanel {
-                Tab { Text("Tab 1") }; Panel {
-                Column(Modifier.gap(1.cssRem)) {
-                    Row(Modifier.gap(1.cssRem), verticalAlignment = Alignment.CenterVertically) {
-                        listOf(ColorSchemes.LightBlue).forEach { colorScheme ->
-                            var checked by remember { mutableStateOf(false) }
-                            Checkbox(
-                                checked,
-                                onCheckedChange = {
-                                    checked = it
-                                    // Update checkedItems list
-                                    checkedItems = if (it) {
-                                        checkedItems + "Checkbox" // Adjust this as per your checkbox label
-                                    } else {
-                                        checkedItems - "Checkbox"
-                                    }
-                                },
-                                colorScheme = colorScheme,
-                                size = CheckboxSize.LG
-                            ) { Text("Checkbox") }
-                        }
-                    }
-                }
-            }
-            }
-            TabPanel {
-                Tab { Text("Tab 2") }; Panel { Text("Panel 2") }
-            }
-            TabPanel {
-                Tab { Text("Tab 3") }; Panel { Text("Panel 3") }
-            }
-        }
+        PresetTagTabs(
+            tabTags = presetTags,
+            onCheckedItemsChanged = { checkedPresetTags = it }
+        )
+
 
     }
 }
