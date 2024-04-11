@@ -55,7 +55,6 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
                             id("file")
                             attr("multiple", "")
                             onChange {
-                                // TODO set file = files from input element. See https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications
                                 file = it.target.files?.get(0)
                             }
                         })
