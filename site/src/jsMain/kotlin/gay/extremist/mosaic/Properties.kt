@@ -6,19 +6,20 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.*
+import io.ktor.serialization.kotlinx.json.*
 
-const val BASE_URL = "http://localhost:8080"
+const val BASE_URL = "http://localhost:8080/"
 
 
 @OptIn(ExperimentalSerializationApi::class)
 val CLIENT = HttpClient(Js) {
     install(ContentNegotiation) {
-        Json {
+        json(Json {
             ignoreUnknownKeys = true
             explicitNulls = false
             isLenient = true
-        }
+        })
     }
     defaultRequest {
         url(BASE_URL)

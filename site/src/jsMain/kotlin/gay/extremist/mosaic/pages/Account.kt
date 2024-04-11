@@ -74,15 +74,16 @@ fun AccountPage() {
 
 
                 //use println to print to database
-                UploadDataEntry { title, description, userTags, checkedItems ->
-                    // Perform action with the video data and checked items
-                    println("Title: $title")
-                    println("Description: $description")
-                    println("User Tags: $userTags")
-                    println("Checked Items: $checkedItems")
+                UploadDataEntry{ title, description, userTags, checkedItems, file ->
+                        // Perform action with the video data and checked items
+                        println("Title: $title")
+                        println("Description: $description")
+                        println("User Tags: $userTags")
+                        println("Checked Items: $checkedItems")
+                        println("File: ${file?.name}")
 
-                    // Example: Upload video data to server along with checked items
-                    //uploadVideoData(videoUrl, title, description, userTags, checkedItems)
+                        // Example: Upload video data to server along with checked items
+                        //uploadVideoData(videoUrl, title, description, userTags, checkedItems)
                 }
 
 

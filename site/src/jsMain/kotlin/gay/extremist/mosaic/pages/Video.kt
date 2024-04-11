@@ -15,12 +15,12 @@ import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import gay.extremist.mosaic.BASE_URL
+import gay.extremist.mosaic.CLIENT
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.*
+import gay.extremist.mosaic.data_models.*
 import gay.extremist.mosaic.toSitePalette
-import gay.extremist.mosaic.data_models.Tag
-import gay.extremist.mosaic.data_models.UnprivilegedAccessAccount
-import gay.extremist.mosaic.data_models.VideoResponse
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.serialization.json.Json
@@ -28,6 +28,7 @@ import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
+import kotlin.js.Date
 
 val VideoContainerStyle by ComponentStyle {
     base { Modifier.fillMaxWidth().gap(10.cssRem) }
@@ -43,21 +44,45 @@ fun VideoPage() {
     var video by remember {
         mutableStateOf(
             VideoResponse(
-                videoId = -1,
+                id = -1,
                 title = loadingVal,
                 description = loadingVal,
                 videoPath = loadingVal,
-                tags = listOf<Tag>(),
-                creatorId = -1,
-                uploadDate = loadingVal
+                tags = listOf(),
+                creator = AccountDisplayResponse(
+                    id = -1,
+                    username = loadingVal
+                ),
+                viewCount = 0,
+                uploadDate = loadingVal,
+                rating = 0.0
             )
         )
     }
 
     LaunchedEffect(id) {
-        video = Json.decodeFromString(
-            CLIENT.get("videos/$id").bodyAsText()
-        )
+        val responseBody = CLIENT.get("videos/$id").bodyAsText()
+        val response = runCatching {
+            Json.decodeFromString<VideoResponse>(responseBody)
+        }.recoverCatching {
+            Json.decodeFromString<ErrorResponse>(responseBody)
+        }.getOrNull()
+
+        when(response){
+            is VideoResponse -> {
+                video = response
+            }
+
+            is ErrorResponse -> {
+                println(response.message)
+                // TODO add error handling for video
+            }
+
+            null -> {
+                // TODO idk
+            }
+
+        }
     }
 
     PageLayout("Video") {
@@ -90,7 +115,7 @@ fun VideoPage() {
                     Row(Modifier.fontSize(1.4.cssRem).gap(2.cssRem)){
                         Div() {
                             SpanText(
-                                "${video.title}", Modifier.color(
+                                video.title, Modifier.color(
                                     when (ColorMode.current) {
                                         ColorMode.LIGHT -> Colors.Black
                                         ColorMode.DARK -> Colors.White
@@ -100,7 +125,7 @@ fun VideoPage() {
                         }
 
                         Div{//temp color
-                            Link("/creator/${video.creatorId}", "Creator",  Modifier.color(sitePalette.brand.accent))
+                            Link("/creator/${video.creator.id}", video.creator.username,  Modifier.color(sitePalette.brand.accent))
                         }
                     }
 
@@ -108,7 +133,7 @@ fun VideoPage() {
 
                     Row(Modifier.fontSize(1.1.cssRem).gap(2.cssRem), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                         SpanText(
-                            "01/23/14", Modifier.color(
+                            "Uploaded: ${Date(video.uploadDate).toLocaleDateString()}", Modifier.color(
                                 when (ColorMode.current) {
                                     ColorMode.LIGHT -> Colors.Black
                                     ColorMode.DARK -> Colors.White
@@ -116,7 +141,7 @@ fun VideoPage() {
                             )
                         )
                         SpanText(
-                            "Views: 789", Modifier.color(
+                            "Views: ${video.viewCount}", Modifier.color(
                                 when (ColorMode.current) {
                                     ColorMode.LIGHT -> Colors.Black
                                     ColorMode.DARK -> Colors.White
@@ -147,7 +172,7 @@ fun VideoPage() {
                         // Change this click handler with your call-to-action behavior
                         // here. Link to an order page? Open a calendar UI? Play a movie?
                         // Up to you!
-                        ctx.router.tryRoutingTo("/creator")
+                        ctx.router.tryRoutingTo("/creator/${video.creator.id}")
                     }, Modifier.color(sitePalette.brand.accent)) {
                         Text("Follow")
                     }
@@ -180,7 +205,7 @@ fun VideoPage() {
                         )
                         Div{
                             SpanText(
-                                "Desc", Modifier.color(
+                                video.description, Modifier.color(
                                     when (ColorMode.current) {
                                         ColorMode.LIGHT -> Colors.Black
                                         ColorMode.DARK -> Colors.White

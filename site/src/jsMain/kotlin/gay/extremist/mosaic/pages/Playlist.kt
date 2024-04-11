@@ -21,7 +21,7 @@ import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 
 
-@Page("/playlist")
+@Page("/playlist/{id}")
 @Composable
 fun PlaylistPage() {
     PageLayout("Playlist"){

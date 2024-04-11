@@ -41,7 +41,7 @@ fun RegisterFunc(onAction: (String, String, String) -> Unit) {
 
         var showPassword by remember { mutableStateOf(false) }
         var password by remember { mutableStateOf("") }
-        InputGroup(Modifier.width(247.px).background(Colors.White), size = InputSize.LG) {
+        InputGroup(Modifier.width(247.px), size = InputSize.LG) {
             TextInput(
                 password,
                 placeholder = "Password",
@@ -64,9 +64,7 @@ fun RegisterFunc(onAction: (String, String, String) -> Unit) {
         val ctx = rememberPageContext()
         Button(
             onClick = {
-                if (username.isNotEmpty() && password.isNotEmpty()) {
-                    // All conditions are satisfied, navigate to "/home"
-                    ctx.router.tryRoutingTo("/home")
+                if (username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
                     // Additionally, perform the action associated with onAction
                     onAction(email, username, password)
                 } else {

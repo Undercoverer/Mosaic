@@ -13,15 +13,17 @@ import com.varabyte.kobweb.silk.components.forms.FilledInputVariant
 import com.varabyte.kobweb.silk.components.forms.InputGroup
 import com.varabyte.kobweb.silk.components.forms.InputSize
 import com.varabyte.kobweb.silk.components.forms.TextInput
-import com.varabyte.kobweb.silk.components.icons.DownloadIcon
+import com.varabyte.kobweb.silk.components.icons.fa.FaUpload
 import gay.extremist.mosaic.BASE_URL
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import org.w3c.files.File
+import org.w3c.files.get
 
 
 @Composable
-fun UploadDataEntry(onAction: ( String, String, List<String>, List<String>) -> Unit) {
+fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file: File?) -> Unit ) {
 
     Column(Modifier.gap(0.5.cssRem).fontSize(1.3.cssRem),  verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         var title by remember { mutableStateOf("") }
@@ -29,7 +31,7 @@ fun UploadDataEntry(onAction: ( String, String, List<String>, List<String>) -> U
         var userTags by remember { mutableStateOf(listOf<String>()) }
         var checkedPresetTags by remember { mutableStateOf<List<String>>(emptyList()) }
         var currentUserTag by remember { mutableStateOf("") }
-
+        var file by remember { mutableStateOf<File?>(null) }
         Box(
             contentAlignment = Alignment.Center
         ) {
@@ -38,16 +40,6 @@ fun UploadDataEntry(onAction: ( String, String, List<String>, List<String>) -> U
                 attr("enctype", "multipart/form-data")
             }) {
                 Column(Modifier.fillMaxSize().gap(1.cssRem), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(
-                        modifier = Modifier.background(Color.rgb(0x2454BF)).borderRadius(2.cssRem),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        IconButton(
-                            onClick = { onAction(title, desc, userTags, checkedPresetTags) }
-                        ) {
-                            DownloadIcon()
-                        }
-                    }
                     Div(attrs = {
                         classes("input-group")
                         style {
@@ -62,6 +54,10 @@ fun UploadDataEntry(onAction: ( String, String, List<String>, List<String>) -> U
                         Input(InputType.File, attrs = {
                             id("file")
                             attr("multiple", "")
+                            onChange {
+                                // TODO set file = files from input element. See https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications
+                                file = it.target.files?.get(0)
+                            }
                         })
                     }
                 }
@@ -141,6 +137,17 @@ fun UploadDataEntry(onAction: ( String, String, List<String>, List<String>) -> U
             tabTags = presetTags,
             onCheckedItemsChanged = { checkedPresetTags = it }
         )
+
+        Box(
+            modifier = Modifier.background(Color.rgb(0x2454BF)).borderRadius(2.cssRem),
+            contentAlignment = Alignment.Center
+        ) {
+            IconButton(
+                onClick = { onAction(title, desc, userTags, checkedPresetTags, file) }
+            ) {
+                FaUpload()
+            }
+        }
 
 
     }

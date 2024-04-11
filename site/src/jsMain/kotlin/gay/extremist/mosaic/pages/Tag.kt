@@ -15,14 +15,10 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import gay.extremist.mosaic.CLIENT
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.SearchVideoTile
-import gay.extremist.mosaic.data_models.Tag
+import gay.extremist.mosaic.data_models.TagResponse
 import gay.extremist.mosaic.toSitePalette
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Text
@@ -36,10 +32,11 @@ fun TagPage() {
 
     var tag by remember {
         mutableStateOf(
-            Tag(
+            TagResponse(
                 -1,
                 loadingVal,
-                loadingVal
+                loadingVal,
+                false
             )
         )
     }

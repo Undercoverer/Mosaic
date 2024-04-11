@@ -58,9 +58,6 @@ fun SignInFunc(onAction: (String, String) -> Unit) {
         Button(
             onClick = {
                 if (email.isNotEmpty() && password.isNotEmpty()) {
-                    // All conditions are satisfied, navigate to "/home"
-                    ctx.router.tryRoutingTo("/home")
-                    // Additionally, perform the action associated with onAction
                     onAction(email, password)
                 } else {
                     println("Cannot navigate to /home. All fields must be filled.")
