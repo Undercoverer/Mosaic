@@ -18,12 +18,6 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.*
 import gay.extremist.mosaic.toSitePalette
-import gay.extremist.mosaic.data_models.Tag
-import gay.extremist.mosaic.data_models.UnprivilegedAccessAccount
-import gay.extremist.mosaic.data_models.VideoResponse
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
@@ -33,33 +27,9 @@ val VideoContainerStyle by ComponentStyle {
     base { Modifier.fillMaxWidth().gap(10.cssRem) }
 
 }
-@Page("/video/{id}")
+@Page("/video")
 @Composable
 fun VideoPage() {
-    val pageCtx = rememberPageContext()
-    val id = pageCtx.route.params.getValue("id").toIntOrNull() ?: return
-    val loadingVal = "Loading..."
-
-    var video by remember {
-        mutableStateOf(
-            VideoResponse(
-                videoId = -1,
-                title = loadingVal,
-                description = loadingVal,
-                videoPath = loadingVal,
-                tags = listOf<Tag>(),
-                creatorId = -1,
-                uploadDate = loadingVal
-            )
-        )
-    }
-
-    LaunchedEffect(id) {
-        video = Json.decodeFromString(
-            CLIENT.get("videos/$id").bodyAsText()
-        )
-    }
-
     PageLayout("Video") {
 
         Row(
@@ -73,99 +43,108 @@ fun VideoPage() {
                 Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center){
                     VideoPlayer(
                         id = "player",
-                        src = "${BASE_URL}${video.videoPath}/output.mpd".also {
-                            println(it)
-                        }
-                    )
+                        src = "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd")
+
                 }
 
 
-                Row(Modifier.fillMaxSize().padding(3.px).background(Colors.Transparent)){}
+                Row(Modifier.fillMaxSize().gap(2.cssRem).padding(3.px).background(Colors.Transparent), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start){}
 
-
-                Row(Modifier.fillMaxSize().padding(15.px).background(when (ColorMode.current) {
+                Column(Modifier.fillMaxSize().padding(15.px).background(when (ColorMode.current) {
                     ColorMode.LIGHT -> Colors.LightGray
                     ColorMode.DARK -> Color.rgb(0x2B2B2B)
-                }), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
-                    Row(Modifier.fontSize(1.4.cssRem).gap(2.cssRem)){
-                        Div() {
+                })) {
+                    Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
+                        Row(Modifier.fontSize(1.4.cssRem).gap(2.cssRem)){
+                            Div() {
+                                SpanText(
+                                    "Video Title", Modifier.color(
+                                        when (ColorMode.current) {
+                                            ColorMode.LIGHT -> Colors.Black
+                                            ColorMode.DARK -> Colors.White
+                                        }
+                                    )
+                                )
+                            }
+
+                        }
+
+
+                    }
+                    Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
+                        Row(Modifier.fontSize(1.4.cssRem).gap(2.cssRem), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
+                            Div {//temp color
+                                Link("/creator", "Creator", Modifier.color(sitePalette.brand.accent))
+                            }
+                        }
+
+                        Spacer()
+                        Row(Modifier.fontSize(1.1.cssRem).gap(2.cssRem), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+
                             SpanText(
-                                "${video.title}", Modifier.color(
+                                "01/23/14", Modifier.color(
                                     when (ColorMode.current) {
                                         ColorMode.LIGHT -> Colors.Black
                                         ColorMode.DARK -> Colors.White
                                     }
                                 )
                             )
-                        }
-
-                        Div{//temp color
-                            Link("/creator/${video.creatorId}", "Creator",  Modifier.color(sitePalette.brand.accent))
-                        }
-                    }
-
-                    Spacer()
-
-                    Row(Modifier.fontSize(1.1.cssRem).gap(2.cssRem), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                        SpanText(
-                            "01/23/14", Modifier.color(
-                                when (ColorMode.current) {
-                                    ColorMode.LIGHT -> Colors.Black
-                                    ColorMode.DARK -> Colors.White
-                                }
-                            )
-                        )
-                        SpanText(
-                            "Views: 789", Modifier.color(
-                                when (ColorMode.current) {
-                                    ColorMode.LIGHT -> Colors.Black
-                                    ColorMode.DARK -> Colors.White
-                                }
-                            )
-                        )
-                        Row(Modifier.fontSize(1.1.cssRem), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                             SpanText(
-                                "Rating: 3.54/5", Modifier.color(
+                                "Views: 789", Modifier.color(
                                     when (ColorMode.current) {
                                         ColorMode.LIGHT -> Colors.Black
                                         ColorMode.DARK -> Colors.White
                                     }
                                 )
                             )
-                            var ratingValue by remember { mutableStateOf(0) }
-                            RatingFunc { rating ->
-                                ratingValue = rating
-                                // Do something with the comment
-                                println("Comment submitted: $rating")
+                            Row(Modifier.fontSize(1.1.cssRem), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                                SpanText(
+                                    "Rating: 3.54/5", Modifier.color(
+                                        when (ColorMode.current) {
+                                            ColorMode.LIGHT -> Colors.Black
+                                            ColorMode.DARK -> Colors.White
+                                        }
+                                    )
+                                )
+                                var ratingValue by remember { mutableStateOf(0) }
+                                RatingFunc { rating ->
+                                    ratingValue = rating
+                                    // Do something with the rate
+                                    println("Rate submitted: $rating")
+                                }
                             }
-                        }
-                    }
 
-                    Row(Modifier.width(6.cssRem)){}
-                    val ctx = rememberPageContext()
-                    Button(onClick = {
-                        // Change this click handler with your call-to-action behavior
-                        // here. Link to an order page? Open a calendar UI? Play a movie?
-                        // Up to you!
-                        ctx.router.tryRoutingTo("/creator")
-                    }, Modifier.color(sitePalette.brand.accent)) {
-                        Text("Follow")
-                    }
-                    Column(Modifier.width(1.cssRem)){  }
-                    SavePopUp(
-                        checkboxItems = listOf("Playlist 1", "Playlist 2", "Playlist 3","Playlist 1", "Playlist 2", "Playlist 3","Playlist 1", "Playlist 2", "Playlist 3","Playlist 1", "Playlist 2", "Playlist 3"),
-                        onPlaylistAction = { playlist ->
-                            // Perform action with playlist
-                            println("Playlist submitted: $playlist")
-                        },
-                        onCheckboxAction = { selectedItem ->
-                            // Perform action with selected checkbox item
-                            selectedItem?.let {
-                                println("Checkbox submitted: $it")
-                            }
                         }
-                    )
+
+                        Spacer()
+                        val ctx = rememberPageContext()
+                        Button(onClick = {
+                            // Change this click handler with your call-to-action behavior
+                            // here. Link to an order page? Open a calendar UI? Play a movie?
+                            // Up to you!
+                            ctx.router.tryRoutingTo("/creator")
+                        }, Modifier.color(sitePalette.brand.accent)) {
+                            Text("Follow")
+                        }
+                        Column(Modifier.width(1.cssRem)){  }
+                        SavePopUp(
+                            checkboxItems = listOf("Playlist 1", "Playlist 2", "Playlist 3","Playlist 1", "Playlist 2", "Playlist 3","Playlist 1", "Playlist 2", "Playlist 3","Playlist 1", "Playlist 2", "Playlist 3"),
+                            onPlaylistAction = { playlist ->
+                                // Perform action with playlist
+                                println("Playlist submitted: $playlist")
+                            },
+                            onCheckboxAction = { selectedItem ->
+                                // Perform action with selected checkbox item
+                                selectedItem?.let {
+                                    println("Checkbox submitted: $it")
+                                }
+                            }
+                        )
+
+                    }
                 }
+
+
                 Row(Modifier.fillMaxSize().padding(3.px).background(Colors.Transparent)){}
 
 
