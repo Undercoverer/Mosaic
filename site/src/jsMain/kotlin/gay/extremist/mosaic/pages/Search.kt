@@ -1,6 +1,6 @@
 package gay.extremist.mosaic.pages
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -16,10 +16,18 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import gay.extremist.mosaic.CLIENT
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.FilterWidget
 import gay.extremist.mosaic.components.widgets.SearchVideoTile
+import gay.extremist.mosaic.data_models.Category
+import gay.extremist.mosaic.data_models.ErrorResponse
+import gay.extremist.mosaic.data_models.TagCategorizedResponse
 import gay.extremist.mosaic.toSitePalette
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.cssRem
 
 val SearchContainerStyle by ComponentStyle {
@@ -33,6 +41,47 @@ fun SearchPage() {
 
     PageLayout("Search") {
         val sitePalette = ColorMode.current.toSitePalette()
+        var presetTags by remember {
+            mutableStateOf(
+                TagCategorizedResponse(
+                    listOf(
+                        Category(
+                            "Loading...",
+                            emptyList()
+                        )
+                    )
+                )
+            )
+        }
+
+        val coroutineScope = rememberCoroutineScope()
+
+        coroutineScope.launch{
+            val responseBody = CLIENT.get("tags/preset").bodyAsText()
+            val response = runCatching {
+                Json.decodeFromString<TagCategorizedResponse>(responseBody)
+            }.recoverCatching {
+                Json.decodeFromString<ErrorResponse>(responseBody)
+            }.getOrNull()
+
+            when(response){
+                is TagCategorizedResponse -> {
+                    presetTags = response
+                }
+
+                is ErrorResponse -> {
+                    println(response.message)
+                    // TODO add error handling for video
+                }
+
+                null -> {
+                    // TODO idk
+                }
+
+            }
+        }
+
+
         Row(
             modifier = Modifier.fillMaxSize().gap(1.cssRem).fontSize(1.1.cssRem),
             verticalAlignment = Alignment.CenterVertically,
@@ -73,11 +122,6 @@ fun SearchPage() {
 
 
                 val sortOptions = listOf("Option 1", "Option 2", "Option 3")
-                val presetTags = listOf(
-                    "Tab 1" to listOf("Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"),
-                    "Tab 2" to listOf("Tag 6", "Tag 7", "Tag 8", "Tag 9", "Tag 10"),
-                    "Tab 3" to listOf("Tag 11", "Tag 12", "Tag 13")
-                )
 
                 FilterWidget(
                     sortOptions = sortOptions,

@@ -13,20 +13,22 @@ import com.varabyte.kobweb.silk.theme.colors.ColorSchemes
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Text
 import androidx.compose.runtime.*
+import gay.extremist.mosaic.Util.capitalize
+import gay.extremist.mosaic.data_models.TagCategorizedResponse
 
 @Composable
 fun PresetTagTabs(
-    tabTags: List<Pair<String, List<String>>>,
+    tabTags: TagCategorizedResponse,
     onCheckedItemsChanged: (List<String>) -> Unit // Callback function to pass checked items
 ) {
     val checkedItems = remember { mutableStateOf<List<String>>(emptyList()) }
 
     Tabs {
-        tabTags.forEach { (tabTitle, tags) ->
+        tabTags.categories.forEach { (tabTitle, tags) ->
             TabPanel {
-                Tab { Text(tabTitle) }; Panel {
+                Tab { Text(tabTitle.capitalize()) }; Panel {
                 Column(Modifier.gap(0.2.cssRem)) {
-                    val chunkedTags = tags.chunked(2) // Split the tags into chunks of 5
+                    val chunkedTags = tags.map{it.tag}.chunked(2) // Split the tags into chunks of 5
 
                     chunkedTags.forEach { chunk ->
                         Row(Modifier.gap(1.cssRem), verticalAlignment = Alignment.CenterVertically) {
@@ -42,8 +44,8 @@ fun PresetTagTabs(
                                     },
                                     colorScheme = ColorSchemes.LightBlue,
                                     size = CheckboxSize.LG
-                                ) {
-                                    Text(tag)
+                                ){
+                                    Text(tag.capitalize())
                                 }
                             }
                         }

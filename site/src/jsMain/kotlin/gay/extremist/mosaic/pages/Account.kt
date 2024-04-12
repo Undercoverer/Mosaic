@@ -25,11 +25,11 @@ import org.jetbrains.compose.web.css.px
 @Page("/account")
 @Composable
 fun AccountPage() {
+    val pageCtx = rememberPageContext()
     PageLayout("Account"){
         val sitePalette = ColorMode.current.toSitePalette()
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
             Column(modifier = Modifier.fillMaxSize().fontSize(1.3.cssRem).background(sitePalette.brand.secondary).padding(2.cssRem), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
-                val ctx = rememberPageContext()
                 SpanText(
                     text = "Playlists",
                     modifier = Modifier.padding(20.px).fontSize(35.px),
@@ -37,7 +37,6 @@ fun AccountPage() {
                 //SearchFunc()
                 Box(Modifier.fillMaxSize().width(20.cssRem).height(35.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(0.2.cssRem).fillMaxSize()){
-                        val ctx = rememberPageContext()
                         for (index in 1..25) {
                             Link("/playlist", "Playlist " + index, Modifier.color(Colors.DarkBlue))
                         }
@@ -66,7 +65,6 @@ fun AccountPage() {
 
             }
             Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).padding(2.cssRem), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
-                val ctx = rememberPageContext()
                 SpanText(
                     text = "Upload",
                     modifier = Modifier.padding(20.px).fontSize(35.px),
@@ -74,15 +72,16 @@ fun AccountPage() {
 
 
                 //use println to print to database
-                UploadDataEntry { title, description, userTags, checkedItems ->
-                    // Perform action with the video data and checked items
-                    println("Title: $title")
-                    println("Description: $description")
-                    println("User Tags: $userTags")
-                    println("Checked Items: $checkedItems")
+                UploadDataEntry{ title, description, userTags, checkedItems, file ->
+                        // Perform action with the video data and checked items
+                        println("Title: $title")
+                        println("Description: $description")
+                        println("User Tags: $userTags")
+                        println("Checked Items: $checkedItems")
+                        println("File: ${file?.name}")
 
-                    // Example: Upload video data to server along with checked items
-                    //uploadVideoData(videoUrl, title, description, userTags, checkedItems)
+                        // Example: Upload video data to server along with checked items
+                        //uploadVideoData(videoUrl, title, description, userTags, checkedItems)
                 }
 
 

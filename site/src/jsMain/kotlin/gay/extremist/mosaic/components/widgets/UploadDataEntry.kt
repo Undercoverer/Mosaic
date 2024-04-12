@@ -13,15 +13,26 @@ import com.varabyte.kobweb.silk.components.forms.FilledInputVariant
 import com.varabyte.kobweb.silk.components.forms.InputGroup
 import com.varabyte.kobweb.silk.components.forms.InputSize
 import com.varabyte.kobweb.silk.components.forms.TextInput
-import com.varabyte.kobweb.silk.components.icons.DownloadIcon
+import com.varabyte.kobweb.silk.components.icons.fa.FaUpload
 import gay.extremist.mosaic.BASE_URL
+import gay.extremist.mosaic.CLIENT
+import gay.extremist.mosaic.data_models.Category
+import gay.extremist.mosaic.data_models.ErrorResponse
+import gay.extremist.mosaic.data_models.TagCategorizedResponse
+import gay.extremist.mosaic.data_models.VideoResponse
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import org.w3c.files.File
+import org.w3c.files.get
 
 
 @Composable
-fun UploadDataEntry(onAction: ( String, String, List<String>, List<String>) -> Unit) {
+fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file: File?) -> Unit ) {
 
     Column(Modifier.gap(0.5.cssRem).fontSize(1.3.cssRem),  verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         var title by remember { mutableStateOf("") }
@@ -29,6 +40,46 @@ fun UploadDataEntry(onAction: ( String, String, List<String>, List<String>) -> U
         var userTags by remember { mutableStateOf(listOf<String>()) }
         var checkedPresetTags by remember { mutableStateOf<List<String>>(emptyList()) }
         var currentUserTag by remember { mutableStateOf("") }
+        var file by remember { mutableStateOf<File?>(null) }
+        var presetTags by remember {
+            mutableStateOf(
+                TagCategorizedResponse(
+                    listOf(
+                        Category(
+                            "Loading...",
+                            emptyList()
+                        )
+                    )
+                )
+            )
+        }
+
+        val coroutineScope = rememberCoroutineScope()
+
+        coroutineScope.launch{
+            val responseBody = CLIENT.get("tags/preset").bodyAsText()
+            val response = runCatching {
+                Json.decodeFromString<TagCategorizedResponse>(responseBody)
+            }.recoverCatching {
+                Json.decodeFromString<ErrorResponse>(responseBody)
+            }.getOrNull()
+
+            when(response){
+                is TagCategorizedResponse -> {
+                    presetTags = response
+                }
+
+                is ErrorResponse -> {
+                    println(response.message)
+                    // TODO add error handling for video
+                }
+
+                null -> {
+                    // TODO idk
+                }
+
+            }
+        }
 
         Box(
             contentAlignment = Alignment.Center
@@ -38,16 +89,6 @@ fun UploadDataEntry(onAction: ( String, String, List<String>, List<String>) -> U
                 attr("enctype", "multipart/form-data")
             }) {
                 Column(Modifier.fillMaxSize().gap(1.cssRem), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(
-                        modifier = Modifier.background(Color.rgb(0x2454BF)).borderRadius(2.cssRem),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        IconButton(
-                            onClick = { onAction(title, desc, userTags, checkedPresetTags) }
-                        ) {
-                            DownloadIcon()
-                        }
-                    }
                     Div(attrs = {
                         classes("input-group")
                         style {
@@ -62,6 +103,9 @@ fun UploadDataEntry(onAction: ( String, String, List<String>, List<String>) -> U
                         Input(InputType.File, attrs = {
                             id("file")
                             attr("multiple", "")
+                            onChange {
+                                file = it.target.files?.get(0)
+                            }
                         })
                     }
                 }
@@ -130,17 +174,23 @@ fun UploadDataEntry(onAction: ( String, String, List<String>, List<String>) -> U
                 }
             }
         }
-        val presetTags = listOf(
-            "Tab 1" to listOf("Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"),
-            "Tab 2" to listOf("Tag 6", "Tag 7", "Tag 8", "Tag 9", "Tag 10"),
-            "Tab 3" to listOf("Tag 11", "Tag 12", "Tag 13")
-        )
 
 
         PresetTagTabs(
             tabTags = presetTags,
             onCheckedItemsChanged = { checkedPresetTags = it }
         )
+
+        Box(
+            modifier = Modifier.background(Color.rgb(0x2454BF)).borderRadius(2.cssRem),
+            contentAlignment = Alignment.Center
+        ) {
+            IconButton(
+                onClick = { onAction(title, desc, userTags, checkedPresetTags, file) }
+            ) {
+                FaUpload()
+            }
+        }
 
 
     }

@@ -3,6 +3,12 @@ package gay.extremist.mosaic.data_models
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class PlaylistDisplayResponse(
+    val id: Int,
+    val name: String
+)
+
+@Serializable
 data class NewPlaylistData(
     val name: String,
     val description: String
@@ -14,5 +20,5 @@ data class PlaylistResponse(
     val owner: Int,
     val name: String,
     val description: String,
-    val videos: List<Int>
+    val videos: List<VideoDisplayResponse>
 )

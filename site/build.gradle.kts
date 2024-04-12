@@ -42,6 +42,8 @@ kotlin {
             implementation(libs.silk.icons.fa)
             implementation(libs.kobwebx.markdown)
             implementation(libs.ktor.client.content.negotiation)
+            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.9")
+            implementation("io.ktor:ktor-client-content-negotiation:2.3.9")
             implementation(npm("dashjs", "4.7.4"))
         }
     }

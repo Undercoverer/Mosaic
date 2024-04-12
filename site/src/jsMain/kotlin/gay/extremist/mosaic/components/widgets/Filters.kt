@@ -16,13 +16,14 @@ import com.varabyte.kobweb.silk.components.forms.Checkbox
 import com.varabyte.kobweb.silk.components.forms.CheckboxSize
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorSchemes
+import gay.extremist.mosaic.data_models.TagCategorizedResponse
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
 fun FilterWidget(
     sortOptions: List<String>, // List of sort by checkboxes
-    presetTags: List<Pair<String, List<String>>>, // List of preset tags
+    presetTags: TagCategorizedResponse, // List of preset tags
     onAction: (List<String>, List<String>) -> Unit // Callback function for filter button
 ) {
     // Track the checked sort options

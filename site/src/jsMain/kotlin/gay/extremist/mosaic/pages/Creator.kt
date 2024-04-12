@@ -18,18 +18,17 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.CLIENT
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.SearchVideoTile
-import gay.extremist.mosaic.data_models.Tag
-import gay.extremist.mosaic.data_models.UnprivilegedAccessAccount
-import gay.extremist.mosaic.data_models.VideoListObject
+import gay.extremist.mosaic.data_models.AccountDisplayResponse
+import gay.extremist.mosaic.data_models.VideoDisplayResponse
 import gay.extremist.mosaic.toSitePalette
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.http.*
 import kotlinx.serialization.json.Json
-import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.*
 
 @Page("/creator/{id}")
 @Composable
@@ -40,23 +39,22 @@ fun CreatorPage() {
 
     var account by remember {
         mutableStateOf(
-            UnprivilegedAccessAccount(
-                accountID = -1,
-                username = loadingVal,
-                email = loadingVal
+            AccountDisplayResponse(
+                id = -1,
+                username = loadingVal
             )
         )
     }
 
     var videoList by remember {
         mutableStateOf(
-            listOf<VideoListObject>()
+            listOf<VideoDisplayResponse>()
         )
     }
 
     LaunchedEffect(id) {
         account = Json.decodeFromString(
-            CLIENT.get("accounts/$id").bodyAsText()
+            CLIENT.get("accounts/$id/creator").bodyAsText()
         )
         videoList = Json.decodeFromString(
             CLIENT.get("accounts/$id/videos").bodyAsText()
@@ -68,11 +66,11 @@ fun CreatorPage() {
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
             Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.secondary).height(20.cssRem).width(25.cssRem)) {  }
             Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+                val ctx = rememberPageContext()
                 SpanText(
                     text = "${account.username.replaceFirstChar { it.uppercase() }}'s Videos",
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
-                val ctx = rememberPageContext()
                 Button(onClick = {
                     // Change this click handler with your call-to-action behavior
                     // here. Link to an order page? Open a calendar UI? Play a movie?
@@ -84,7 +82,7 @@ fun CreatorPage() {
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
                         for(video in videoList) {
-                            SearchVideoTile(onClick = { pageCtx.router.tryRoutingTo("/video/${video.id}") }) {
+                            SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video/${video.id}") }) {
                                 P { Text("${video.title}\n") }
                             }
                         }
