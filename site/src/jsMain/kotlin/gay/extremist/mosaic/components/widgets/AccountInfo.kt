@@ -16,9 +16,11 @@ import com.varabyte.kobweb.silk.components.disclosure.Tabs
 import com.varabyte.kobweb.silk.components.forms.*
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.text.SpanText
+import kotlinx.browser.window
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.get
 
 @Composable
 fun AccountInfo(onAction: (String, String, String) -> Unit) {
@@ -30,7 +32,7 @@ fun AccountInfo(onAction: (String, String, String) -> Unit) {
         ) {
             Button(
                 onClick = {
-                    ctx.router.tryRoutingTo("/creator")
+                    ctx.router.tryRoutingTo("/creator/${window.localStorage["id"]}")
                 },
                 Modifier.background(Color.rgb(0x2EB4A9))
             ) {
@@ -40,7 +42,6 @@ fun AccountInfo(onAction: (String, String, String) -> Unit) {
 
         SpanText("Current Email")
         SpanText("Current Username")
-        SpanText("Current Password")
 
         Row(Modifier.height(1.cssRem)){}
 
@@ -93,9 +94,8 @@ fun AccountInfo(onAction: (String, String, String) -> Unit) {
 
                     Box(Modifier.fillMaxSize().height(10.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                         Column(Modifier.gap(0.2.cssRem).fillMaxSize()){
-                            val ctx = rememberPageContext()
                             for (index in 1..25) {
-                                Link("/creator", "Creator " + index, Modifier.color(Colors.DarkBlue))
+                                Link("/creator", "Creator $index", Modifier.color(Colors.DarkBlue))
                             }
 
                         }
@@ -108,9 +108,8 @@ fun AccountInfo(onAction: (String, String, String) -> Unit) {
                 Tab { Text("Tags") }; Panel {
                     Box(Modifier.fillMaxSize().height(10.cssRem).position(Position.Relative).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                         Column(Modifier.gap(0.2.cssRem).fillMaxSize()){
-                            val ctx = rememberPageContext()
                             for (index in 1..100) {
-                                Link("/tags", "Tag " + index, Modifier.color(Colors.DarkBlue))
+                                Link("/tags", "Tag $index", Modifier.color(Colors.DarkBlue))
                             }
 
                         }

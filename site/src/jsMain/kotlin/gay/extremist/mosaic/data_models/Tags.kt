@@ -15,3 +15,14 @@ data class TagResponse(
     val category: String?,
     val isPreset: Boolean
 )
+
+@Serializable
+data class Category(
+    val category: String,
+    val tags:List<TagDisplayResponse>
+)
+
+@Serializable
+data class TagCategorizedResponse(
+    val categories: List<Category>
+)

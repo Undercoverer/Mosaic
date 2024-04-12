@@ -54,7 +54,7 @@ fun CreatorPage() {
 
     LaunchedEffect(id) {
         account = Json.decodeFromString(
-            CLIENT.get("accounts/$id").bodyAsText()
+            CLIENT.get("accounts/$id/creator").bodyAsText()
         )
         videoList = Json.decodeFromString(
             CLIENT.get("accounts/$id/videos").bodyAsText()

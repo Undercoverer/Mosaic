@@ -15,6 +15,15 @@ import com.varabyte.kobweb.silk.components.forms.InputSize
 import com.varabyte.kobweb.silk.components.forms.TextInput
 import com.varabyte.kobweb.silk.components.icons.fa.FaUpload
 import gay.extremist.mosaic.BASE_URL
+import gay.extremist.mosaic.CLIENT
+import gay.extremist.mosaic.data_models.Category
+import gay.extremist.mosaic.data_models.ErrorResponse
+import gay.extremist.mosaic.data_models.TagCategorizedResponse
+import gay.extremist.mosaic.data_models.VideoResponse
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -32,6 +41,46 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
         var checkedPresetTags by remember { mutableStateOf<List<String>>(emptyList()) }
         var currentUserTag by remember { mutableStateOf("") }
         var file by remember { mutableStateOf<File?>(null) }
+        var presetTags by remember {
+            mutableStateOf(
+                TagCategorizedResponse(
+                    listOf(
+                        Category(
+                            "Loading...",
+                            emptyList()
+                        )
+                    )
+                )
+            )
+        }
+
+        val coroutineScope = rememberCoroutineScope()
+
+        coroutineScope.launch{
+            val responseBody = CLIENT.get("tags/preset").bodyAsText()
+            val response = runCatching {
+                Json.decodeFromString<TagCategorizedResponse>(responseBody)
+            }.recoverCatching {
+                Json.decodeFromString<ErrorResponse>(responseBody)
+            }.getOrNull()
+
+            when(response){
+                is TagCategorizedResponse -> {
+                    presetTags = response
+                }
+
+                is ErrorResponse -> {
+                    println(response.message)
+                    // TODO add error handling for video
+                }
+
+                null -> {
+                    // TODO idk
+                }
+
+            }
+        }
+
         Box(
             contentAlignment = Alignment.Center
         ) {
@@ -125,11 +174,6 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
                 }
             }
         }
-        val presetTags = listOf(
-            "Tab 1" to listOf("Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5"),
-            "Tab 2" to listOf("Tag 6", "Tag 7", "Tag 8", "Tag 9", "Tag 10"),
-            "Tab 3" to listOf("Tag 11", "Tag 12", "Tag 13")
-        )
 
 
         PresetTagTabs(

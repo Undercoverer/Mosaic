@@ -10,6 +10,7 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
@@ -18,9 +19,11 @@ import gay.extremist.mosaic.components.sections.Footer
 import gay.extremist.mosaic.components.sections.NavHeader
 import gay.extremist.mosaic.toSitePalette
 import kotlinx.browser.document
+import kotlinx.browser.window
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.percent
+import org.w3c.dom.get
 
 val PageContentStyle by ComponentStyle {
     base { Modifier.fillMaxSize().padding(leftRight = 2.cssRem, top = 0.20.cssRem) }
@@ -65,8 +68,12 @@ private fun SvgMosaic(modifier: Modifier) {
 
 @Composable
 fun PageLayout(title: String, content: @Composable ColumnScope.() -> Unit) {
+    val pageCtx = rememberPageContext()
     LaunchedEffect(title) {
         document.title = "Mosaic - $title"
+        if (window.localStorage["token"].isNullOrBlank() || window.localStorage["id"].isNullOrBlank()) {
+            pageCtx.router.tryRoutingTo("/")
+        }
     }
 
     Box(

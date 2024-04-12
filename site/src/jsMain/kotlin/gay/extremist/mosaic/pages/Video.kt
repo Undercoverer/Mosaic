@@ -61,32 +61,33 @@ fun VideoPage() {
         )
     }
 
-    LaunchedEffect(id) {
-        val responseBody = CLIENT.get("videos/$id").bodyAsText()
-        val response = runCatching {
-            Json.decodeFromString<VideoResponse>(responseBody)
-        }.recoverCatching {
-            Json.decodeFromString<ErrorResponse>(responseBody)
-        }.getOrNull()
-
-        when(response){
-            is VideoResponse -> {
-                video = response
-            }
-
-            is ErrorResponse -> {
-                println(response.message)
-                // TODO add error handling for video
-            }
-
-            null -> {
-                // TODO idk
-            }
-
-        }
-    }
 
     PageLayout("Video") {
+
+        LaunchedEffect(id) {
+            val responseBody = CLIENT.get("videos/$id").bodyAsText()
+            val response = runCatching {
+                Json.decodeFromString<VideoResponse>(responseBody)
+            }.recoverCatching {
+                Json.decodeFromString<ErrorResponse>(responseBody)
+            }.getOrNull()
+
+            when(response){
+                is VideoResponse -> {
+                    video = response
+                }
+
+                is ErrorResponse -> {
+                    println(response.message)
+                    // TODO add error handling for video
+                }
+
+                null -> {
+                    // TODO idk
+                }
+
+            }
+        }
 
         Row(
             Modifier.fillMaxWidth().gap(1.cssRem)
@@ -131,7 +132,7 @@ fun VideoPage() {
                     Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
                         Row(Modifier.fontSize(1.4.cssRem).gap(2.cssRem), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
                             Div {//temp color
-                                Link("/creator/${video.creator.id}", "Creator", Modifier.color(sitePalette.brand.accent))
+                                Link("/creator/${video.creator.id}", video.creator.username, Modifier.color(sitePalette.brand.accent))
                             }
                         }
 

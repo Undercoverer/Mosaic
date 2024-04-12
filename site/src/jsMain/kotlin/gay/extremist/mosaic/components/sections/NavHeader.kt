@@ -3,6 +3,7 @@ package gay.extremist.mosaic.components.sections
 import androidx.compose.runtime.*
 import com.varabyte.kobweb.browser.dom.ElementTarget
 import com.varabyte.kobweb.compose.css.functions.clamp
+import com.varabyte.kobweb.compose.dom.registerRefScope
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.foundation.layout.Spacer
@@ -10,6 +11,11 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.core.init.KobwebConfig
+import com.varabyte.kobweb.core.rememberPageContext
+import com.varabyte.kobweb.navigation.Anchor
+import com.varabyte.kobweb.navigation.toOpenLinkStrategy
 import com.varabyte.kobweb.silk.components.animation.Keyframes
 import com.varabyte.kobweb.silk.components.animation.toAnimation
 import com.varabyte.kobweb.silk.components.graphics.Image
@@ -21,6 +27,7 @@ import com.varabyte.kobweb.silk.components.icons.SunIcon
 import com.varabyte.kobweb.silk.components.layout.breakpoint.displayIfAtLeast
 import com.varabyte.kobweb.silk.components.layout.breakpoint.displayUntil
 import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.navigation.LinkStyle
 import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
 import com.varabyte.kobweb.silk.components.navigation.UndecoratedLinkVariant
 import com.varabyte.kobweb.silk.components.overlay.Overlay
@@ -36,7 +43,13 @@ import gay.extremist.mosaic.CLIENT
 import gay.extremist.mosaic.components.widgets.IconButton
 import gay.extremist.mosaic.components.widgets.SearchForm
 import gay.extremist.mosaic.toSitePalette
+import kotlinx.browser.window
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.A
+import org.jetbrains.compose.web.dom.AttrBuilderContext
+import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.HTMLAnchorElement
+import org.w3c.dom.get
 
 val NavHeaderStyle by ComponentStyle.base {
     Modifier.fillMaxWidth().padding(1.cssRem)
@@ -47,11 +60,44 @@ private fun NavLink(path: String, text: String) {
     Link(path, text, variant = UndecoratedLinkVariant.then(UncoloredLinkVariant))
 }
 
+// This special function to construct an anchor element also clears local storage of token and id
+@Composable
+private fun SignOutNavLink(path: String, text: String) {
+    val pageCtx = rememberPageContext()
+    val attrs: AttrBuilderContext<HTMLAnchorElement> = LinkStyle.toModifier(UndecoratedLinkVariant.then(UncoloredLinkVariant)).then(Modifier).toAttrs()
+    A(
+        path,
+        attrs = {
+            attrs()
+            @Suppress("NAME_SHADOWING") // Intentional shadowing - nullable to non-null
+            onClick { evt ->
+                val openInternalLinksStrategy = evt.toOpenLinkStrategy(KobwebConfig.Instance.openLinkStrategies.internal)
+                val openExternalLinksStrategy = evt.toOpenLinkStrategy(KobwebConfig.Instance.openLinkStrategies.external)
+
+                window.localStorage.removeItem("token")
+                window.localStorage.removeItem("id")
+
+                pageCtx.router.navigateTo(
+                    path,
+                    openInternalLinksStrategy = openInternalLinksStrategy,
+                    openExternalLinksStrategy = openExternalLinksStrategy
+                )
+                evt.preventDefault()
+                evt.stopPropagation()
+            }
+        },
+        content = {
+            registerRefScope(null)
+            Text(text)
+        }
+    )
+}
+
 @Composable
 private fun MenuItems() {
-    NavLink("/home", "Home")
     NavLink("/account", "Account")
-    NavLink("/", "Sign Out")
+    SignOutNavLink("/", "Sign Out")
+
 }
 
 @Composable
