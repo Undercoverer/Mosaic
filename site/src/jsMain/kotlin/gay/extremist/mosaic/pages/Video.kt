@@ -1,6 +1,7 @@
 package gay.extremist.mosaic.pages
 
 import androidx.compose.runtime.*
+import com.varabyte.kobweb.browser.dom.ElementTarget
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.foundation.layout.*
 import com.varabyte.kobweb.compose.ui.Alignment
@@ -12,22 +13,30 @@ import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.overlay.KeepPopupOpenStrategy
+import com.varabyte.kobweb.silk.components.overlay.PopupPlacement
+import com.varabyte.kobweb.silk.components.overlay.Tooltip
+import com.varabyte.kobweb.silk.components.overlay.manual
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.BASE_URL
 import gay.extremist.mosaic.CLIENT
+import gay.extremist.mosaic.Util.*
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.*
 import gay.extremist.mosaic.data_models.*
 import gay.extremist.mosaic.toSitePalette
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import kotlinx.browser.window
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.get
 import kotlin.js.Date
 
 val VideoContainerStyle by ComponentStyle {
@@ -38,6 +47,7 @@ val VideoContainerStyle by ComponentStyle {
 @Composable
 fun VideoPage() {
     val pageCtx = rememberPageContext()
+    val coroutineScope = rememberCoroutineScope()
     val sitePalette = ColorMode.current.toSitePalette()
     val id = pageCtx.route.params.getValue("id").toIntOrNull() ?: return
     val loadingVal = "Loading..."
@@ -61,32 +71,20 @@ fun VideoPage() {
         )
     }
 
+    var newPlaylist by remember {
+        mutableStateOf<PlaylistDisplayResponse?>(null)
+    }
+
 
     PageLayout("Video") {
 
         LaunchedEffect(id) {
-            val responseBody = CLIENT.get("videos/$id").bodyAsText()
-            val response = runCatching {
-                Json.decodeFromString<VideoResponse>(responseBody)
-            }.recoverCatching {
-                Json.decodeFromString<ErrorResponse>(responseBody)
-            }.getOrNull()
-
-            when(response){
-                is VideoResponse -> {
-                    video = response
+            video = getRequest<VideoResponse>(
+                urlString = "videos/$id",
+                onError = {
+                    println(it.message)
                 }
-
-                is ErrorResponse -> {
-                    println(response.message)
-                    // TODO add error handling for video
-                }
-
-                null -> {
-                    // TODO idk
-                }
-
-            }
+            ) ?: video
         }
 
         Row(
@@ -185,15 +183,50 @@ fun VideoPage() {
                         }
                         Column(Modifier.width(1.cssRem)){  }
                         SavePopUp(
-                            checkboxItems = listOf("Playlist 1", "Playlist 2", "Playlist 3","Playlist 1", "Playlist 2", "Playlist 3","Playlist 1", "Playlist 2", "Playlist 3","Playlist 1", "Playlist 2", "Playlist 3"),
                             onPlaylistAction = { playlist ->
                                 // Perform action with playlist
-                                println("Playlist submitted: $playlist")
+                                coroutineScope.launch{
+                                    newPlaylist = postRequest<NewPlaylistData,PlaylistDisplayResponse>(
+                                        urlString = "playlists",
+                                        setHeaders = {
+                                            append(headerAccountId, window.localStorage["id"] ?: "")
+                                            append(headerToken, window.localStorage["token"] ?: "")
+                                        },
+                                        setBody = {
+                                            NewPlaylistData(
+                                                name = playlist
+                                            )
+                                        },
+                                        onSuccess = {
+                                            println("Playlist submitted: ${it.name}")
+
+                                        }
+                                    )
+                                }
+
+                                newPlaylist
                             },
                             onCheckboxAction = { selectedItem ->
                                 // Perform action with selected checkbox item
-                                selectedItem?.let {
-                                    println("Checkbox submitted: $it")
+                                when (selectedItem){
+                                    is PlaylistDisplayResponse ->{
+                                        coroutineScope.launch{
+                                            postRequest<String>(
+                                                urlString = "playlists/${selectedItem.id}/add",
+                                                setHeaders = {
+                                                    append(headerAccountId, window.localStorage["id"] ?: "")
+                                                    append(headerToken, window.localStorage["token"] ?: "")
+                                                    append(headerVideoId, id.toString())
+                                                },
+                                                onSuccess = {
+                                                    println(it)
+
+                                                }
+                                            )
+                                        }
+                                    }
+                                    else -> {
+                                    }
                                 }
                             }
                         )
@@ -211,9 +244,13 @@ fun VideoPage() {
                 }), horizontalArrangement = Arrangement.Start) {
                     Column(Modifier.fillMaxSize().gap(1.cssRem).fontSize(1.1.cssRem).height(6.cssRem).overflow { y(Overflow.Auto)}, horizontalAlignment = Alignment.Start) {
 
-                        Link("/tags",
-                            "Tags", Modifier.color(sitePalette.brand.primary)
-                        )
+                        for(tag in video.tags) {
+
+                            Link(
+                                "/tags/${tag.id}",
+                                tag.tag, Modifier.color(sitePalette.brand.primary)
+                            )
+                        }
                         Div{
                             SpanText(
                                 video.description, Modifier.color(

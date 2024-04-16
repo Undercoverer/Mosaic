@@ -9,13 +9,12 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.silk.components.forms.FilledInputVariant
-import com.varabyte.kobweb.silk.components.forms.InputGroup
-import com.varabyte.kobweb.silk.components.forms.InputSize
-import com.varabyte.kobweb.silk.components.forms.TextInput
+import com.varabyte.kobweb.silk.components.forms.*
+import com.varabyte.kobweb.silk.components.icons.fa.FaPlus
 import com.varabyte.kobweb.silk.components.icons.fa.FaUpload
 import gay.extremist.mosaic.BASE_URL
 import gay.extremist.mosaic.CLIENT
+import gay.extremist.mosaic.Util.getRequest
 import gay.extremist.mosaic.data_models.Category
 import gay.extremist.mosaic.data_models.ErrorResponse
 import gay.extremist.mosaic.data_models.TagCategorizedResponse
@@ -35,6 +34,8 @@ import org.w3c.files.get
 fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file: File?) -> Unit ) {
 
     Column(Modifier.gap(0.5.cssRem).fontSize(1.3.cssRem),  verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        val inputWidth = Modifier.width(16.cssRem)
+
         var title by remember { mutableStateOf("") }
         var desc by remember { mutableStateOf("") }
         var userTags by remember { mutableStateOf(listOf<String>()) }
@@ -46,7 +47,7 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
                 TagCategorizedResponse(
                     listOf(
                         Category(
-                            "Loading...",
+                            "",
                             emptyList()
                         )
                     )
@@ -57,27 +58,22 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
         val coroutineScope = rememberCoroutineScope()
 
         coroutineScope.launch{
-            val responseBody = CLIENT.get("tags/preset").bodyAsText()
-            val response = runCatching {
-                Json.decodeFromString<TagCategorizedResponse>(responseBody)
-            }.recoverCatching {
-                Json.decodeFromString<ErrorResponse>(responseBody)
-            }.getOrNull()
-
-            when(response){
-                is TagCategorizedResponse -> {
-                    presetTags = response
+            presetTags = getRequest<TagCategorizedResponse>(
+                urlString = "tags/preset",
+                onError = {
+                    println(it.message)
                 }
+            ) ?: presetTags
+        }
 
-                is ErrorResponse -> {
-                    println(response.message)
-                    // TODO add error handling for video
-                }
-
-                null -> {
-                    // TODO idk
-                }
-
+        Box(
+            modifier = Modifier.background(Color.rgb(0x2454BF)).borderRadius(2.cssRem).margin(bottom = 0.5.cssRem),
+            contentAlignment = Alignment.Center
+        ) {
+            IconButton(
+                onClick = { onAction(title, desc, userTags, checkedPresetTags, file) }
+            ) {
+                FaUpload()
             }
         }
 
@@ -115,7 +111,7 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
 
 
 
-        InputGroup(size = InputSize.LG) {
+        InputGroup(size = InputSize.LG, modifier = inputWidth) {
             TextInput(
                 title,
                 placeholder = "Title",
@@ -123,18 +119,19 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
                 onTextChanged = { title = it })
         }
 
-        InputGroup(size = InputSize.LG) {
+        InputGroup(size = InputSize.LG, modifier = inputWidth) {
             TextInput(
                 desc,
                 placeholder = "Description",
                 variant = FilledInputVariant,
                 onTextChanged = { desc = it })
+
         }
 
-        InputGroup(size = InputSize.LG) {
+        InputGroup(size = InputSize.LG, modifier = inputWidth) {
             TextInput(
                 currentUserTag,
-                placeholder = "Enter Tag",
+                placeholder = "Add Custom Tag",
                 variant = FilledInputVariant,
                 onTextChanged = { currentUserTag = it },
                 onCommit = {
@@ -144,10 +141,24 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
                     }
                 }
             )
+            RightInset(width = 4.cssRem) {
+                Button(
+                    onClick = {
+                        if (currentUserTag.isNotBlank()) {
+                            userTags = userTags + currentUserTag
+                            currentUserTag = ""
+                        }
+                    },
+                    Modifier.background(Color.rgb(0x2454BF)).borderRadius(3.cssRem),
+                    size = ButtonSize.SM,
+                ) {
+                    FaPlus()
+                }
+            }
         }
 
         // Display all entered user tags with delete buttons
-        Box(Modifier.fillMaxWidth().width(12.cssRem)) {
+        Box(Modifier.fillMaxWidth().width(16.cssRem)) {
             if (userTags.isNotEmpty()) {
                 var remainingTags = userTags
                 Column(modifier = Modifier.fillMaxWidth()) {
@@ -175,23 +186,9 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
             }
         }
 
-
         PresetTagTabs(
             tabTags = presetTags,
             onCheckedItemsChanged = { checkedPresetTags = it }
         )
-
-        Box(
-            modifier = Modifier.background(Color.rgb(0x2454BF)).borderRadius(2.cssRem),
-            contentAlignment = Alignment.Center
-        ) {
-            IconButton(
-                onClick = { onAction(title, desc, userTags, checkedPresetTags, file) }
-            ) {
-                FaUpload()
-            }
-        }
-
-
     }
 }

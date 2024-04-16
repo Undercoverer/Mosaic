@@ -13,6 +13,7 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.CLIENT
+import gay.extremist.mosaic.Util.postRequest
 import gay.extremist.mosaic.components.layouts.UnsignInPageLayout
 import gay.extremist.mosaic.components.widgets.RegisterFunc
 import gay.extremist.mosaic.components.widgets.SignInFunc
@@ -66,39 +67,24 @@ fun SignInPage() {
 
                     SignInFunc { email, password ->
                         coroutineScope.launch {
-                            val responseBody = CLIENT.post("accounts/login") {
-                                contentType(ContentType.Application.Json)
-                                setBody(
+                            postRequest<LoginAccount, RegisteredAccount>(
+                                urlString = "accounts/login",
+                                setBody = {
                                     LoginAccount(
                                         email,
                                         password
                                     )
-                                )
-                            }.bodyAsText()
-
-                            val response = runCatching {
-                                Json.decodeFromString<RegisteredAccount>(responseBody)
-                            }.recoverCatching {
-                                Json.decodeFromString<ErrorResponse>(responseBody)
-                            }.getOrNull()
-
-                            when (response) {
-                                is RegisteredAccount -> {
-                                    window.localStorage["token"] = response.token
-                                    window.localStorage["id"] = response.accountId.toString()
+                                },
+                                onSuccess = {
+                                    window.localStorage["token"] = it.token
+                                    window.localStorage["id"] = it.accountId.toString()
 
                                     pageContext.router.tryRoutingTo("/home")
+                                },
+                                onError = {
+                                    println(it.message)
                                 }
-
-                                is ErrorResponse -> {
-                                    println(response.message)
-                                    //TODO add error handling for login
-                                }
-
-                                null -> {
-                                    //TODO I honestly don't know what goes here
-                                }
-                            }
+                            )
                         }
                     }
                 }
@@ -117,39 +103,25 @@ fun SignInPage() {
 
                     RegisterFunc{email, username, password ->
                         coroutineScope.launch {
-                            val responseBody = CLIENT.post("accounts/register"){
-                                contentType(ContentType.Application.Json)
-                                setBody(
+                            postRequest<RegistrationAccount, RegisteredAccount>(
+                                urlString = "accounts/register",
+                                setBody = {
                                     RegistrationAccount(
                                         username,
                                         email,
                                         password
                                     )
-                                )
-                            }.bodyAsText()
-
-                            val response = runCatching {
-                                Json.decodeFromString<RegisteredAccount>(responseBody)
-                            }.recoverCatching {
-                                Json.decodeFromString<ErrorResponse>(responseBody)
-                            }.getOrNull()
-
-                            when(response) {
-                                is RegisteredAccount -> {
-                                    window.localStorage["token"] = response.token
-                                    window.localStorage["id"] = response.accountId.toString()
+                                },
+                                onSuccess = {
+                                    window.localStorage["token"] = it.token
+                                    window.localStorage["id"] = it.accountId.toString()
 
                                     pageContext.router.tryRoutingTo("/home")
+                                },
+                                onError = {
+                                    println(it.message)
                                 }
-                                is ErrorResponse -> {
-                                    //TODO add error handling for register
-                                }
-                                null -> {
-                                    //TODO I honestly don't know what goes here
-                                }
-                            }
-
-
+                            )
                         }
                     }
                 }

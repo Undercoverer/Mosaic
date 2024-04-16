@@ -15,9 +15,12 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import gay.extremist.mosaic.Util.capitalize
+import gay.extremist.mosaic.Util.getRequest
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.SearchVideoTile
 import gay.extremist.mosaic.data_models.TagResponse
+import gay.extremist.mosaic.data_models.VideoDisplayResponse
 import gay.extremist.mosaic.toSitePalette
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
@@ -27,6 +30,7 @@ import org.jetbrains.compose.web.dom.Text
 @Composable
 fun TagPage() {
     val pageCtx = rememberPageContext()
+    val coroutineScope = rememberCoroutineScope()
     val id = pageCtx.route.params.getValue("id").toIntOrNull() ?: return
     val loadingVal = "Loading..."
 
@@ -41,15 +45,27 @@ fun TagPage() {
         )
     }
 
-    // To Be Implemented, Waiting for Tag endpoints
-    // For example of how this will work, check creator page
-//    LaunchedEffect(id) {
-//        tag = Json.decodeFromString(
-//            CLIENT
-//                .get("https://jsonplaceholder.typicode.com/users/$id")
-//                .bodyAsText()
-//        )
-//    }
+    var videoList by remember {
+        mutableStateOf(
+            listOf<VideoDisplayResponse>()
+        )
+    }
+
+    LaunchedEffect(id) {
+        tag = getRequest<TagResponse>(
+            urlString = "tags/$id",
+            onError = {
+                println(it.message)
+            }
+        ) ?: tag
+
+        videoList = getRequest<List<VideoDisplayResponse>>(
+            urlString = "tags/$id/videos",
+            onError = {
+                println(it.message)
+            }
+        ) ?: videoList
+    }
 
     PageLayout("Tag"){
         val sitePalette = ColorMode.current.toSitePalette()
@@ -59,24 +75,22 @@ fun TagPage() {
             Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).height(30.cssRem).width(25.cssRem)) {  }
             Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
                 SpanText(
-                    text = "Videos of ${tag.tag.uppercase()}",
+                    text = "Videos of ${tag.tag.capitalize()}",
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
-                val ctx = rememberPageContext()
                 Button(onClick = {
                     // Change this click handler with your call-to-action behavior
                     // here. Link to an order page? Open a calendar UI? Play a movie?
                     // Up to you!
-                    ctx.router.tryRoutingTo("/creator")
+                    pageCtx.router.tryRoutingTo("/creator")
                 }, Modifier.background(Color.rgb(0x2454BF))) {
                     Text("Follow")
                 }
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
-                        val ctx = rememberPageContext()
-                        for (index in 1..25) {
-                            SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                SpanText("Title\n")
+                        for (video in videoList) {
+                            SearchVideoTile(onClick = { pageCtx.router.tryRoutingTo("/video/${video.id}") }) {
+                                SpanText("${video.title}\n")
                             }
                         }
 

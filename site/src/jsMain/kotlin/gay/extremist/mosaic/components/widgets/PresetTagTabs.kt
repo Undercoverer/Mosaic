@@ -13,6 +13,10 @@ import com.varabyte.kobweb.silk.theme.colors.ColorSchemes
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Text
 import androidx.compose.runtime.*
+import com.varabyte.kobweb.compose.css.FontSize
+import com.varabyte.kobweb.compose.foundation.layout.Box
+import com.varabyte.kobweb.compose.ui.modifiers.fontSize
+import com.varabyte.kobweb.compose.ui.modifiers.width
 import gay.extremist.mosaic.Util.capitalize
 import gay.extremist.mosaic.data_models.TagCategorizedResponse
 
@@ -24,40 +28,38 @@ fun PresetTagTabs(
     val checkedItems = remember { mutableStateOf<List<String>>(emptyList()) }
 
     Tabs {
-        tabTags.categories.forEach { (tabTitle, tags) ->
+        tabTags.categories.forEach { (category, tags) ->
             TabPanel {
-                Tab { Text(tabTitle.capitalize()) }; Panel {
+                Tab(Modifier.fontSize(FontSize.Small)) { Text(category.capitalize()) }; Panel {
                 Column(Modifier.gap(0.2.cssRem)) {
                     val chunkedTags = tags.map{it.tag}.chunked(2) // Split the tags into chunks of 5
 
                     chunkedTags.forEach { chunk ->
                         Row(Modifier.gap(1.cssRem), verticalAlignment = Alignment.CenterVertically) {
                             chunk.forEach { tag ->
-                                Checkbox(
-                                    checked = checkedItems.value.contains(tag), // Check if tag is in the checked items
-                                    onCheckedChange = {
-                                        checkedItems.value = if (it) {
-                                            checkedItems.value + tag // Add tag to checked items
-                                        } else {
-                                            checkedItems.value - tag // Remove tag from checked items
-                                        }
-                                    },
-                                    colorScheme = ColorSchemes.LightBlue,
-                                    size = CheckboxSize.LG
-                                ){
-                                    Text(tag.capitalize())
+                                Box(modifier = Modifier.width(10.cssRem)){
+                                    Checkbox(
+                                        checked = checkedItems.value.contains(tag), // Check if tag is in the checked items
+                                        onCheckedChange = {
+                                            checkedItems.value = if (it) {
+                                                checkedItems.value + tag // Add tag to checked items
+                                            } else {
+                                                checkedItems.value - tag // Remove tag from checked items
+                                            }
+                                            // Pass the list of checked items to the callback function
+                                            onCheckedItemsChanged(checkedItems.value)
+                                        },
+                                        colorScheme = ColorSchemes.LightBlue,
+                                        size = CheckboxSize.LG
+                                    ){ Text(tag.capitalize()) }
                                 }
                             }
                         }
                     }
                 }
-            }
-            }
+            }}
         }
     }
-
-    // Pass the list of checked items to the callback function
-    onCheckedItemsChanged(checkedItems.value)
 }
 
 

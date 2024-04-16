@@ -2,6 +2,7 @@ package gay.extremist.mosaic.components.widgets
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.layout.ContentScale
+import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
@@ -20,7 +21,7 @@ fun VideoTile(onClick: () -> Unit, content: @Composable () -> Unit) {
 
     // Create for loop to take in number of videos (dynamic)
     // Each row has a padding of 10px
-    Row(Modifier.fillMaxSize().height(10.cssRem).padding(15.px)
+    Row(Modifier.fillMaxSize().height(10.cssRem).padding(15.px).cursor(Cursor.Pointer)
         //.border(width = 1.px, style = LineStyle.Solid)
         .background(Color.rgba(0.3f,0.3f,0.3f,0.3f))
         .onClick { onClick() }) {
