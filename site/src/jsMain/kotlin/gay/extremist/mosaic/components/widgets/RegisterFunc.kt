@@ -61,7 +61,6 @@ fun RegisterFunc(onAction: (String, String, String) -> Unit) {
             }
         }
 
-        val ctx = rememberPageContext()
         Button(
             onClick = {
                 if (username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {

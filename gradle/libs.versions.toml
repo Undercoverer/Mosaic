@@ -1,6 +1,6 @@
 [versions]
 jetbrains-compose = "1.6.1"
-kobweb = "0.17.2-SNAPSHOT"
+kobweb = "0.17.3-SNAPSHOT"
 kotlin = "1.9.23"
 ktor = "2.3.9"
 serialization = "1.6.3"

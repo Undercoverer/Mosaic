@@ -10,8 +10,7 @@ data class PlaylistDisplayResponse(
 
 @Serializable
 data class NewPlaylistData(
-    val name: String,
-    val description: String
+    val name: String
 )
 
 @Serializable
@@ -19,6 +18,5 @@ data class PlaylistResponse(
     val id: Int,
     val owner: Int,
     val name: String,
-    val description: String,
     val videos: List<VideoDisplayResponse>
 )

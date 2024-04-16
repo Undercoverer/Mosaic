@@ -14,21 +14,46 @@ import com.varabyte.kobweb.silk.components.forms.*
 import com.varabyte.kobweb.silk.components.overlay.*
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import com.varabyte.kobweb.silk.theme.colors.ColorSchemes
+import gay.extremist.mosaic.Util.getRequest
+import gay.extremist.mosaic.data_models.PlaylistDisplayResponse
+import gay.extremist.mosaic.data_models.PlaylistResponse
 import gay.extremist.mosaic.toSitePalette
+import kotlinx.browser.window
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.get
 
 @Composable
 fun SavePopUp(
-    checkboxItems: List<String>,
-    onPlaylistAction: (String) -> Unit,
-    onCheckboxAction: (String?) -> Unit
+    onPlaylistAction: (String) -> PlaylistDisplayResponse?,
+    onCheckboxAction: (PlaylistDisplayResponse?) -> Unit
 ) {
     val sitePalette = ColorMode.current.toSitePalette()
+    val coroutineScope = rememberCoroutineScope()
     var isPopoverVisible by remember { mutableStateOf(false) }
-    var checkedItem by remember { mutableStateOf<String?>(null) }
+    var checkedItem by remember { mutableStateOf<PlaylistDisplayResponse?>(null) }
     var playlistInput by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
+
+    var playlists by remember {
+        mutableStateOf(listOf<PlaylistDisplayResponse>())
+    }
+
+    var playlistNames by remember {
+        mutableStateOf(listOf<String>())
+    }
+
+    coroutineScope.launch {
+        playlists = getRequest<List<PlaylistDisplayResponse>>(
+            urlString = "accounts/${window.localStorage["id"]}/playlists",
+            onError = {
+                println(it.message)
+            }
+        ) ?: playlists
+
+        playlistNames = playlists.map { it.name }
+    }
 
     Button(
         onClick = {
@@ -72,9 +97,17 @@ fun SavePopUp(
                         Button(
                             onClick = {
                                 // Check if the entered playlist does not exist in the checkbox items
-                                if (playlistInput !in checkboxItems) {
+                                if (playlistInput !in playlistNames) {
                                     // Invoke the action if playlist does not exist
-                                    onPlaylistAction(playlistInput)
+                                    when(val newPlaylist = onPlaylistAction(playlistInput)){
+                                        is PlaylistDisplayResponse -> {
+                                            println (newPlaylist.name)
+                                            isPopoverVisible = !isPopoverVisible
+                                        }
+                                        null -> {
+                                            //TODO(Not Quite Sure How to change an existing element)
+                                        }
+                                    }
                                 } else {
                                     // Set error state if playlist exists
                                     isError = true
@@ -98,17 +131,16 @@ fun SavePopUp(
                         Alignment.TopCenter
                     ) {
                         Column(Modifier.padding(1.cssRem).fillMaxSize()) {
-                            checkboxItems.forEach { item ->
+                            playlists.forEach { playlist ->
                                 Checkbox(
-                                    checked = item == checkedItem,
+                                    checked = playlist == checkedItem,
                                     onCheckedChange = {
-                                        checkedItem = if (it) item else null
-                                        onCheckboxAction(checkedItem)
+                                        checkedItem = if (it) playlist else null
                                     },
                                     size = CheckboxSize.LG,
                                     colorScheme = ColorSchemes.LightBlue
                                 ) {
-                                    Text(item)
+                                    Text(playlist.name)
                                 }
                             }
                         }

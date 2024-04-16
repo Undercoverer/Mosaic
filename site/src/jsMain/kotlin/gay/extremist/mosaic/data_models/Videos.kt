@@ -19,5 +19,8 @@ data class VideoResponse(
 data class VideoDisplayResponse(
     val id: Int,
     val title: String,
-    val videoPath: String
+    val videoPath: String,
+    val creator: AccountDisplayResponse,
+    val uploadDate: String,
+    val viewCount: Int
 )
