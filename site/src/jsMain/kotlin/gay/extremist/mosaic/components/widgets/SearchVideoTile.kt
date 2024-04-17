@@ -30,7 +30,6 @@ fun SearchVideoTile(onClick: () -> Unit, content: @Composable () -> Unit) {
     // Create for loop to take in number of videos (dynamic)
     // Each row has a padding of 10px
     Row(Modifier.fillMaxSize().height(10.cssRem).padding(15.px)
-
         .background(Color.rgba(0.3f,0.3f,0.3f,0.3f))
         .onClick { onClick() }) {
         Box(Modifier.fillMaxWidth(20.percent).height(7.cssRem), Alignment.Center) {
@@ -42,7 +41,7 @@ fun SearchVideoTile(onClick: () -> Unit, content: @Composable () -> Unit) {
         }
         Box(Modifier.fillMaxWidth(80.percent).padding(1.cssRem).overflow(Overflow.Hidden)) {
             Column(Modifier.gap(2.px).fontSize(1.2.cssRem), verticalArrangement = Arrangement.Top){
-                SpanText("Tit132111111111111111111111111111111111111111111111111111111111111111111111111le")
+                SpanText("T32111111111111111111111111111111111111111111111111111111111111111111111111le")
                 Column(Modifier.gap(1.px).fontSize(1.cssRem)){
                     SpanText("Creator")
                     SpanText("01/23/24")
