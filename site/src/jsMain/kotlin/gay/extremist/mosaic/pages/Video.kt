@@ -18,6 +18,7 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.*
 import gay.extremist.mosaic.toSitePalette
+import org.jetbrains.compose.web.css.FlexWrap
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
@@ -152,11 +153,7 @@ fun VideoPage() {
                     ColorMode.LIGHT -> Colors.LightGray
                     ColorMode.DARK -> Color.rgb(0x2B2B2B)
                 }), horizontalArrangement = Arrangement.Start) {
-                    Column(Modifier.fillMaxSize().gap(1.cssRem).fontSize(1.1.cssRem).height(6.cssRem).overflow { y(Overflow.Auto)}, horizontalAlignment = Alignment.Start) {
-
-                        Link("/tags",
-                            "Tags", Modifier.color(sitePalette.brand.primary)
-                        )
+                    Column(Modifier.fillMaxSize().gap(1.cssRem).fontSize(1.1.cssRem).height(10.cssRem).overflow { y(Overflow.Auto)}, horizontalAlignment = Alignment.Start) {
                         Div{
                             SpanText(
                                 "Desc", Modifier.color(
@@ -167,7 +164,19 @@ fun VideoPage() {
                                 )
                             )
                         }
+                        Box(Modifier.fillMaxSize().height(15.cssRem)) {
+                           Row(Modifier.width(58.cssRem).gap(0.5.cssRem).flexWrap(FlexWrap.Wrap)){
+                               for (index in 1..100) {
+                                   Link(
+                                       "/tags",
+                                       "Tags",
+                                       Modifier.color(sitePalette.brand.primary)
+                                   )
+                               }
 
+                           }
+
+                        }
 
                     }
 
@@ -176,24 +185,22 @@ fun VideoPage() {
                 Row(Modifier.fillMaxSize().padding(3.px).background(Colors.Transparent)){}
 
 
-                Row(Modifier.fillMaxSize().padding(15.px).fontSize(1.1.cssRem).background(when (ColorMode.current) {
+                Row(Modifier.fillMaxSize().padding(10.px).fontSize(1.1.cssRem).background(when (ColorMode.current) {
                     ColorMode.LIGHT -> Colors.LightGray
                     ColorMode.DARK -> Color.rgb(0x2B2B2B)
                 }), horizontalArrangement = Arrangement.Start) {
-                    Column(Modifier.fillMaxSize().gap(1.cssRem).height(8.cssRem).overflow { y(Overflow.Auto)}){
-                        CommentFunc { comment ->
-                            // Do something with the comment
-                            println("Comment submitted: $comment")
-                        }
+                    Box(Modifier.fillMaxSize().padding(2.cssRem).height(15.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                        Column(Modifier.gap(1.cssRem).fillMaxSize()){
+                            CommentFunc { comment ->
+                                // Do something with the comment
+                                println("Comment submitted: $comment")
+                            }
 
-                        SpanText(
-                            "Comments", Modifier.color(
-                                when (ColorMode.current) {
-                                    ColorMode.LIGHT -> Colors.Black
-                                    ColorMode.DARK -> Colors.White
-                                }
-                            )
-                        )
+                            for (index in 1..25) {
+                                CommentTile()
+                            }
+
+                        }
 
                     }
 
@@ -216,12 +223,12 @@ fun VideoPage() {
                     ), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top
                 ) {
 
-                    Box(Modifier.fillMaxSize().padding(2.cssRem).height(50.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
-                        Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
+                    Box(Modifier.fillMaxSize().padding(2.cssRem).height(60.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                        Column(Modifier.gap(1.cssRem).fillMaxSize()){
                             val ctx = rememberPageContext()
                             for (index in 1..25) {
                                 VideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                    SpanText("Title\n")
+
                                 }
                             }
 
