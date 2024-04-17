@@ -149,7 +149,7 @@ fun VideoPage() {
                 Row(Modifier.fillMaxSize().padding(3.px).background(Colors.Transparent)){}
 
 
-                Row(Modifier.fillMaxSize().padding(15.px).background(when (ColorMode.current) {
+                Row(Modifier.fillMaxSize().padding(10.px).background(when (ColorMode.current) {
                     ColorMode.LIGHT -> Colors.LightGray
                     ColorMode.DARK -> Color.rgb(0x2B2B2B)
                 }), horizontalArrangement = Arrangement.Start) {
