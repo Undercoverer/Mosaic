@@ -25,7 +25,7 @@ fun PresetTagTabs(
     tabTags: TagCategorizedResponse,
     onCheckedItemsChanged: (List<String>) -> Unit // Callback function to pass checked items
 ) {
-    val checkedItems = remember { mutableStateOf<List<String>>(emptyList()) }
+    val checkedItems = mutableStateOf<List<String>>(emptyList())
 
     Tabs {
         tabTags.categories.forEach { (category, tags) ->

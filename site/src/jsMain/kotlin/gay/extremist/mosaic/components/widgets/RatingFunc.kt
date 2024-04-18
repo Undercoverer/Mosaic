@@ -15,15 +15,56 @@ import com.varabyte.kobweb.silk.components.icons.ChevronRightIcon
 import com.varabyte.kobweb.silk.components.icons.PlusIcon
 import com.varabyte.kobweb.silk.components.overlay.*
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import gay.extremist.mosaic.Util.*
+import gay.extremist.mosaic.data_models.*
+import kotlinx.browser.window
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.cssRem
+import org.w3c.dom.get
 
 
 @Composable
-fun RatingFunc(onAction: (Int) -> Unit){
+fun RatingFunc(video: VideoResponse, onAdded: (Double) -> Unit, onUpdated: (Double) -> Unit, onError: (ErrorResponse) -> Unit = {}){
+    val coroutineScope = rememberCoroutineScope()
 
-    var rating by remember { mutableStateOf("") }
+    var rating by remember { mutableStateOf<RatingResponse?>(null) }
+    var inputRating by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
     var isPopoverVisible by remember { mutableStateOf(false) }
+
+    coroutineScope.launch {
+        val existingID = getRequest<Int>(
+            urlString = "ratings/on",
+            setHeaders = {
+                append(headerAccountId, window.localStorage["id"] ?: "")
+                append(headerToken, window.localStorage["token"] ?: "")
+                append(headerVideoId, video.id.toString())
+            },
+            onError = {
+                println("fetch existing: error")
+            }
+        )
+
+        rating = getRequest<RatingResponse>(
+            urlString = "ratings/$existingID",
+            setHeaders = {
+                append(headerAccountId, window.localStorage["id"] ?: "")
+                append(headerToken, window.localStorage["token"] ?: "")
+                append(headerVideoId, video.id.toString())
+            },
+            onSuccess = {
+                println("fetch existing: success")
+            },
+            onError = {
+                println("fetch existing: error")
+                print(it.message)
+            },
+            onNull = {
+                println("fetch existing: null")
+            }
+        )
+    }
 
     Box(
         modifier = Modifier.borderRadius(1.cssRem),
@@ -48,7 +89,7 @@ fun RatingFunc(onAction: (Int) -> Unit){
                 Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) { // Ensure the row lays out items vertically aligned
                     InputGroup(Modifier.width(7.cssRem), size = InputSize.LG) {
                         TextInput(
-                            rating,
+                            inputRating,
                             placeholder = "Rate",
                             variant = FilledInputVariant,
                             onTextChanged = { newText ->
@@ -56,7 +97,7 @@ fun RatingFunc(onAction: (Int) -> Unit){
                                 isError = false
                                 // Only update the rating if the new text is empty or a valid number between 1 and 5
                                 if (newText.isEmpty() || newText.toIntOrNull() in 1..5) {
-                                    rating = newText
+                                    inputRating = newText
                                 } else {
                                     // If the input is invalid, set the error flag to true
                                     isError = true
@@ -65,9 +106,45 @@ fun RatingFunc(onAction: (Int) -> Unit){
                         RightInset(Modifier.width(3.cssRem)) {
                             Button(
                                 onClick = {
-                                    if (rating.toIntOrNull() in 1..5) {
-                                        onAction(rating.toInt())
-                                    } else {
+                                    if (inputRating.toIntOrNull() in 1..5 && rating != null) {
+                                        coroutineScope.launch {
+                                            val avgFactor = ((video.rating * 2) - rating!!.rating)
+                                            rating = postRequest<Int,RatingResponse>(
+                                                urlString = "ratings/${rating!!.id}",
+                                                setBody = {
+                                                    inputRating.toInt()
+                                                },
+                                                onSuccess = {
+                                                    onUpdated((avgFactor + it.rating)/2)
+                                                },
+                                                onError = {
+                                                    println(it.message)
+                                                    onError(it)
+                                                }
+                                            )
+                                        }
+                                    } else if (inputRating.toIntOrNull() in 1..5 && rating == null){
+                                        coroutineScope.launch {
+                                            rating = postRequest<Int,RatingResponse>(
+                                                urlString = "ratings",
+                                                setHeaders = {
+                                                    append(headerAccountId, window.localStorage["id"] ?: "")
+                                                    append(headerToken, window.localStorage["token"] ?: "")
+                                                    append(headerVideoId, video.id.toString())
+                                                },
+                                                setBody = {
+                                                    inputRating.toInt()
+                                                },
+                                                onSuccess = {
+                                                    onAdded((video.rating + it.rating)/2)
+                                                },
+                                                onError = {
+                                                    println(it.message)
+                                                    onError(it)
+                                                }
+                                            )
+                                        }
+                                    } else{
                                         // Show error message as a tooltip if rating is not within range
                                         isError = true
                                     }},
@@ -81,8 +158,8 @@ fun RatingFunc(onAction: (Int) -> Unit){
 
                     }
                     if (isError) {
-                        Tooltip(ElementTarget.PreviousSibling, "Enter a value between 1 and 5", placement = PopupPlacement.BottomRight)
-
+                        Tooltip(ElementTarget.PreviousSibling, "Enter a Number between 1 and 5", placement = PopupPlacement.BottomRight)
+                        window.setTimeout({isError = false}, 1000)
                     }
 
                 }

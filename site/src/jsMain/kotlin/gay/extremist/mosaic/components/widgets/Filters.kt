@@ -1,6 +1,7 @@
 package gay.extremist.mosaic.components.widgets
 
 import androidx.compose.runtime.*
+import com.varabyte.kobweb.compose.css.FontSize
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -18,33 +19,30 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorSchemes
 import gay.extremist.mosaic.data_models.TagCategorizedResponse
 import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.dom.Text
 
 @Composable
 fun FilterWidget(
     sortOptions: List<String>, // List of sort by checkboxes
     presetTags: TagCategorizedResponse, // List of preset tags
-    onAction: (List<String>, List<String>) -> Unit // Callback function for filter button
+    onAction: (String?, List<String>) -> Unit // Callback function for filter button
 ) {
     // Track the checked sort options
-    var checkedSortOptions by remember { mutableStateOf<List<String>>(emptyList()) }
+    var checkedSortOption by remember { mutableStateOf<String?>(null) }
 
-    Column(Modifier.gap(0.5.cssRem).fontSize(1.3.cssRem), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(Modifier.gap(0.5.cssRem).fontSize(FontSize.XLarge), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
         SpanText("Sort By")
 
         // Render checkboxes for sort options
         sortOptions.forEach { option ->
             Checkbox(
-                checked = option in checkedSortOptions,
+                checked = checkedSortOption == option,
                 onCheckedChange = { isChecked ->
-                    if (isChecked) {
-                        checkedSortOptions = checkedSortOptions + option
-                    } else {
-                        checkedSortOptions = checkedSortOptions - option
-                    }
+                    checkedSortOption = if (isChecked) option else null
                 },
                 colorScheme = ColorSchemes.LightBlue,
-                size = CheckboxSize.LG
+                size = CheckboxSize.LG,
             ) {
                 Text(option)
             }
@@ -67,7 +65,7 @@ fun FilterWidget(
             Button(
                 onClick = {
                     // Pass the checked sort options and preset tags to the callback function
-                    onAction(checkedSortOptions, checkedPresetTags)
+                    onAction(checkedSortOption, checkedPresetTags)
                 },
                 //Modifier.background(Color.rgb(0x2EB4A9))
             ) {

@@ -15,16 +15,18 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import gay.extremist.mosaic.Util.capitalize
-import gay.extremist.mosaic.Util.getRequest
+import gay.extremist.mosaic.Util.*
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.SearchVideoTile
 import gay.extremist.mosaic.data_models.TagResponse
 import gay.extremist.mosaic.data_models.VideoDisplayResponse
 import gay.extremist.mosaic.toSitePalette
+import kotlinx.browser.window
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.get
 
 @Page("/tags/{id}")
 @Composable
@@ -51,6 +53,12 @@ fun TagPage() {
         )
     }
 
+    var followedTags by remember {
+        mutableStateOf(
+            listOf<TagResponse>()
+        )
+    }
+
     LaunchedEffect(id) {
         tag = getRequest<TagResponse>(
             urlString = "tags/$id",
@@ -65,6 +73,16 @@ fun TagPage() {
                 println(it.message)
             }
         ) ?: videoList
+
+        followedTags = getRequest<List<TagResponse>>(
+            urlString = "accounts/${window.localStorage["id"]}/tags",
+            setHeaders = {
+                append(headerToken, window.localStorage["token"] ?: "")
+            },
+            onError = {
+                println(it.message)
+            }
+        ) ?: followedTags
     }
 
     PageLayout("Tag"){
@@ -78,22 +96,67 @@ fun TagPage() {
                     text = "Videos of ${tag.tag.capitalize()}",
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
-                Button(onClick = {
-                    // Change this click handler with your call-to-action behavior
-                    // here. Link to an order page? Open a calendar UI? Play a movie?
-                    // Up to you!
-                    pageCtx.router.tryRoutingTo("/creator")
-                }, Modifier.background(Color.rgb(0x2454BF))) {
-                    Text("Follow")
+                key(followedTags){
+                    if (tag !in followedTags) {
+                        Button(onClick = {
+                            coroutineScope.launch{
+                                postRequestText(
+                                    urlString = "tags/$id/follow",
+                                    setHeaders = {
+                                        append(headerAccountId, window.localStorage["id"] ?: "")
+                                        append(headerToken, window.localStorage["token"] ?: "")
+                                    },
+                                    onSuccess = {
+                                        println(it)
+                                        followedTags += tag
+                                    },
+                                    onError = {
+                                        println(it.message)
+                                    },
+                                    onNull = {
+                                        println("wrong return type dummy")
+                                    }
+                                )
+
+                            }
+                        }, Modifier.background(Color.rgb(0x2454BF))) {
+                            Text("Follow")
+                        }
+                    } else {
+                        Button(onClick = {
+                            coroutineScope.launch{
+                                postRequestText(
+                                    urlString = "tags/$id/unfollow",
+                                    setHeaders = {
+                                        append(headerAccountId, window.localStorage["id"] ?: "")
+                                        append(headerToken, window.localStorage["token"] ?: "")
+                                    },
+                                    onSuccess = {
+                                        println(it)
+                                         followedTags = emptyList()
+                                    },
+                                    onError = {
+                                        println(it.message)
+                                    },
+                                    onNull = {
+                                    }
+                                )
+
+                            }
+                        }, Modifier.background(Color.rgb(0x2454BF))) {
+                            Text("Unfollow")
+                        }
+                    }
                 }
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
                         for (video in videoList) {
-                            SearchVideoTile(onClick = { pageCtx.router.tryRoutingTo("/video/${video.id}") }) {
-                                SpanText("${video.title}\n")
-                            }
+                            SearchVideoTile(
+                                onClick = { pageCtx.router.tryRoutingTo("/video/${video.id}") },
+                                video
+                            )
                         }
-
+                        ifVideosEmpty(videoList, "Not Many Videos For This Tag")
                     }
 
                 }

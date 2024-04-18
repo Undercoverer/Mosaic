@@ -31,17 +31,13 @@ import org.w3c.files.get
 
 
 @Composable
-fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file: File?) -> Unit ) {
+fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file: File?) -> Int? ) {
 
     Column(Modifier.gap(0.5.cssRem).fontSize(1.3.cssRem),  verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         val inputWidth = Modifier.width(16.cssRem)
-
-        var title by remember { mutableStateOf("") }
-        var desc by remember { mutableStateOf("") }
-        var userTags by remember { mutableStateOf(listOf<String>()) }
-        var checkedPresetTags by remember { mutableStateOf<List<String>>(emptyList()) }
-        var currentUserTag by remember { mutableStateOf("") }
-        var file by remember { mutableStateOf<File?>(null) }
+        var uploadedVideoID by remember {
+            mutableStateOf<Int?>(null)
+        }
         var presetTags by remember {
             mutableStateOf(
                 TagCategorizedResponse(
@@ -54,6 +50,13 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
                 )
             )
         }
+
+        var title by mutableStateOf("")
+        var desc by mutableStateOf("")
+        var userTags by mutableStateOf(listOf<String>())
+        var checkedPresetTags by mutableStateOf<List<String>>(emptyList())
+        var currentUserTag by mutableStateOf("")
+        var file by mutableStateOf<File?>(null)
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -71,7 +74,7 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
             contentAlignment = Alignment.Center
         ) {
             IconButton(
-                onClick = { onAction(title, desc, userTags, checkedPresetTags, file) }
+                onClick = { uploadedVideoID = onAction(title, desc, userTags, checkedPresetTags, file) }
             ) {
                 FaUpload()
             }
@@ -113,10 +116,11 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
 
         InputGroup(size = InputSize.LG, modifier = inputWidth) {
             TextInput(
-                title,
+                text = title,
                 placeholder = "Title",
                 variant = FilledInputVariant,
-                onTextChanged = { title = it })
+                onTextChanged = { title = it }
+            )
         }
 
         InputGroup(size = InputSize.LG, modifier = inputWidth) {
@@ -190,5 +194,26 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
             tabTags = presetTags,
             onCheckedItemsChanged = { checkedPresetTags = it }
         )
+
+        when(uploadedVideoID != null) {
+            true -> {
+                title = ""
+                desc = ""
+                userTags = emptyList()
+                checkedPresetTags = emptyList()
+                currentUserTag = ""
+                file = null
+                presetTags = TagCategorizedResponse(
+                    listOf(
+                        Category(
+                            "",
+                            emptyList()
+                        )
+                    )
+                )
+                uploadedVideoID = null
+            }
+            false -> { }
+        }
     }
 }

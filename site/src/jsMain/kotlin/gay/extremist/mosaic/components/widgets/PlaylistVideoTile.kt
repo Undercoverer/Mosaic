@@ -19,34 +19,48 @@ import gay.extremist.mosaic.data_models.VideoDisplayResponse
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.dom.Text
 import kotlin.js.Date
 
-
+/**
+ * A video tile which is a rectangle with a thumbnail on the left and the title and description on the right
+ * The thumbnail takes up 20% of the rectangle and the title and description take up the other 80% and are
+ * vertically centered in that section. Clicking on the tile will trigger the onClick callback.
+ *
+ * Video description and title are passed in as content.
+ */
 @Composable
-fun VideoTile(onClick: () -> Unit, video: VideoDisplayResponse) {
-
-    // Create for loop to take in number of videos (dynamic)
-    // Each row has a padding of 10px
+fun PlaylistVideoTile(
+    onClick: () -> Unit,
+    onDelete: () -> Unit, // New parameter for delete action
+    video: VideoDisplayResponse
+) {
     Row(Modifier.fillMaxSize().height(10.cssRem).padding(15.px).cursor(Cursor.Pointer)
-        //.border(width = 1.px, style = LineStyle.Solid)
         .background(Color.rgba(0.3f,0.3f,0.3f,0.3f))
-        .onClick { onClick() }) {
-        Box(Modifier.fillMaxWidth(35.percent).height(7.cssRem), Alignment.Center) {
+        .onClick { onClick() }, verticalAlignment = Alignment.CenterVertically) {
+        IconButton(
+            onClick = { onDelete() }
+        ) {
+            Text("X") // White "x" icon
+        }
+
+        Box(Modifier.fillMaxWidth(20.percent).height(7.cssRem).onClick { onClick() }, Alignment.Center) {
             ContentScale.Fit
+
             Image("/MosaicThumbnail.PNG",
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(4.px), )
         }
-
-        Box(Modifier.fillMaxWidth(65.percent).padding(1.cssRem).overflow(Overflow.Hidden)) {
-            Column(Modifier.gap(2.px).fontSize(1.2.cssRem), verticalArrangement = Arrangement.Top) {
+        Box(Modifier.fillMaxWidth(80.percent).padding(1.cssRem).overflow(Overflow.Hidden)) {
+            Column(Modifier.gap(2.px).fontSize(1.2.cssRem), verticalArrangement = Arrangement.Top){
                 SpanText(video.title, Modifier.fontSize(FontSize.Large).padding(bottom = .5.cssRem))
-                Column(Modifier.gap(1.px).fontSize(1.cssRem)) {
+                Column(Modifier.gap(1.px).fontSize(1.cssRem)){
                     SpanText("Creator: ${ video.creator.username }")
                     SpanText("Uploaded: ${Date(video.uploadDate).toLocaleDateString()}")
                 }
             }
+
         }
     }
 }
