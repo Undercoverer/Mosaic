@@ -52,6 +52,7 @@ fun SearchForm(httpClient: HttpClient) {
 
 @Composable
 private fun SearchBar(dataListId: String, httpClient: HttpClient) {
+    val ctx = rememberPageContext()
     var textInput by remember { mutableStateOf("") }
     InputGroup(Modifier.margin(bottom = 0.25.cssRem), variant = SearchBarInput) {
         TextInput(
@@ -60,9 +61,15 @@ private fun SearchBar(dataListId: String, httpClient: HttpClient) {
             Modifier.onClick {  }.attrsModifier { attr("list", dataListId) },
             placeholder = "Search", // Placeholder text for the input field
             focusBorderColor = Colors.Transparent,
+            onCommit = {
+                if (textInput.isNotEmpty()) {
+                    // If the search query is not empty, navigate to the search page
+
+                    ctx.router.tryRoutingTo("/search?q=$textInput")
+                }
+            }
         )
         RightInset {
-            val ctx = rememberPageContext()
             Button(
                 onClick = {
                     if (textInput.isNotEmpty()) {

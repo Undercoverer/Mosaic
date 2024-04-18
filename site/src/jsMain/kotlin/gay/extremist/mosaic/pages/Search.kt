@@ -14,15 +14,17 @@ import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.CLIENT
+import gay.extremist.mosaic.Util.getRequest
+import gay.extremist.mosaic.Util.ifVideosEmpty
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.FilterWidget
 import gay.extremist.mosaic.components.widgets.SearchVideoTile
 import gay.extremist.mosaic.data_models.Category
 import gay.extremist.mosaic.data_models.ErrorResponse
 import gay.extremist.mosaic.data_models.TagCategorizedResponse
+import gay.extremist.mosaic.data_models.VideoDisplayResponse
 import gay.extremist.mosaic.toSitePalette
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -41,6 +43,10 @@ fun SearchPage() {
 
     PageLayout("Search") {
         val sitePalette = ColorMode.current.toSitePalette()
+        val pageCtx = rememberPageContext()
+        val coroutineScope = rememberCoroutineScope()
+        val query = pageCtx.route.params.getValue("q")
+
         var presetTags by remember {
             mutableStateOf(
                 TagCategorizedResponse(
@@ -54,7 +60,11 @@ fun SearchPage() {
             )
         }
 
-        val coroutineScope = rememberCoroutineScope()
+        var videoList by remember {
+            mutableStateOf(listOf<VideoDisplayResponse>())
+        }
+
+        var sortBy by remember { mutableStateOf<String?>(null) }
 
         coroutineScope.launch{
             val responseBody = CLIENT.get("tags/preset").bodyAsText()
@@ -79,6 +89,16 @@ fun SearchPage() {
                 }
 
             }
+
+            videoList = getRequest<List<VideoDisplayResponse>>(
+                urlString = "videos/search",
+                setQueryParameters = {
+                    parameters.append("title", query)
+                },
+                onError = {
+                    println(it.message)
+                }
+            ) ?: videoList
         }
 
 
@@ -97,13 +117,10 @@ fun SearchPage() {
             ) {
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(40.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
-                        val ctx = rememberPageContext()
-                        for (index in 1..25) {
-                            SearchVideoTile(onClick = { ctx.router.tryRoutingTo("/video") }) {
-                                SpanText("Title\n")
-                            }
+                        for (video in videoList) {
+                            SearchVideoTile(onClick = { pageCtx.router.tryRoutingTo("/video/${video.id}") }, video)
                         }
-
+                        ifVideosEmpty(videoList, "Hmm... Maybe Try That Again")
                     }
 
                 }
@@ -121,16 +138,51 @@ fun SearchPage() {
 
 
 
-                val sortOptions = listOf("Option 1", "Option 2", "Option 3")
+                val sortOptions = listOf("Upload Date", "Views", "Rating")
 
                 FilterWidget(
                     sortOptions = sortOptions,
                     presetTags = presetTags,
-                    onAction = { checkedSortOptions, checkedPresetTags ->
+                    onAction = { checkedSortOption, checkedPresetTags ->
                         // Do something with the selected sort options and preset tags
                         // For example:
-                        println("Sort options: $checkedSortOptions")
-                        println("Preset tags: $checkedPresetTags")
+                        println("Sort option: $checkedSortOption")
+                        println("Preset tags: ${checkedPresetTags.joinToString(separator = ",")}")
+                        when (checkedSortOption) {
+                            "Upload Date" -> {
+                                sortBy = "date"
+                            }
+                            "Views" -> {
+                                sortBy = "views"
+                            }
+                            "Rating" -> {
+                                sortBy = "rating"
+                            }
+                        }
+                        coroutineScope.launch {
+                            videoList = getRequest<List<VideoDisplayResponse>>(
+                                urlString = "videos/search",
+                                setQueryParameters = {
+                                    parameters.append("title", query)
+                                    when(checkedPresetTags.isNotEmpty()){
+                                        true -> {
+                                            parameters.append("tags", checkedPresetTags.joinToString(separator = ","))
+                                        }
+                                        false -> {}
+                                    }
+                                    when (sortBy) {
+                                        is String -> {
+                                            parameters.append("sortBy", sortBy!!)
+                                        }
+                                        null -> {}
+                                    }
+
+                                },
+                                onError = {
+                                    println(it.message)
+                                }
+                            ) ?: videoList
+                        }
                     }
                 )
 

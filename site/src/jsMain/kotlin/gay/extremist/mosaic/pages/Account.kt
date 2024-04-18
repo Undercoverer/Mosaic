@@ -1,7 +1,9 @@
 package gay.extremist.mosaic.pages
 
 import androidx.compose.runtime.*
+import com.varabyte.kobweb.browser.dom.ElementTarget
 import com.varabyte.kobweb.browser.file.readBytes
+import com.varabyte.kobweb.compose.css.FontSize
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -14,6 +16,9 @@ import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.overlay.AdvancedTooltip
+import com.varabyte.kobweb.silk.components.overlay.PopupPlacement
+import com.varabyte.kobweb.silk.components.overlay.PopupPlacementStrategy
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.Util.getRequest
@@ -38,6 +43,7 @@ import org.w3c.dom.get
 fun AccountPage() {
     val pageCtx = rememberPageContext()
     val coroutineScope = rememberCoroutineScope()
+    var uploadedVideoId by remember { mutableStateOf<Int?>(null) }
 
     var playlists by remember {
         mutableStateOf(listOf<PlaylistDisplayResponse>())
@@ -64,7 +70,8 @@ fun AccountPage() {
                 Box(Modifier.fillMaxSize().width(20.cssRem).height(35.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(0.2.cssRem).fillMaxSize()){
                         for (playlist in playlists) {
-                            Link("/playlist/${playlist.id}", playlist.name, Modifier.color(Colors.DarkBlue))
+                            Link("/playlist/${playlist.id}", playlist.name, Modifier.color(Colors.DarkBlue).fontSize(
+                                FontSize.XLarge))
                         }
 
                     }
@@ -81,14 +88,7 @@ fun AccountPage() {
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
 
-
-                AccountInfo {email, username, password, confirmPassword ->
-                    println("Email: $email")
-                    println("Username: $username")
-                    println("Password: $password")
-                    println("Confirm Password: $confirmPassword")
-
-                }
+                AccountInfo ()
 
             }
             Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).padding(2.cssRem), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -102,7 +102,7 @@ fun AccountPage() {
                 UploadDataEntry{ title, description, userTags, checkedItems, file ->
                     coroutineScope.launch {
                         val fileBytes = file?.readBytes() ?: byteArrayOf()
-                        postRequest<MultiPartFormDataContent, Int>(
+                        uploadedVideoId = postRequest<MultiPartFormDataContent, Int>(
                             urlString = "videos",
                             setHeaders = {
                                 append(headerAccountId, window.localStorage["id"] ?: "")
@@ -130,8 +130,21 @@ fun AccountPage() {
                             }
                         )
                     }
+                    uploadedVideoId
                 }
 
+                when(uploadedVideoId != null){
+                    true -> {
+                        AdvancedTooltip(
+                            ElementTarget.PreviousSibling,
+                            "Video Uploaded Successfully",
+                            hideDelayMs = 2000,
+                            placementStrategy = PopupPlacementStrategy.of(PopupPlacement.Top)
+                        )
+                        uploadedVideoId = null
+                    }
+                    false -> { }
+                }
 
             }
         }

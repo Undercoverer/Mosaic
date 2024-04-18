@@ -3,7 +3,10 @@
 package gay.extremist.mosaic.pages
 
 import androidx.compose.runtime.*
+import com.varabyte.kobweb.compose.css.FontSize
+import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Overflow
+import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -17,12 +20,14 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.Util.getRequest
 import gay.extremist.mosaic.Util.headerToken
+import gay.extremist.mosaic.Util.ifVideosEmpty
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.VideoTile
 import gay.extremist.mosaic.data_models.VideoDisplayResponse
 import gay.extremist.mosaic.toSitePalette
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.w3c.dom.get
@@ -36,32 +41,26 @@ fun HomePage() {
         val coroutineScope = rememberCoroutineScope()
         val sitePalette = ColorMode.current.toSitePalette()
 
-        var tagsRecommendations by remember {
-            mutableStateOf(
-                listOf<VideoDisplayResponse>()
-            )
-        }
-
         var creatorsRecommendations by remember {
             mutableStateOf(
                 listOf<VideoDisplayResponse>()
             )
         }
 
-        coroutineScope.launch {
-            tagsRecommendations = getRequest<List<VideoDisplayResponse>>(
-                urlString = "accounts/${window.localStorage["id"]}/recommended-videos",
-                setQueryParameters = {
-                    parameters.append("by", "tags")
-                },
-                setHeaders = {
-                    append(headerToken, window.localStorage["token"] ?: "")
-                },
-                onError = {
-                    println(it.message)
-                }
-            ) ?: tagsRecommendations
+        var generalRecommendations by remember {
+            mutableStateOf(
+                listOf<VideoDisplayResponse>()
+            )
+        }
 
+        var tagsRecommendations by remember {
+            mutableStateOf(
+                listOf<VideoDisplayResponse>()
+            )
+        }
+
+
+        coroutineScope.launch {
             creatorsRecommendations = getRequest<List<VideoDisplayResponse>>(
                 urlString = "accounts/${window.localStorage["id"]}/recommended-videos",
                 setQueryParameters = {
@@ -74,6 +73,27 @@ fun HomePage() {
                     println(it.message)
                 }
             ) ?: creatorsRecommendations
+
+            generalRecommendations = getRequest<List<VideoDisplayResponse>>(
+                urlString = "videos",
+                onError = {
+                    println(it.message)
+                }
+            ) ?: generalRecommendations
+
+
+            tagsRecommendations = getRequest<List<VideoDisplayResponse>>(
+                urlString = "accounts/${window.localStorage["id"]}/recommended-videos",
+                setQueryParameters = {
+                    parameters.append("by", "tags")
+                },
+                setHeaders = {
+                    append(headerToken, window.localStorage["token"] ?: "")
+                },
+                onError = {
+                    println(it.message)
+                }
+            ) ?: tagsRecommendations
         }
 
         Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
@@ -88,10 +108,12 @@ fun HomePage() {
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
                         for (video in creatorsRecommendations) {
-                            VideoTile(onClick = { pageCtx.router.tryRoutingTo("/video/${video.id}") }) {
-                                SpanText("${video.title}\n")
-                            }
+                            VideoTile(
+                                onClick = { pageCtx.router.tryRoutingTo("/video/${video.id}") },
+                                video
+                            )
                         }
+                        ifVideosEmpty(creatorsRecommendations, "Follow More Creators To See More Videos")
                     }
                 }
             }
@@ -105,12 +127,13 @@ fun HomePage() {
                 )
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
-                        for (index in 1..25) {
-                            VideoTile(onClick = { pageCtx.router.tryRoutingTo("/video") }) {
-                                SpanText("Title\n")
-                            }
+                        for (video in generalRecommendations) {
+                            VideoTile(
+                                onClick = { pageCtx.router.tryRoutingTo("/video/${video.id}") },
+                                video = video
+                            )
                         }
-
+                        ifVideosEmpty(generalRecommendations, "Follow More Creators To See More Videos")
                     }
 
                 }
@@ -126,10 +149,12 @@ fun HomePage() {
                 Box(Modifier.fillMaxSize().padding(2.cssRem).height(33.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(1.cssRem).fontSize(1.2.cssRem).fillMaxSize()){
                         for (video in tagsRecommendations) {
-                            VideoTile(onClick = { pageCtx.router.tryRoutingTo("/video/${video.id}") }) {
-                                SpanText("${video.title}\n")
-                            }
+                            VideoTile(
+                                onClick = { pageCtx.router.tryRoutingTo("/video/${video.id}") },
+                                video
+                            )
                         }
+                        ifVideosEmpty(tagsRecommendations, "Follow More Tags To See More Videos")
                     }
                 }
             }

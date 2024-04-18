@@ -27,7 +27,7 @@ import org.w3c.dom.get
 @Composable
 fun SavePopUp(
     onPlaylistAction: (String) -> PlaylistDisplayResponse?,
-    onCheckboxAction: (PlaylistDisplayResponse?) -> Unit
+    onCheckboxAction: (PlaylistDisplayResponse?) -> Unit,
 ) {
     val sitePalette = ColorMode.current.toSitePalette()
     val coroutineScope = rememberCoroutineScope()
@@ -35,24 +35,23 @@ fun SavePopUp(
     var checkedItem by remember { mutableStateOf<PlaylistDisplayResponse?>(null) }
     var playlistInput by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
+    var isSaveError by remember { mutableStateOf(false) }
 
-    var playlists by remember {
-        mutableStateOf(listOf<PlaylistDisplayResponse>())
-    }
+    val playlists = mutableStateOf(listOf<PlaylistDisplayResponse>())
 
     var playlistNames by remember {
         mutableStateOf(listOf<String>())
     }
 
     coroutineScope.launch {
-        playlists = getRequest<List<PlaylistDisplayResponse>>(
+        playlists.value = getRequest<List<PlaylistDisplayResponse>>(
             urlString = "accounts/${window.localStorage["id"]}/playlists",
             onError = {
                 println(it.message)
             }
-        ) ?: playlists
+        ) ?: playlists.value
 
-        playlistNames = playlists.map { it.name }
+        playlistNames = playlists.value.map { it.name }
     }
 
     Button(
@@ -60,6 +59,7 @@ fun SavePopUp(
             isPopoverVisible = !isPopoverVisible
             // Reset error state when button is clicked
             isError = false
+            isSaveError = false
         },
         modifier = Modifier.color(sitePalette.brand.secondary)
     ) {
@@ -101,8 +101,8 @@ fun SavePopUp(
                                     // Invoke the action if playlist does not exist
                                     when(val newPlaylist = onPlaylistAction(playlistInput)){
                                         is PlaylistDisplayResponse -> {
+                                            playlists.value += newPlaylist
                                             println (newPlaylist.name)
-                                            isPopoverVisible = !isPopoverVisible
                                         }
                                         null -> {
                                             //TODO(Not Quite Sure How to change an existing element)
@@ -131,7 +131,7 @@ fun SavePopUp(
                         Alignment.TopCenter
                     ) {
                         Column(Modifier.padding(1.cssRem).fillMaxSize()) {
-                            playlists.forEach { playlist ->
+                            playlists.value.forEach { playlist ->
                                 Checkbox(
                                     checked = playlist == checkedItem,
                                     onCheckedChange = {
@@ -155,6 +155,11 @@ fun SavePopUp(
                         ) {
                             Text("Add to Playlist")
                         }
+                    }
+
+                    if (isSaveError) {
+                        Tooltip(ElementTarget.PreviousSibling, "The Video is already in that playlist", placement = PopupPlacement.Bottom, keepOpenStrategy = KeepPopupOpenStrategy.manual(true))
+
                     }
                 }
             }
