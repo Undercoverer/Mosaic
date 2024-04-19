@@ -256,7 +256,7 @@ fun VideoPage() {
                                         )
 
                                     }
-                                }, Modifier.background(Color.rgb(0x2EB4A9))) {
+                                }, Modifier.color(sitePalette.brand.accent)) {
                                     Text("Unfollow")
                                 }
                             } else if(video.creator.id == window.localStorage["id"]?.toInt()) {
@@ -508,7 +508,7 @@ fun VideoPage() {
         Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
 
 
-//        if(toggle){
+        if(toggle){
 //            coroutineScope.launch {
 //                video = getRequest<VideoResponse>(
 //                    urlString = "videos/$id",
@@ -517,8 +517,8 @@ fun VideoPage() {
 //                    }
 //                ) ?: video
 //            }
-//            toggle = !toggle
-//        }
+            toggle = !toggle
+        }
 
     }
 }

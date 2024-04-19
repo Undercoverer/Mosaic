@@ -135,10 +135,10 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
                             currentUserTag = ""
                         }
                     },
-                    Modifier.background(Color.rgb(0x2454BF)).borderRadius(3.cssRem),
+                    Modifier.background(Color.rgb(0x2454BF)),
                     size = ButtonSize.SM,
                 ) {
-                    FaPlus()
+                    Text("Add")
                 }
             }
         }
