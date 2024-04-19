@@ -14,7 +14,6 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.overlay.AdvancedTooltip
 import com.varabyte.kobweb.silk.components.overlay.PopupPlacement
@@ -33,6 +32,7 @@ import gay.extremist.mosaic.toSitePalette
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import kotlinx.browser.window
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
@@ -41,7 +41,6 @@ import org.w3c.dom.get
 @Page("/account")
 @Composable
 fun AccountPage() {
-    val pageCtx = rememberPageContext()
     val coroutineScope = rememberCoroutineScope()
     var uploadedVideoId by remember { mutableStateOf<Int?>(null) }
 
@@ -70,26 +69,17 @@ fun AccountPage() {
                 Box(Modifier.fillMaxSize().width(20.cssRem).height(35.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
                     Column(Modifier.gap(0.2.cssRem).fillMaxSize()){
                         for (playlist in playlists) {
-                            Link("/playlist/${playlist.id}", playlist.name, Modifier.color(Colors.DarkBlue).fontSize(
-                                FontSize.XLarge))
+                            Link("/playlist/${playlist.id}", playlist.name, Modifier.color(Colors.DarkBlue).fontSize(FontSize.XLarge))
                         }
-
                     }
-
                 }
-
-
-
             }
             Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).padding(2.cssRem), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
-
                 SpanText(
                     text = "Account Info",
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
-
                 AccountInfo ()
-
             }
             Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).padding(2.cssRem), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
                 SpanText(
@@ -97,8 +87,6 @@ fun AccountPage() {
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
 
-
-                //use println to print to database
                 UploadDataEntry{ title, description, userTags, checkedItems, file ->
                     coroutineScope.launch {
                         val fileBytes = file?.readBytes() ?: byteArrayOf()
@@ -122,36 +110,32 @@ fun AccountPage() {
                                     boundary = "WebAppBoundary"
                                 )
                             },
-                            onSuccess = {
-                                println(it)
-                            },
-                            onError = {
-                                println(it.message)
-                            }
                         )
                     }
-                    uploadedVideoId
                 }
 
-                when(uploadedVideoId != null){
-                    true -> {
-                        AdvancedTooltip(
-                            ElementTarget.PreviousSibling,
-                            "Video Uploaded Successfully",
-                            hideDelayMs = 2000,
-                            placementStrategy = PopupPlacementStrategy.of(PopupPlacement.Top)
-                        )
-                        uploadedVideoId = null
-                    }
-                    false -> { }
+                ShowUploadSuccess(uploadedVideoId) {
+                    uploadedVideoId = null
                 }
-
             }
         }
-
-        Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
-
-
     }
+}
 
+@Composable
+fun ShowUploadSuccess(uploadedVideoId: Int?, onTimeout: () -> Unit) {
+    when(uploadedVideoId != null){
+        true -> {
+            AdvancedTooltip(
+                ElementTarget.PreviousSibling,
+                "Video Uploaded Successfully",
+                placementStrategy = PopupPlacementStrategy.of(PopupPlacement.Top)
+            )
+            LaunchedEffect(key1 = uploadedVideoId) {
+                delay(3000)
+                onTimeout()
+            }
+        }
+        false -> { }
+    }
 }

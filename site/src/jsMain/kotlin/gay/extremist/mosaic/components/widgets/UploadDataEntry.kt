@@ -10,19 +10,14 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.silk.components.forms.*
-import com.varabyte.kobweb.silk.components.icons.fa.FaPlus
-import com.varabyte.kobweb.silk.components.icons.fa.FaUpload
+import com.varabyte.kobweb.silk.components.icons.fa.*
+import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import gay.extremist.mosaic.BASE_URL
-import gay.extremist.mosaic.CLIENT
 import gay.extremist.mosaic.Util.getRequest
 import gay.extremist.mosaic.data_models.Category
-import gay.extremist.mosaic.data_models.ErrorResponse
 import gay.extremist.mosaic.data_models.TagCategorizedResponse
-import gay.extremist.mosaic.data_models.VideoResponse
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import gay.extremist.mosaic.toSitePalette
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
@@ -31,9 +26,12 @@ import org.w3c.files.get
 
 
 @Composable
-fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file: File?) -> Int? ) {
-
-    Column(Modifier.gap(0.5.cssRem).fontSize(1.3.cssRem),  verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file: File?) -> Unit) {
+    Column(
+        Modifier.gap(0.5.cssRem).fontSize(1.3.cssRem),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         val inputWidth = Modifier.width(16.cssRem)
         var uploadedVideoID by remember {
             mutableStateOf<Int?>(null)
@@ -43,8 +41,7 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
                 TagCategorizedResponse(
                     listOf(
                         Category(
-                            "",
-                            emptyList()
+                            "", emptyList()
                         )
                     )
                 )
@@ -54,30 +51,21 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
         var title by mutableStateOf("")
         var desc by mutableStateOf("")
         var userTags by mutableStateOf(listOf<String>())
-        var checkedPresetTags by mutableStateOf<List<String>>(emptyList())
+        var checkedPresetTags by remember { mutableStateOf<List<String>>(emptyList()) }
         var currentUserTag by mutableStateOf("")
         var file by mutableStateOf<File?>(null)
 
         val coroutineScope = rememberCoroutineScope()
 
-        coroutineScope.launch{
-            presetTags = getRequest<TagCategorizedResponse>(
-                urlString = "tags/preset",
-                onError = {
-                    println(it.message)
-                }
-            ) ?: presetTags
+        coroutineScope.launch {
+            presetTags = getRequest<TagCategorizedResponse>(urlString = "tags/preset") ?: presetTags
         }
 
         Box(
             modifier = Modifier.background(Color.rgb(0x2454BF)).borderRadius(2.cssRem).margin(bottom = 0.5.cssRem),
             contentAlignment = Alignment.Center
         ) {
-            IconButton(
-                onClick = { uploadedVideoID = onAction(title, desc, userTags, checkedPresetTags, file) }
-            ) {
-                FaUpload()
-            }
+            IconButton(onClick = { onAction(title, desc, userTags, checkedPresetTags, file) }) { FaUpload() }
         }
 
         Box(
@@ -87,7 +75,11 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
                 attr("method", "POST")
                 attr("enctype", "multipart/form-data")
             }) {
-                Column(Modifier.fillMaxSize().gap(1.cssRem), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    Modifier.fillMaxSize().gap(1.cssRem),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Div(attrs = {
                         classes("input-group")
                         style {
@@ -115,26 +107,16 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
 
 
         InputGroup(size = InputSize.LG, modifier = inputWidth) {
-            TextInput(
-                text = title,
-                placeholder = "Title",
-                variant = FilledInputVariant,
-                onTextChanged = { title = it }
-            )
+            TextInput(text = title, placeholder = "Title", variant = FilledInputVariant, onTextChanged = { title = it })
         }
 
         InputGroup(size = InputSize.LG, modifier = inputWidth) {
-            TextInput(
-                desc,
-                placeholder = "Description",
-                variant = FilledInputVariant,
-                onTextChanged = { desc = it })
+            TextInput(desc, placeholder = "Description", variant = FilledInputVariant, onTextChanged = { desc = it })
 
         }
 
         InputGroup(size = InputSize.LG, modifier = inputWidth) {
-            TextInput(
-                currentUserTag,
+            TextInput(currentUserTag,
                 placeholder = "Add Custom Tag",
                 variant = FilledInputVariant,
                 onTextChanged = { currentUserTag = it },
@@ -143,8 +125,8 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
                         userTags = userTags + currentUserTag
                         currentUserTag = ""
                     }
-                }
-            )
+                })
+
             RightInset(width = 4.cssRem) {
                 Button(
                     onClick = {
@@ -165,7 +147,7 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
         Box(Modifier.fillMaxWidth().width(16.cssRem)) {
             if (userTags.isNotEmpty()) {
                 var remainingTags = userTags
-                Column(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.fillMaxWidth().background(ColorMode.current.toSitePalette().brand.primary.darkened(0.1f))) {
                     while (remainingTags.isNotEmpty()) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -174,13 +156,12 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
                         ) {
                             val rowTags = if (remainingTags.size > 2) remainingTags.take(2) else remainingTags
                             remainingTags = remainingTags.drop(rowTags.size)
+
                             rowTags.forEach { tag ->
                                 Row(Modifier.fontSize(1.3.cssRem), verticalAlignment = Alignment.CenterVertically) {
                                     Text(tag)
-                                    IconButton(
-                                        onClick = { userTags = userTags - tag }
-                                    ) {
-                                        Text("X") // White "x" icon
+                                    IconButton(onClick = { userTags = userTags - tag }) {
+                                        FaX()
                                     }
                                 }
                             }
@@ -190,12 +171,9 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
             }
         }
 
-        PresetTagTabs(
-            tabTags = presetTags,
-            onCheckedItemsChanged = { checkedPresetTags = it }
-        )
+        PresetTagTabs(tabTags = presetTags, onCheckedItemsChanged = { checkedPresetTags = it })
 
-        when(uploadedVideoID != null) {
+        when (uploadedVideoID != null) {
             true -> {
                 title = ""
                 desc = ""
@@ -206,14 +184,14 @@ fun UploadDataEntry(onAction: (String, String, List<String>, List<String>, file:
                 presetTags = TagCategorizedResponse(
                     listOf(
                         Category(
-                            "",
-                            emptyList()
+                            "", emptyList()
                         )
                     )
                 )
                 uploadedVideoID = null
             }
-            false -> { }
+
+            false -> {}
         }
     }
 }
