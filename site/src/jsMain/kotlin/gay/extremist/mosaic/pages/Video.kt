@@ -119,12 +119,7 @@ fun VideoPage() {
 
                         Spacer()
                         val ctx = rememberPageContext()
-                        Button(onClick = {
-                            // Change this click handler with your call-to-action behavior
-                            // here. Link to an order page? Open a calendar UI? Play a movie?
-                            // Up to you!
-                            ctx.router.tryRoutingTo("/creator")
-                        }, Modifier.color(sitePalette.brand.accent)) {
+                        Button(onClick = { ctx.router.tryRoutingTo("/creator")}, Modifier.color(sitePalette.brand.accent)) {
                             Text("Follow")
                         }
                         Column(Modifier.width(1.cssRem)){  }
