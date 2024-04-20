@@ -6,12 +6,10 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
-import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.width
-import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.*
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
@@ -53,7 +51,7 @@ fun RegisterFunc(onAction: (String, String, String) -> Unit) {
             RightInset(width = 4.5.cssRem) {
                 Button(
                     onClick = { showPassword = !showPassword },
-                    Modifier.width(3.5.cssRem).height(1.75.cssRem).background(Color.rgb(0x2EB4A9)),
+                    Modifier.width(3.5.cssRem).height(1.75.cssRem).background(Color.rgb(0x2A9F96)),
                     size = ButtonSize.SM,
                 ) {
                     Text(if (showPassword) "Hide" else "Show")
@@ -70,7 +68,7 @@ fun RegisterFunc(onAction: (String, String, String) -> Unit) {
                     println("Cannot navigate to /home. All fields must be filled.")
                 }
             },
-            Modifier.background(Color.rgb(0x2EB4A9))
+            Modifier.background(Color.rgb(0x2A9F96))
         ) {
             Text("Register")
         }

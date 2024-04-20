@@ -14,7 +14,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.init.KobwebConfig
 import com.varabyte.kobweb.core.rememberPageContext
-import com.varabyte.kobweb.navigation.Anchor
 import com.varabyte.kobweb.navigation.toOpenLinkStrategy
 import com.varabyte.kobweb.silk.components.animation.Keyframes
 import com.varabyte.kobweb.silk.components.animation.toAnimation
@@ -23,7 +22,6 @@ import com.varabyte.kobweb.silk.components.icons.CloseIcon
 import com.varabyte.kobweb.silk.components.icons.HamburgerIcon
 import com.varabyte.kobweb.silk.components.icons.MoonIcon
 import com.varabyte.kobweb.silk.components.icons.SunIcon
-
 import com.varabyte.kobweb.silk.components.layout.breakpoint.displayIfAtLeast
 import com.varabyte.kobweb.silk.components.layout.breakpoint.displayUntil
 import com.varabyte.kobweb.silk.components.navigation.Link
@@ -49,7 +47,6 @@ import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.AttrBuilderContext
 import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.HTMLAnchorElement
-import org.w3c.dom.get
 
 val NavHeaderStyle by ComponentStyle.base {
     Modifier.fillMaxWidth().padding(1.cssRem)
@@ -155,7 +152,7 @@ fun NavHeader() {
             val currentColorMode = ColorMode.current
 
             val (imageResource, imageSize) = when (currentColorMode) {
-                ColorMode.LIGHT -> Pair("/MosaicWhiteBackground.png", 3.5.cssRem)
+                ColorMode.LIGHT -> Pair("/MosaicWhiteBackground.png", 3.2.cssRem)
                 ColorMode.DARK -> Pair("/MosaicLogoNoBackground.png", 4.cssRem)
             }
 

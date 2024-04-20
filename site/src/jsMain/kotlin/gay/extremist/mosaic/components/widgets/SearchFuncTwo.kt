@@ -13,6 +13,7 @@ import com.varabyte.kobweb.silk.components.forms.*
 import com.varabyte.kobweb.silk.components.icons.fa.FaMagnifyingGlass
 import com.varabyte.kobweb.silk.components.style.addVariantBase
 import com.varabyte.kobweb.silk.components.style.vars.color.ColorVar
+import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import com.varabyte.kobweb.silk.theme.colors.palette.background
 import com.varabyte.kobweb.silk.theme.colors.palette.toPalette
 import io.ktor.client.*
@@ -26,7 +27,7 @@ val SearchBarInput by InputGroupStyle.addVariantBase {
     Modifier
         .setVariable(InputVars.BorderColor, Colors.Transparent)
         .setVariable(ColorVar, colorMode.toPalette().background)
-        .backgroundColor(Color.rgba(220, 233, 250, 0.7f).darkened(0.3f))
+        .backgroundColor(Color.rgba(220, 233, 250, 0.7f).darkened(0.4f))
 }
 
 @Composable
@@ -78,7 +79,10 @@ private fun SearchBar(dataListId: String, httpClient: HttpClient) {
                         ctx.router.tryRoutingTo("/search?q=$textInput")
                     }
                 },
-                modifier = Modifier.ariaLabel("Search"),
+                modifier = Modifier.ariaLabel("Search").background(when (ColorMode.current) {
+                    ColorMode.LIGHT -> Color.rgb(0xABA9A8)
+                    ColorMode.DARK -> Color.rgb(0x666666)
+                }),
                 variant = SearchBarInput,
                 type = ButtonType.Button, // Change the button type to Button
             ) {
