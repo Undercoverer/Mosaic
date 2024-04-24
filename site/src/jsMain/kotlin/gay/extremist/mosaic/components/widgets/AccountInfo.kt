@@ -35,6 +35,7 @@ import org.w3c.dom.get
 
 @Composable
 fun AccountInfo() {
+    println(window.localStorage["token"])
     val coroutineScope = rememberCoroutineScope()
     val loadingVal = "Loading..."
 
@@ -52,11 +53,6 @@ fun AccountInfo() {
         )
     }
 
-    var newInfo by remember {
-        mutableStateOf<AccountResponse?>(
-            null
-        )
-    }
 
     var followedCreators by remember {
         mutableStateOf(listOf<AccountDisplayResponse>())
@@ -117,6 +113,7 @@ fun AccountInfo() {
 
 
         var isMatching by remember { mutableStateOf(true) }
+        var isFilled by remember { mutableStateOf(true) }
         var email by remember { mutableStateOf("") }
         var username by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
@@ -124,7 +121,7 @@ fun AccountInfo() {
         var showPassword by remember { mutableStateOf(false) }
         var showConfirmPassword by remember { mutableStateOf(false) }
 
-        key(isMatching, newInfo) {
+        key(isMatching, isFilled) {
             SpanText("Email: ${account.email}")
 
             SpanText("Username: ${account.username}")
@@ -198,7 +195,7 @@ fun AccountInfo() {
                 Button(
                     onClick = {
                         isMatching = (password == confirmPassword)
-                        if (isMatching && (email != "" || username != "" || password != "")) {
+                        if (isMatching && password != "" && (email != "" || username != "")) {
                             coroutineScope.launch{
                                 account = postRequest<RegistrationAccount, AccountResponse>(
                                     urlString = "accounts/${account.accountID}",
@@ -216,10 +213,7 @@ fun AccountInfo() {
                                                 true -> { username }
                                                 false -> { account.username }
                                             },
-                                            password = when(password != ""){
-                                                true -> { password }
-                                                false -> { account.password }
-                                            }
+                                            password = password
                                         )
                                     },
                                     onSuccess = {
@@ -237,6 +231,9 @@ fun AccountInfo() {
                                     }
                                 ) ?: account
                             }
+                        } else if (password == ""){
+                            isFilled = false
+                            tooltipText = "Password Must Be Provided"
                         } else if (!isMatching){
                             tooltipText = "Both Passwords Must Match"
                         }
@@ -246,13 +243,13 @@ fun AccountInfo() {
                     Text("Submit")
                 }
             }
-            if (!isMatching) {
+            if (!isMatching || !isFilled) {
                 AdvancedTooltip(
                     ElementTarget.PreviousSibling,
                     tooltipText,
                     placementStrategy = PopupPlacementStrategy.of(PopupPlacement.Top)
                 )
-                window.setTimeout({ isMatching = true }, 1000)
+                window.setTimeout({ isMatching = true; isFilled = true }, 1000)
             }
         }
 
