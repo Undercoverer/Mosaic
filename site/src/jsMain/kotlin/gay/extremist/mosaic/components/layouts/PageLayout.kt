@@ -71,7 +71,7 @@ fun PageLayout(title: String, content: @Composable ColumnScope.() -> Unit) {
     val pageCtx = rememberPageContext()
     LaunchedEffect(title) {
         document.title = "Mosaic - $title"
-        if (window.localStorage["token"].isNullOrBlank() || window.localStorage["id"].isNullOrBlank()) {
+        if (window.localStorage["token"].isNullOrBlank() && window.localStorage["id"].isNullOrBlank()) {
             pageCtx.router.tryRoutingTo("/")
         }
     }

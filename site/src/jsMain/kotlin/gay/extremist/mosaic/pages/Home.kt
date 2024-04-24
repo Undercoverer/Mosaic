@@ -133,7 +133,7 @@ fun HomePage() {
                                 video = video
                             )
                         }
-                        ifVideosEmpty(generalRecommendations, "Follow More Creators To See More Videos")
+                        ifVideosEmpty(generalRecommendations, "Huh, This One Isn't Supposed To Be Empty...")
                     }
 
                 }
