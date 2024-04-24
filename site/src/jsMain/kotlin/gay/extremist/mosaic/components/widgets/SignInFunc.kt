@@ -46,7 +46,7 @@ fun SignInFunc(onAction: (String, String) -> Unit) {
             RightInset(width = 4.5.cssRem) {
                 Button(
                     onClick = { showPassword = !showPassword },
-                    Modifier.width(3.5.cssRem).height(1.75.cssRem).background(Color.rgb(0x2EB4A9)),
+                    Modifier.width(3.5.cssRem).height(1.75.cssRem).background(Color.rgb(0x2A9F96)),
                     size = ButtonSize.SM,
                 ) {
                     Text(if (showPassword) "Hide" else "Show")
@@ -54,7 +54,6 @@ fun SignInFunc(onAction: (String, String) -> Unit) {
             }
         }
 
-        val ctx = rememberPageContext()
         Button(
             onClick = {
                 if (email.isNotEmpty() && password.isNotEmpty()) {
@@ -63,7 +62,7 @@ fun SignInFunc(onAction: (String, String) -> Unit) {
                     println("Cannot navigate to /home. All fields must be filled.")
                 }
             },
-            Modifier.background(Color.rgb(0x2EB4A9))
+            Modifier.background(Color.rgb(0x2A9F96))
         ) {
             Text("Sign In")
         }

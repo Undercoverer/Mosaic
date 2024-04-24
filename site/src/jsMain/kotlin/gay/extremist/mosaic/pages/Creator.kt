@@ -113,7 +113,7 @@ fun CreatorPage() {
                                     }
                                 )
                             }
-                        }, Modifier.background(Color.rgb(0x2EB4A9))) {
+                        }, Modifier.background(Color.rgb(0x2A9F96))) {
                             Text("Follow")
                         }
                     } else if (account in followedAccounts)  {
@@ -135,7 +135,7 @@ fun CreatorPage() {
                                 )
 
                             }
-                        }, Modifier.background(Color.rgb(0x2EB4A9))) {
+                        }, Modifier.background(Color.rgb(0x2A9F96))) {
                             Text("Unfollow")
                         }
                     }

@@ -21,7 +21,7 @@ class SitePalette(
     class Brand(
         val primary: Color = Color.rgb(0x3B72Ed),
         val secondary: Color = Color.rgb(0x9F8BFF),
-        val accent: Color = Color.rgb(0x2ECDC0),
+        val accent: Color = Color.rgb(0x2EB4A9),
     )
 }
 
@@ -32,7 +32,7 @@ object SitePalettes {
         brand = SitePalette.Brand(
             primary = Color.rgb(0x3B72Ed),
             secondary = Color.rgb(0x9F8BFF),
-            accent = Color.rgb(0x2ECDC0),
+            accent = Color.rgb(0x2EB4A9),
         )
     )
     val dark = SitePalette(
@@ -41,7 +41,7 @@ object SitePalettes {
         brand = SitePalette.Brand(
             primary = Color.rgb(0x3B72Ed),
             secondary = Color.rgb(0x9F8BFF),
-            accent = Color.rgb(0x2ECDC0),
+            accent = Color.rgb(0x2EB4A9),
         )
     )
 }

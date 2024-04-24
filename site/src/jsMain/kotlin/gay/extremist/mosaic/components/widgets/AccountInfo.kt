@@ -17,15 +17,16 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.disclosure.Tabs
 import com.varabyte.kobweb.silk.components.forms.*
 import com.varabyte.kobweb.silk.components.navigation.Link
-import com.varabyte.kobweb.silk.components.overlay.AdvancedTooltip
-import com.varabyte.kobweb.silk.components.overlay.PopupPlacement
-import com.varabyte.kobweb.silk.components.overlay.PopupPlacementStrategy
+import com.varabyte.kobweb.silk.components.overlay.*
 import com.varabyte.kobweb.silk.components.text.SpanText
 import gay.extremist.mosaic.Util.getRequest
 import gay.extremist.mosaic.Util.headerAccountId
 import gay.extremist.mosaic.Util.headerToken
 import gay.extremist.mosaic.Util.postRequest
-import gay.extremist.mosaic.data_models.*
+import gay.extremist.mosaic.data_models.AccountDisplayResponse
+import gay.extremist.mosaic.data_models.AccountResponse
+import gay.extremist.mosaic.data_models.RegistrationAccount
+import gay.extremist.mosaic.data_models.TagResponse
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.Position
@@ -105,7 +106,7 @@ fun AccountInfo() {
                 onClick = {
                     ctx.router.tryRoutingTo("/creator/${window.localStorage["id"]}")
                 },
-                Modifier.background(Color.rgb(0x2EB4A9))
+                Modifier.background(Color.rgb(0x2A9F96))
             ) {
                 Text("My Creator Page")
             }
@@ -120,14 +121,66 @@ fun AccountInfo() {
         var confirmPassword by remember { mutableStateOf("") }
         var showPassword by remember { mutableStateOf(false) }
         var showConfirmPassword by remember { mutableStateOf(false) }
+        var isPopoverVisible by remember { mutableStateOf(false) }
 
         key(isMatching, isFilled) {
-            SpanText("Email: ${account.email}")
+            Box(Modifier.background(Color.rgb(0x2A9F96)).fontSize(1.2.cssRem).padding(1.cssRem).borderRadius(0.5.cssRem)){
+                Column{
+                    SpanText("Email: ${account.email}")
+                    SpanText("Username: ${account.username}")
+                }
+            }
 
-            SpanText("Username: ${account.username}")
+            Button(
+                onClick = {
+                    isPopoverVisible = !isPopoverVisible
+                    // Reset error state when button is clicked
+
+                },
+                modifier = Modifier.color(Color.rgb(0x2A9F96))
+            ) {
+                Text("Delete Account")
+            }
+
+            if (isPopoverVisible) {
+                Popover(
+                    target = ElementTarget.PreviousSibling,
+                    modifier = Modifier.padding(0.5.cssRem).background(Color.rgb(0x2A9F96)),
+                    placement = PopupPlacement.Left,
+                    keepOpenStrategy = KeepPopupOpenStrategy.manual(true),
+                    content = {
+                        Column (verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+                            SpanText("Would you like to Delete this account?")
+                            Row(Modifier.gap(1.cssRem)){
+
+                                Button(
+                                    size = ButtonSize.SM,
+                                    onClick = {
+                                        // Reset error state when button is clicked
+
+                                    },
+                                    modifier = Modifier.color(Color.rgb(0x2A9F96))
+                                ) {
+                                    Text("OK")
+                                }
+
+                                Button(
+                                    size = ButtonSize.SM,
+                                    onClick = {
+                                        // Reset error state when button is clicked
+
+                                    },
+                                    modifier = Modifier.color(Color.rgb(0x2A9F96))
+                                ) {
+                                    Text("Cancel")
+                                }
+                            }
+                        }
+
+                    } )
+            }
 
             Row(Modifier.height(1.cssRem)) {}
-
             val inputWidth = Modifier.width(15.cssRem)
 
 
@@ -137,7 +190,8 @@ fun AccountInfo() {
                     email,
                     placeholder = "Email",
                     variant = FilledInputVariant,
-                    onTextChanged = { email = it })
+                    onTextChanged = { email = it }
+                )
             }
 
 
@@ -146,7 +200,8 @@ fun AccountInfo() {
                     username,
                     placeholder = "Username",
                     variant = FilledInputVariant,
-                    onTextChanged = { username = it })
+                    onTextChanged = { username = it }
+                )
             }
 
 
@@ -161,7 +216,7 @@ fun AccountInfo() {
                 RightInset(width = 4.5.cssRem) {
                     Button(
                         onClick = { showPassword = !showPassword },
-                        Modifier.width(3.5.cssRem).height(1.75.cssRem).background(Color.rgb(0x2EB4A9)),
+                        Modifier.width(3.5.cssRem).height(1.75.cssRem).background(Color.rgb(0x2A9F96)),
                         size = ButtonSize.SM,
                     ) {
                         Text(if (showPassword) "Hide" else "Show")
@@ -180,7 +235,7 @@ fun AccountInfo() {
                 RightInset(width = 4.5.cssRem) {
                     Button(
                         onClick = { showConfirmPassword = !showConfirmPassword },
-                        Modifier.width(3.5.cssRem).height(1.75.cssRem).background(Color.rgb(0x2EB4A9)),
+                        Modifier.width(3.5.cssRem).height(1.75.cssRem).background(Color.rgb(0x2A9F96)),
                         size = ButtonSize.SM,
                     ) {
                         Text(if (showConfirmPassword) "Hide" else "Show")
@@ -238,9 +293,9 @@ fun AccountInfo() {
                             tooltipText = "Both Passwords Must Match"
                         }
                     },
-                    Modifier.background(Color.rgb(0x2EB4A9))
+                    Modifier.background(Color.rgb(0x2A9F96))
                 ) {
-                    Text("Submit")
+                    Text("Update Info")
                 }
             }
             if (!isMatching || !isFilled) {
