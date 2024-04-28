@@ -14,6 +14,9 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.Page
+import com.varabyte.kobweb.silk.components.forms.Button
+import com.varabyte.kobweb.silk.components.forms.TextInput
+import com.varabyte.kobweb.silk.components.icons.fa.FaPlus
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.overlay.AdvancedTooltip
 import com.varabyte.kobweb.silk.components.overlay.PopupPlacement
@@ -27,7 +30,8 @@ import gay.extremist.mosaic.Util.postRequest
 import gay.extremist.mosaic.components.layouts.PageLayout
 import gay.extremist.mosaic.components.widgets.AccountInfo
 import gay.extremist.mosaic.components.widgets.UploadDataEntry
-import gay.extremist.mosaic.data_models.*
+import gay.extremist.mosaic.data_models.NewPlaylistData
+import gay.extremist.mosaic.data_models.PlaylistDisplayResponse
 import gay.extremist.mosaic.toSitePalette
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
@@ -47,47 +51,99 @@ fun AccountPage() {
     var playlists by remember {
         mutableStateOf(listOf<PlaylistDisplayResponse>())
     }
+    var playlistName by remember { mutableStateOf("") }
+
 
     coroutineScope.launch {
         playlists = getRequest<List<PlaylistDisplayResponse>>(
             urlString = "accounts/${window.localStorage["id"]}/playlists",
             onError = {
                 println(it.message)
-            }
-        ) ?: playlists
+            }) ?: playlists
     }
 
-    PageLayout("Account"){
+    PageLayout("Account") {
         val sitePalette = ColorMode.current.toSitePalette()
-        Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)){
-            Column(modifier = Modifier.fillMaxSize().fontSize(1.3.cssRem).background(sitePalette.brand.secondary).padding(2.cssRem), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(modifier = Modifier.fillMaxSize().gap(1.cssRem)) {
+            Column(
+                modifier = Modifier.fillMaxSize().fontSize(1.3.cssRem).background(sitePalette.brand.secondary)
+                    .padding(2.cssRem),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 SpanText(
                     text = "Playlists",
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
+                // New playlist button
 
-                Box(Modifier.fillMaxSize().width(20.cssRem).height(35.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
-                    Column(Modifier.gap(0.2.cssRem).fillMaxSize()){
+                Row() {
+                    TextInput(
+                        modifier = Modifier.fillMaxWidth(), text = playlistName, onTextChanged = {
+                            playlistName = it
+                        }, placeholder = "New Playlist"
+                    )
+                    Button(modifier = Modifier.aspectRatio(1), onClick = {
+                        coroutineScope.launch {
+                            postRequest<NewPlaylistData, PlaylistDisplayResponse>(
+                                urlString = "playlists",
+                                setHeaders = {
+                                    append(headerAccountId, window.localStorage["id"] ?: "")
+                                    append(headerToken, window.localStorage["token"] ?: "")
+                                    append(HttpHeaders.ContentType, "application/json")
+                                    append(HttpHeaders.Accept, "application/json")
+                                },
+                                setBody = {
+                                    NewPlaylistData(
+                                        name = playlistName
+                                    )
+                                },
+                                onSuccess = {
+                                    playlists = playlists + it
+                                    playlistName = ""
+                                })
+                        }
+                    }) {
+                        FaPlus()
+                    }
+                }
+                Box(
+                    Modifier.fillMaxSize().width(20.cssRem).height(35.cssRem).overflow { y(Overflow.Auto) },
+                    Alignment.TopCenter
+                ) {
+                    Column(Modifier.gap(0.2.cssRem).fillMaxSize()) {
                         for (playlist in playlists) {
-                            Link("/playlist/${playlist.id}", playlist.name, Modifier.color(Colors.DarkBlue).fontSize(FontSize.XLarge))
+                            Link(
+                                "/playlist/${playlist.id}",
+                                playlist.name,
+                                Modifier.color(Colors.DarkBlue).fontSize(FontSize.XLarge)
+                            )
                         }
                     }
                 }
             }
-            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).padding(2.cssRem), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                modifier = Modifier.fillMaxSize().background(sitePalette.brand.accent).padding(2.cssRem),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 SpanText(
                     text = "Account Info",
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
-                AccountInfo ()
+                AccountInfo()
             }
-            Column(modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).padding(2.cssRem), verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                modifier = Modifier.fillMaxSize().background(sitePalette.brand.primary).padding(2.cssRem),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 SpanText(
                     text = "Upload",
                     modifier = Modifier.padding(20.px).fontSize(35.px),
                 )
 
-                UploadDataEntry{ title, description, userTags, checkedItems, file ->
+                UploadDataEntry { title, description, userTags, checkedItems, file ->
                     coroutineScope.launch {
                         val fileBytes = file?.readBytes() ?: byteArrayOf()
                         uploadedVideoId = postRequest<MultiPartFormDataContent, Int>(
@@ -106,8 +162,7 @@ fun AccountPage() {
                                             append(HttpHeaders.ContentType, "video/mp4")
                                             append(HttpHeaders.ContentDisposition, "filename=${file?.name}")
                                         })
-                                    },
-                                    boundary = "WebAppBoundary"
+                                    }, boundary = "WebAppBoundary"
                                 )
                             },
                         )
@@ -124,11 +179,11 @@ fun AccountPage() {
 
 @Composable
 fun ShowUploadSuccess(uploadedVideoId: Int?, onTimeout: () -> Unit) {
-    when(uploadedVideoId != null){
+    when (uploadedVideoId != null) {
         true -> {
             AdvancedTooltip(
                 ElementTarget.PreviousSibling,
-                "Video Uploaded Successfully",
+                "Video UploadedUnit Successfully",
                 placementStrategy = PopupPlacementStrategy.of(PopupPlacement.Top)
             )
             LaunchedEffect(key1 = uploadedVideoId) {
@@ -136,6 +191,7 @@ fun ShowUploadSuccess(uploadedVideoId: Int?, onTimeout: () -> Unit) {
                 onTimeout()
             }
         }
-        false -> { }
+
+        false -> {}
     }
 }

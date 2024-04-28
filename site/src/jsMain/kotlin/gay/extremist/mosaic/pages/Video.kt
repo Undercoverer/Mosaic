@@ -13,7 +13,10 @@ import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.navigation.Link
-import com.varabyte.kobweb.silk.components.overlay.*
+import com.varabyte.kobweb.silk.components.overlay.KeepPopupOpenStrategy
+import com.varabyte.kobweb.silk.components.overlay.Popover
+import com.varabyte.kobweb.silk.components.overlay.PopupPlacement
+import com.varabyte.kobweb.silk.components.overlay.manual
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
@@ -47,9 +50,6 @@ fun VideoPage() {
     val id = pageCtx.route.params.getValue("id").toIntOrNull() ?: return
     val loadingVal = "Loading..."
 
-    var tooltipText by remember {
-        mutableStateOf("")
-    }
 
     var toggle by remember { mutableStateOf(false) }
 
@@ -71,9 +71,6 @@ fun VideoPage() {
         )
     }
 
-    var newPlaylist by remember {
-        mutableStateOf<PlaylistDisplayResponse?>(null)
-    }
     var newComment by remember {
         mutableStateOf<CommentResponseNonrecursive?>(null)
     }
@@ -111,36 +108,27 @@ fun VideoPage() {
     PageLayout("Video") {
 
         coroutineScope.launch {
-            video = getRequest<VideoResponse>(
-                urlString = "videos/$id",
-                onError = {
-                    println(it.message)
-                }
-            ) ?: video
+            video = getRequest<VideoResponse>(urlString = "videos/$id", onError = {
+                println(it.message)
+            }) ?: video
 
-            followedAccounts = getRequest<List<AccountDisplayResponse>>(
-                urlString = "accounts/${window.localStorage["id"]}/following",
-                setHeaders = {
-                    append(headerToken, window.localStorage["token"] ?: "")
-                },
-                onError = {
-                    println(it.message)
-                }
-            ) ?: followedAccounts
+            followedAccounts =
+                getRequest<List<AccountDisplayResponse>>(urlString = "accounts/${window.localStorage["id"]}/following",
+                    setHeaders = {
+                        append(headerToken, window.localStorage["token"] ?: "")
+                    },
+                    onError = {
+                        println(it.message)
+                    }) ?: followedAccounts
 
-            comments = getRequest<List<CommentResponseNonrecursive>>(
-                urlString = "comments/video/$id",
-                onError = {
-                    println(it.message)
-                }
-            ) ?: comments
+            comments = getRequest<List<CommentResponseNonrecursive>>(urlString = "comments/video/$id", onError = {
+                println(it.message)
+            }) ?: comments
 
-            recommends = getRequest<List<VideoDisplayResponse>>(
-                urlString = "accounts/${video.creator.id}/videos",
-                onError = {
+            recommends =
+                getRequest<List<VideoDisplayResponse>>(urlString = "accounts/${video.creator.id}/videos", onError = {
                     println(it.message)
-                }
-            ) ?: recommends
+                }) ?: recommends
         }
 
         Row(
@@ -150,13 +138,10 @@ fun VideoPage() {
 
 
             Column(Modifier.fillMaxSize().width(180.cssRem), horizontalAlignment = Alignment.Start) {
-                Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center){
-                    VideoPlayer(
-                        id = "player",
-                        src = "${BASE_URL}${video.videoPath}/output.mpd".also {
-                            println(it)
-                        }
-                    )
+                Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center) {
+                    VideoPlayer(id = "player", src = "${BASE_URL}${video.videoPath}/output.mpd".also {
+                        println(it)
+                    })
                 }
 
 
@@ -356,64 +341,23 @@ fun VideoPage() {
                             }
                         }
                         Column(Modifier.width(1.cssRem)) { }
-                        key(newPlaylist, responseText) {
-                            SavePopUp(onPlaylistAction = { playlist ->
-                                // Perform action with playlist
-                                coroutineScope.launch {
-                                    newPlaylist =
-                                        postRequest<NewPlaylistData, PlaylistDisplayResponse>(urlString = "playlists",
+                        SavePopUp(onCheckboxAction = { selectedItem ->
+                            // Perform action with selected checkbox item
+                            when (selectedItem) {
+                                is PlaylistDisplayResponse -> {
+                                    coroutineScope.launch {
+                                        responseText = postRequestText(urlString = "playlists/${selectedItem.id}/add",
                                             setHeaders = {
                                                 append(headerAccountId, window.localStorage["id"] ?: "")
                                                 append(headerToken, window.localStorage["token"] ?: "")
-                                            },
-                                            setBody = {
-                                                NewPlaylistData(
-                                                    name = playlist
-                                                )
-                                            },
-                                            onSuccess = {
-                                                println("Playlist submitted: ${it.name}")
-                                                tooltipText = "Playlist ${newPlaylist!!.name} Created"
+                                                append(headerVideoId, id.toString())
                                             })
-                                }
-
-                                newPlaylist
-                            }, onCheckboxAction = { selectedItem ->
-                                // Perform action with selected checkbox item
-                                when (selectedItem) {
-                                    is PlaylistDisplayResponse -> {
-                                        coroutineScope.launch {
-                                            responseText =
-                                                postRequestText(urlString = "playlists/${selectedItem.id}/add",
-                                                    setHeaders = {
-                                                        append(headerAccountId, window.localStorage["id"] ?: "")
-                                                        append(headerToken, window.localStorage["token"] ?: "")
-                                                        append(headerVideoId, id.toString())
-                                                    },
-                                                    onSuccess = {
-                                                        println(it)
-                                                        tooltipText = "Video Added to ${newPlaylist!!.name}"
-                                                    },
-                                                    onError = {
-                                                        println(it.message)
-                                                    })
-                                        }
-                                    }
-
-                                    else -> {
                                     }
                                 }
-                            })
-                            if (tooltipText != "") {
-                                AdvancedTooltip(
-                                    ElementTarget.PreviousSibling,
-                                    tooltipText,
-                                    hideDelayMs = 2000,
-                                    placementStrategy = PopupPlacementStrategy.of(PopupPlacement.Top)
-                                )
+
+                                else -> {}
                             }
-                        }
-
+                        })
                     }
                 }
 
@@ -546,20 +490,6 @@ fun VideoPage() {
             }
         }
         Row(modifier = Modifier.fillMaxSize().height(3.cssRem)) {}
-
-
-        if(toggle){
-//            coroutineScope.launch {
-//                video = getRequest<VideoResponse>(
-//                    urlString = "videos/$id",
-//                    onError = {
-//                        println(it.message)
-//                    }
-//                ) ?: video
-//            }
-            toggle = !toggle
-        }
-
     }
 }
 
