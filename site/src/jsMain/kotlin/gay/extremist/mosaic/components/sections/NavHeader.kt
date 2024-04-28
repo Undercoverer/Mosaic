@@ -92,6 +92,7 @@ private fun SignOutNavLink(path: String, text: String) {
 
 @Composable
 private fun MenuItems() {
+    NavLink("/home", "Home")
     NavLink("/account", "Account")
     SignOutNavLink("/", "Sign Out")
 

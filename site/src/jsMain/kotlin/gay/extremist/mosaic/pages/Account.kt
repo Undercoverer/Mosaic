@@ -11,12 +11,11 @@ import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.silk.components.forms.Button
-import com.varabyte.kobweb.silk.components.forms.TextInput
-import com.varabyte.kobweb.silk.components.icons.fa.FaPlus
+import com.varabyte.kobweb.silk.components.forms.*
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.overlay.AdvancedTooltip
 import com.varabyte.kobweb.silk.components.overlay.PopupPlacement
@@ -40,6 +39,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.dom.Text
 import org.w3c.dom.get
 
 @Page("/account")
@@ -78,34 +78,43 @@ fun AccountPage() {
                 // New playlist button
 
                 Row() {
-                    TextInput(
-                        modifier = Modifier.fillMaxWidth(), text = playlistName, onTextChanged = {
-                            playlistName = it
-                        }, placeholder = "New Playlist"
-                    )
-                    Button(modifier = Modifier.aspectRatio(1), onClick = {
-                        coroutineScope.launch {
-                            postRequest<NewPlaylistData, PlaylistDisplayResponse>(
-                                urlString = "playlists",
-                                setHeaders = {
-                                    append(headerAccountId, window.localStorage["id"] ?: "")
-                                    append(headerToken, window.localStorage["token"] ?: "")
-                                    append(HttpHeaders.ContentType, "application/json")
-                                    append(HttpHeaders.Accept, "application/json")
-                                },
-                                setBody = {
-                                    NewPlaylistData(
-                                        name = playlistName
-                                    )
-                                },
-                                onSuccess = {
-                                    playlists = playlists + it
-                                    playlistName = ""
-                                })
+                    InputGroup {
+                        TextInput(
+                            modifier = Modifier.fillMaxWidth(), text = playlistName, onTextChanged = {
+                                playlistName = it
+                            }, variant = FilledInputVariant,
+                            placeholder = "New Playlist"
+                        )
+                        RightInset(width = 4.5.cssRem) {
+                            Button(modifier = Modifier.width(3.5.cssRem).height(1.75.cssRem).background(Color.rgb(0x8269F8)),
+                                size = ButtonSize.SM, onClick = {
+                                coroutineScope.launch {
+                                    postRequest<NewPlaylistData, PlaylistDisplayResponse>(
+                                        urlString = "playlists",
+                                        setHeaders = {
+                                            append(headerAccountId, window.localStorage["id"] ?: "")
+                                            append(headerToken, window.localStorage["token"] ?: "")
+                                            append(HttpHeaders.ContentType, "application/json")
+                                            append(HttpHeaders.Accept, "application/json")
+                                        },
+                                        setBody = {
+                                            NewPlaylistData(
+                                                name = playlistName
+                                            )
+                                        },
+                                        onSuccess = {
+                                            playlists = playlists + it
+                                            playlistName = ""
+                                        })
+                                }
+                            }) {
+
+                               Text("Add")
+
+                            }
                         }
-                    }) {
-                        FaPlus()
                     }
+
                 }
                 Box(
                     Modifier.fillMaxSize().width(20.cssRem).height(35.cssRem).overflow { y(Overflow.Auto) },
