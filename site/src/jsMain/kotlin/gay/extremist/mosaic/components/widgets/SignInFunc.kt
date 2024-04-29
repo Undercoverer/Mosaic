@@ -12,6 +12,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.*
+import kotlinx.browser.window
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Text
@@ -59,7 +60,7 @@ fun SignInFunc(onAction: (String, String) -> Unit) {
                 if (email.isNotEmpty() && password.isNotEmpty()) {
                     onAction(email, password)
                 } else {
-                    println("Cannot navigate to /home. All fields must be filled.")
+                    window.alert("All Fields Must Be Filled")
                 }
             },
             Modifier.background(Color.rgb(0x2A9F96))
