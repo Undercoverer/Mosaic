@@ -109,7 +109,11 @@ fun VideoPage() {
 
         coroutineScope.launch {
             video = getRequest<VideoResponse>(urlString = "videos/$id", onError = {
-                println(it.message)
+                if(it.message == "Video not finished processing"){
+                    window.alert("Looks Like This Video Is Still Processing, Try Again Later.")
+                    pageCtx.router.tryRoutingTo("/home")
+                }
+                println(it.status)
             }) ?: video
 
             followedAccounts =

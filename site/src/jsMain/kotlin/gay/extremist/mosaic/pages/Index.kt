@@ -82,7 +82,9 @@ fun SignInPage() {
                                     pageContext.router.tryRoutingTo("/home")
                                 },
                                 onError = {
-                                    println(it.message)
+                                    if(it.message == "Incorrect username or password"){
+                                        window.alert("Incorrect Username or Password")
+                                    }
                                 }
                             )
                         }

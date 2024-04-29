@@ -26,7 +26,6 @@ import gay.extremist.mosaic.data_models.RegistrationAccount
 import gay.extremist.mosaic.data_models.TagResponse
 import io.ktor.http.*
 import kotlinx.browser.window
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.cssRem
@@ -155,7 +154,7 @@ fun AccountInfo() {
                                             }, onSuccess = {
                                                 window.localStorage.removeItem("id")
                                                 window.localStorage.removeItem("token")
-                                                delay(3000)
+                                                window.alert("Account Deleted Successfully")
                                                 ctx.router.tryRoutingTo("/")
                                             })
                                         }
