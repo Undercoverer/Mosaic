@@ -9,7 +9,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.*
 import io.ktor.serialization.kotlinx.json.*
 
-const val BASE_URL = "http://localhost:8080/"
+const val BASE_URL = "http://ucic.extremist.gay:8080/" // "http://localhost:8080/" // DEV
 
 
 @OptIn(ExperimentalSerializationApi::class)

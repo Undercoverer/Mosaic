@@ -19,15 +19,14 @@ import com.varabyte.kobweb.silk.components.forms.*
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.overlay.*
 import com.varabyte.kobweb.silk.components.text.SpanText
-import gay.extremist.mosaic.Util.getRequest
-import gay.extremist.mosaic.Util.headerAccountId
-import gay.extremist.mosaic.Util.headerToken
-import gay.extremist.mosaic.Util.postRequest
+import gay.extremist.mosaic.Util.*
 import gay.extremist.mosaic.data_models.AccountDisplayResponse
 import gay.extremist.mosaic.data_models.AccountResponse
 import gay.extremist.mosaic.data_models.RegistrationAccount
 import gay.extremist.mosaic.data_models.TagResponse
+import io.ktor.http.*
 import kotlinx.browser.window
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.cssRem
@@ -45,11 +44,7 @@ fun AccountInfo() {
     var account by remember {
         mutableStateOf(
             AccountResponse(
-                accountID = -1,
-                username = loadingVal,
-                email = loadingVal,
-                token = loadingVal,
-                password = loadingVal
+                accountID = -1, username = loadingVal, email = loadingVal, token = loadingVal, password = loadingVal
             )
         )
     }
@@ -65,48 +60,42 @@ fun AccountInfo() {
 
 
     coroutineScope.launch {
-        account = getRequest<AccountResponse>(
-            urlString = "accounts/${window.localStorage["id"]}",
-            setHeaders = {
-                append(headerToken, window.localStorage["token"] ?: "")
-            },
-            onError = {
-                println(it.message)
-            }
-        ) ?: account
+        account = getRequest<AccountResponse>(urlString = "accounts/${window.localStorage["id"]}", setHeaders = {
+            append(headerToken, window.localStorage["token"] ?: "")
+        }, onError = {
+            println(it.message)
+        }) ?: account
 
-        followedCreators = getRequest<List<AccountDisplayResponse>>(
-            urlString = "accounts/${window.localStorage["id"]}/following",
-            setHeaders = {
-                append(headerToken, window.localStorage["token"] ?: "")
-            },
-            onError = {
-                println(it.message)
-            }
-        ) ?: followedCreators
+        followedCreators =
+            getRequest<List<AccountDisplayResponse>>(urlString = "accounts/${window.localStorage["id"]}/following",
+                setHeaders = {
+                    append(headerToken, window.localStorage["token"] ?: "")
+                },
+                onError = {
+                    println(it.message)
+                }) ?: followedCreators
 
-        followedTags = getRequest<List<TagResponse>>(
-            urlString = "accounts/${window.localStorage["id"]}/tags",
-            setHeaders = {
+        followedTags =
+            getRequest<List<TagResponse>>(urlString = "accounts/${window.localStorage["id"]}/tags", setHeaders = {
                 append(headerToken, window.localStorage["token"] ?: "")
-            },
-            onError = {
+            }, onError = {
                 println(it.message)
-            }
-        ) ?:followedTags
+            }) ?: followedTags
     }
 
-    Column(Modifier.gap(0.5.cssRem), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        Modifier.gap(0.5.cssRem),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         val ctx = rememberPageContext()
         Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
+            modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
         ) {
             Button(
                 onClick = {
                     ctx.router.tryRoutingTo("/creator/${window.localStorage["id"]}")
-                },
-                Modifier.background(Color.rgb(0x2A9F96))
+                }, Modifier.background(Color.rgb(0x2A9F96))
             ) {
                 Text("My Creator Page")
             }
@@ -124,8 +113,10 @@ fun AccountInfo() {
         var isPopoverVisible by remember { mutableStateOf(false) }
 
         key(isMatching, isFilled) {
-            Box(Modifier.background(Color.rgb(0x2A9F96)).fontSize(1.2.cssRem).padding(1.cssRem).borderRadius(0.5.cssRem)){
-                Column{
+            Box(
+                Modifier.background(Color.rgb(0x2A9F96)).fontSize(1.2.cssRem).padding(1.cssRem).borderRadius(0.5.cssRem)
+            ) {
+                Column {
                     SpanText("Email: ${account.email}")
                     SpanText("Username: ${account.username}")
                 }
@@ -136,48 +127,55 @@ fun AccountInfo() {
                     isPopoverVisible = !isPopoverVisible
                     // Reset error state when button is clicked
 
-                },
-                modifier = Modifier.color(Color.rgb(0x2A9F96))
+                }, modifier = Modifier.color(Color.rgb(0x2A9F96))
             ) {
                 Text("Delete Account")
             }
 
             if (isPopoverVisible) {
-                Popover(
-                    target = ElementTarget.PreviousSibling,
+                Popover(target = ElementTarget.PreviousSibling,
                     modifier = Modifier.padding(0.5.cssRem).background(Color.rgb(0x2A9F96)),
                     placement = PopupPlacement.Left,
                     keepOpenStrategy = KeepPopupOpenStrategy.manual(true),
                     content = {
-                        Column (verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+                        Column(
+                            verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             SpanText("Would you like to Delete this account?")
-                            Row(Modifier.gap(1.cssRem)){
+                            Row(Modifier.gap(1.cssRem)) {
 
                                 Button(
-                                    size = ButtonSize.SM,
-                                    onClick = {
-                                        // Reset error state when button is clicked
-
-                                    },
-                                    modifier = Modifier.color(Color.rgb(0x2A9F96))
+                                    size = ButtonSize.SM, onClick = {
+                                        coroutineScope.launch {
+                                            deleteRequest("accounts/${window.localStorage["id"]}", setHeaders = {
+                                                append(headerToken, window.localStorage["token"] ?: "")
+                                                append(HttpHeaders.ContentType, "application/json")
+                                            }, onError = {
+                                                println(it.message)
+                                            }, onSuccess = {
+                                                window.localStorage.removeItem("id")
+                                                window.localStorage.removeItem("token")
+                                                delay(3000)
+                                                ctx.router.tryRoutingTo("/")
+                                            })
+                                        }
+                                    }, modifier = Modifier.color(Color.rgb(0x2A9F96))
                                 ) {
                                     Text("OK")
                                 }
 
                                 Button(
-                                    size = ButtonSize.SM,
-                                    onClick = {
+                                    size = ButtonSize.SM, onClick = {
                                         // Reset error state when button is clicked
-
-                                    },
-                                    modifier = Modifier.color(Color.rgb(0x2A9F96))
+                                        isPopoverVisible = !isPopoverVisible
+                                    }, modifier = Modifier.color(Color.rgb(0x2A9F96))
                                 ) {
                                     Text("Cancel")
                                 }
                             }
                         }
 
-                    } )
+                    })
             }
 
             Row(Modifier.height(1.cssRem)) {}
@@ -186,12 +184,7 @@ fun AccountInfo() {
 
 
             InputGroup(size = InputSize.LG, modifier = inputWidth) {
-                TextInput(
-                    email,
-                    placeholder = "Email",
-                    variant = FilledInputVariant,
-                    onTextChanged = { email = it }
-                )
+                TextInput(email, placeholder = "Email", variant = FilledInputVariant, onTextChanged = { email = it })
             }
 
 
@@ -200,8 +193,7 @@ fun AccountInfo() {
                     username,
                     placeholder = "Username",
                     variant = FilledInputVariant,
-                    onTextChanged = { username = it }
-                )
+                    onTextChanged = { username = it })
             }
 
 
@@ -244,56 +236,61 @@ fun AccountInfo() {
             }
 
             Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
             ) {
                 Button(
                     onClick = {
                         isMatching = (password == confirmPassword)
                         if (isMatching && password != "" && (email != "" || username != "")) {
-                            coroutineScope.launch{
-                                account = postRequest<RegistrationAccount, AccountResponse>(
-                                    urlString = "accounts/${account.accountID}",
-                                    setHeaders = {
-                                        append(headerAccountId, window.localStorage["id"] ?: "")
-                                        append(headerToken, window.localStorage["token"] ?: "")
-                                    },
-                                    setBody = {
-                                        RegistrationAccount(
-                                            email = when(email != ""){
-                                                true -> { email }
-                                                false -> { account.email }
-                                            },
-                                            username = when(username != ""){
-                                                true -> { username }
-                                                false -> { account.username }
-                                            },
-                                            password = password
-                                        )
-                                    },
-                                    onSuccess = {
-                                        window.localStorage.setItem("token", it.token)
-                                        window.localStorage.setItem("id", it.accountID.toString())
-                                        email = ""
-                                        username = ""
-                                        password = ""
-                                        confirmPassword = ""
-                                        isMatching = false
-                                        tooltipText = "Account Successfully Updated"
-                                    },
-                                    onError = {
-                                        println(it.message)
-                                    }
-                                ) ?: account
+                            coroutineScope.launch {
+                                account =
+                                    postRequest<RegistrationAccount, AccountResponse>(urlString = "accounts/${account.accountID}",
+                                        setHeaders = {
+                                            append(headerAccountId, window.localStorage["id"] ?: "")
+                                            append(headerToken, window.localStorage["token"] ?: "")
+                                        },
+                                        setBody = {
+                                            RegistrationAccount(
+                                                email = when (email != "") {
+                                                    true -> {
+                                                        email
+                                                    }
+
+                                                    false -> {
+                                                        account.email
+                                                    }
+                                                }, username = when (username != "") {
+                                                    true -> {
+                                                        username
+                                                    }
+
+                                                    false -> {
+                                                        account.username
+                                                    }
+                                                }, password = password
+                                            )
+                                        },
+                                        onSuccess = {
+                                            window.localStorage.setItem("token", it.token)
+                                            window.localStorage.setItem("id", it.accountID.toString())
+                                            email = ""
+                                            username = ""
+                                            password = ""
+                                            confirmPassword = ""
+                                            isMatching = false
+                                            tooltipText = "Account Successfully Updated"
+                                        },
+                                        onError = {
+                                            println(it.message)
+                                        }) ?: account
                             }
-                        } else if (password == ""){
+                        } else if (password == "") {
                             isFilled = false
                             tooltipText = "Password Must Be Provided"
-                        } else if (!isMatching){
+                        } else if (!isMatching) {
                             tooltipText = "Both Passwords Must Match"
                         }
-                    },
-                    Modifier.background(Color.rgb(0x2A9F96))
+                    }, Modifier.background(Color.rgb(0x2A9F96))
                 ) {
                     Text("Update Info")
                 }
@@ -308,36 +305,43 @@ fun AccountInfo() {
             }
         }
 
-        Row(Modifier.height(1.cssRem)){}
+        Row(Modifier.height(1.cssRem)) {}
         Tabs(Modifier.fillMaxSize().fontSize(FontSize.Smaller)) {
             TabPanel {
                 Tab { Text("Followed Creators") }; Panel {
 
-                    Box(Modifier.fillMaxSize().height(10.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
-                        Column(Modifier.gap(0.2.cssRem).fillMaxSize()){
-                            for (creator in followedCreators) {
-                                Link("/creator/${creator.id}", creator.username, Modifier.color(Colors.DarkBlue).fontSize(FontSize.Larger))
-                            }
-
+                Box(Modifier.fillMaxSize().height(10.cssRem).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
+                    Column(Modifier.gap(0.2.cssRem).fillMaxSize()) {
+                        for (creator in followedCreators) {
+                            Link(
+                                "/creator/${creator.id}",
+                                creator.username,
+                                Modifier.color(Colors.DarkBlue).fontSize(FontSize.Larger)
+                            )
                         }
 
                     }
 
                 }
+
+            }
             }
             TabPanel {
                 Tab { Text("Followed Tags") }; Panel {
-                    Box(Modifier.fillMaxSize().height(10.cssRem).position(Position.Relative).overflow { y(Overflow.Auto) }, Alignment.TopCenter) {
-                        Column(Modifier.gap(0.2.cssRem).fillMaxSize()){
-                            for (tag in followedTags) {
-                                Link("/tags/${tag.id}", tag.tag, Modifier.color(Colors.DarkBlue).fontSize(FontSize.Larger))
-                            }
-
+                Box(
+                    Modifier.fillMaxSize().height(10.cssRem).position(Position.Relative).overflow { y(Overflow.Auto) },
+                    Alignment.TopCenter
+                ) {
+                    Column(Modifier.gap(0.2.cssRem).fillMaxSize()) {
+                        for (tag in followedTags) {
+                            Link("/tags/${tag.id}", tag.tag, Modifier.color(Colors.DarkBlue).fontSize(FontSize.Larger))
                         }
 
                     }
 
                 }
+
+            }
             }
         }
 

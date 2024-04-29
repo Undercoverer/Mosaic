@@ -192,7 +192,7 @@ fun ShowUploadSuccess(uploadedVideoId: Int?, onTimeout: () -> Unit) {
         true -> {
             AdvancedTooltip(
                 ElementTarget.PreviousSibling,
-                "Video UploadedUnit Successfully",
+                "Video Uploaded Successfully",
                 placementStrategy = PopupPlacementStrategy.of(PopupPlacement.Top)
             )
             LaunchedEffect(key1 = uploadedVideoId) {
